@@ -45,19 +45,31 @@ def conectar_servicos():
     drive_service = build('drive', 'v3', credentials=creds)
     return sheet, drive_service
 
-# --- ROTA PRINCIPAL: Serve a Interface Gráfica do index.html ---
+# --- ROTA PRINCIPAL: Serve a Interface Gráfica do index.html com verificação de caminho ---
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    try:
-        with open("index.html", "r", encoding="utf-8") as f:
-            return f.read()
-    except FileNotFoundError:
+    caminhos_possiveis = ["index.html", "app/index.html", "../index.html"]
+    caminho_encontrado = None
+    
+    for caminho in caminhos_possiveis:
+        if os.path.exists(caminho):
+            caminho_encontrado = caminho
+            break
+            
+    if caminho_encontrado:
+        try:
+            with open(caminho_encontrado, "r", encoding="utf-8") as f:
+                return f.read()
+        except Exception as e:
+            return f"<h1>Erro ao ler o index.html: {str(e)}</h1>"
+    else:
         return """
         <html>
-            <head><title>Projeto Nexo</title></head>
+            <head><title>Projeto Nexo — Erro de Arquivo</title></head>
             <body style="font-family:sans-serif; background:#060911; color:#fff; text-align:center; padding-top:50px;">
                 <h1>Projeto Nexo Sanctuary Master API</h1>
-                <p>O arquivo <b>index.html</b> não foi encontrado na raiz do projeto. Por favor, envie-o para o repositório.</p>
+                <p>O arquivo <b>index.html</b> não foi encontrado nos diretórios verificados.</p>
+                <p>Certifique-se de que o <b>index.html</b> está na raiz do repositório junto com o main.py.</p>
             </body>
         </html>
         """
