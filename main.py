@@ -7,6 +7,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Dict, Any
@@ -44,43 +45,24 @@ def conectar_servicos():
     drive_service = build('drive', 'v3', credentials=creds)
     return sheet, drive_service
 
-def executar_lapidacao_nexo(questao):
-    prompt_sistema = """
-    Você é o 'Nexo | Lapidação Cirúrgica', agente inteligente de diagnóstico e recomposição de erros para o vestibular de Medicina da UEL (COPS/UEL).
-    Estruture sua resposta estritamente em:
-    1. Anatomia do Erro (Feedback Formativo)
-    2. Microrevisão Direta
-    3. Active Recall (Recordação Ativa / What-if)
-    """
-    prompt_usuario = f"""
-    Analise a seguinte falha mapeada no Banco Longitudinal:
-    - ID da Questão: {questao.get('ID_QUESTAO')}
-    - Disciplina: {questao.get('DISCIPLINA')}
-    - Conteúdo: {questao.get('CONTEUDO')}
-    - Resposta do Candidato: {questao.get('RESPOSTA_CANDIDATO')}
-    - Gabarito Oficial: {questao.get('GABARITO')}
-    """
-    response = client_ai.models.generate_content(
-        model='gemini-2.5-flash',
-        contents=prompt_usuario,
-        config=genai.types.GenerateContentConfig(
-            system_instruction=prompt_sistema,
-            temperature=0.2
-        )
-    )
-    return response.text
-
-def salvar_markdown_drive(drive_service, id_questao, disciplina, conteudo, texto_markdown):
-    nome_arquivo = f"[NEXO] {id_questao} - {disciplina} ({conteudo}).md"
-    file_metadata = {'name': nome_arquivo, 'mimeType': 'text/markdown'}
-    media = MediaIoBaseUpload(io.BytesIO(texto_markdown.encode('utf-8')), mimetype='text/markdown', resumable=True)
-    file = drive_service.files().create(body=file_metadata, media_body=media, fields='id, webViewLink').execute()
-    return file.get('webViewLink')
-
-@app.get("/")
+# --- ROTA PRINCIPAL: Serve a Interface Gráfica do index.html ---
+@app.get("/", response_class=HTMLResponse)
 def read_root():
-    return {"status": "online", "message": "Projeto Nexo Sanctuary API ativa para Medicina UEL!"}
+    try:
+        with open("index.html", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return """
+        <html>
+            <head><title>Projeto Nexo</title></head>
+            <body style="font-family:sans-serif; background:#060911; color:#fff; text-align:center; padding-top:50px;">
+                <h1>Projeto Nexo Sanctuary Master API</h1>
+                <p>O arquivo <b>index.html</b> não foi encontrado na raiz do projeto. Por favor, envie-o para o repositório.</p>
+            </body>
+        </html>
+        """
 
+# --- ROTAS DA API ---
 @app.get("/api/v1/blocks/daily")
 def get_daily_block():
     return {
