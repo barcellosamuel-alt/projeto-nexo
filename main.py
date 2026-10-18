@@ -6,10 +6,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 import os
 
-DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:5433/nexo_db"
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+import os
 
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+psycopg2://postgres:postgres@localhost:5433/nexo_db")
 app = FastAPI(title="Projeto Nexo — Backend Longitudinal", version="1.0.0")
 
 def get_db():
