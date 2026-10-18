@@ -48,7 +48,7 @@
             align-items: center;
         }
 
-        /* ABA DE ENTRADA: Glassmorphism Holográfico com Borda Animada (Neon Glow & Caleidoscópio) */
+        /* ABA DE ENTRADA: Glassmorphism Holográfico com Borda Animada */
         header.hero {
             background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
             color: white;
@@ -135,7 +135,7 @@
             100% { transform: scale(0.95); opacity: 0.8; }
         }
 
-        /* Relógio e Calendário Estabilizado com Glassmorphism Avançado */
+        /* Relógio e Calendário Estabilizado */
         .clock-widget {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -267,7 +267,7 @@
         .pet-bubble { font-size: 13px; color: #f8fafc; font-weight: 700; max-width: 210px; }
         .pet-status { font-size: 11px; color: #34d399; font-weight: 700; margin-top: 3px; }
 
-        /* MÓDULOS COM RECURSOS VARIADOS E IDENTIDADE PRÓPRIA */
+        /* MÓDULOS */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -458,4 +458,78 @@
 
         @media(max-width: 850px) {
             .top-utility-bar { grid-template-columns: 1fr; }
-            .clock-widget { align-items
+            .clock-widget { align-items: flex-start; width: 100%; box-sizing: border-box; }
+            .analytics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Pet Digital Holográfico Interativo -->
+<div class="pet-companion" onclick="interagirPet()" title="Clique para interagir com o seu mascote!">
+    <div class="pet-avatar" id="petEmoji">🦊</div>
+    <div class="pet-info">
+        <span class="pet-bubble" id="petSpeech">"Olá! Vamos gabaritar a UEL juntos?"</span>
+        <span class="pet-status" id="petStatus">✨ XP: 150 // Nível Foco</span>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Barra Superior com Quadro Holográfico e Relógio em Tempo Real -->
+    <div class="top-utility-bar">
+        <header class="hero" style="margin-bottom: 0;">
+            <div>
+                <h1>PROJETO NEXO // SANCTUARY MASTER</h1>
+                <p>Plataforma Longitudinal de Alta Performance para Medicina UEL</p>
+            </div>
+            <div class="hero-badge-tech">
+                <div class="tech-pulse"></div>
+                COPS-UEL 2027 // CORE ATIVO
+            </div>
+        </header>
+        <div class="clock-widget">
+            <div class="clock-time" id="liveClock">00:00:00</div>
+            <div class="clock-date" id="liveDate">Carregando data...</div>
+            <button class="calendar-sync-btn" onclick="agendarNoGoogleCalendar()">📅 Agendar no Google Calendar</button>
+        </div>
+    </div>
+
+    <!-- Ferramentas Úteis -->
+    <div class="tools-bar">
+        <button class="tool-btn" onclick="toggleTool('notesDrawer')">📝 Bloco de Notas</button>
+        <button class="tool-btn" onclick="toggleTool('calcDrawer')">🧮 Mini Calculadora</button>
+        <button class="tool-btn" onclick="toggleTool('focusDrawer')">💡 Pílula de Bem-Estar</button>
+        <button class="tool-btn" onclick="toggleTool('soundDrawer')">🎵 Sons de Foco (Lo-Fi)</button>
+        <button class="tool-btn" onclick="toggleTool('gamesDrawer')" style="border-color: var(--accent-emerald); color: var(--accent-emerald);">🎮 Pausa & Mini-Jogos</button>
+    </div>
+
+    <!-- Bloco de Notas com Persistência -->
+    <div id="notesDrawer" class="aux-drawer">
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">📝 Bloco de Notas Local (Scratchpad Inteligente)</strong>
+        <textarea id="quickNotes" rows="4" placeholder="Escreva fórmulas rápidas ou insights... (Salva automaticamente)" oninput="salvarNotas()"></textarea>
+    </div>
+
+    <!-- Calculadora Científica -->
+    <div id="calcDrawer" class="aux-drawer">
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🧮 Calculadora de Apoio Rápido</strong>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <input type="text" id="calcInput" placeholder="Ex: sqrt(144) + 50 * 2" style="margin-top:0;">
+            <button class="action-btn" onclick="calcularResultado()" style="margin-top:0;">Calcular</button>
+        </div>
+        <div id="calcResult" style="font-family: 'JetBrains Mono'; font-size: 14px; color: var(--accent-emerald); font-weight: 700;"></div>
+    </div>
+
+    <!-- Pílulas de Bem-Estar Dinâmicas -->
+    <div id="focusDrawer" class="aux-drawer">
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">💡 Cantinho da Clareza & Saúde Mental</strong>
+        <p id="pillText" style="font-style: italic; color: var(--text-main); font-size: 15px; margin: 0 0 12px 0;">"A aprovação em Medicina na UEL é construída na consistência diária, respirando fundo e corrigindo cada lacuna com paciência e método."</p>
+        <button class="action-btn" onclick="proximaPilula()" style="padding: 8px 14px; font-size: 12px; margin-top:0;">🔄 Nova Pílula de Foco</button>
+    </div>
+
+    <!-- Sons de Foco -->
+    <div id="soundDrawer" class="aux-drawer">
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🎵 Ambiente Sonoro de Concentração</strong>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Escolha uma paisagem sonora imersiva:</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="action-btn" onclick="tocarSom('chuva')" style="background-color: var(--accent-primary); margin-top:0;">🌧️ Chuva Suave</button>
+            <button class="action-btn" onclick="tocarSom('cafe')" style="background-color: var(--accent-amber); margin-top:0;">☕ Cafeteria Acolhedora</button>
