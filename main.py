@@ -13,7 +13,7 @@ load_dotenv()
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
     description="API Longitudinal de Alta Performance para Preparação Medicina UEL — Python 3",
-    version="5.0.0"
+    version="5.2.0"
 )
 
 app.add_middleware(
@@ -39,7 +39,6 @@ def _save_local_db(data: Dict[str, Any]) -> None:
     with open(LOCAL_DB, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-# --- Cantinho da Clareza (Repertório Ampliado) ---
 CONTEUDOS_CLAREZA = [
     {
         "texto": "O Senhor é o meu pastor; nada me faltará.",
@@ -72,7 +71,6 @@ CONTEUDOS_CLAREZA = [
 def get_quotes():
     return {"quotes": CONTEUDOS_CLAREZA}
 
-# --- Gerenciamento de Notas (CRUD Completo) ---
 class NotePayload(BaseModel):
     id: Optional[int] = None
     title: str = ""
@@ -121,7 +119,6 @@ def delete_note(note_id: int):
     _save_local_db(db)
     return {"status": "deleted", "id": note_id}
 
-# --- Telemetria Longitudinal ---
 @app.get("/api/v1/telemetry")
 def get_telemetry():
     db = _load_local_db()
