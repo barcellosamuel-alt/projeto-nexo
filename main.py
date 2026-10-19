@@ -1,5 +1,6 @@
 import os
 import io
+import random
 import gspread
 from google.oauth2.service_account import Credentials
 from google import genai
@@ -38,6 +39,30 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 client_ai = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
+# Base de conteúdos dinâmicos para o painel motivacional e evangélico "Cantinho da Clareza"[cite: 13]
+CONTEUDOS_CLAREZA = [
+    {
+        "tipo": "versiculo",
+        "texto": "Tudo posso naquele que me fortalece. — Filipenses 4:13",
+        "imagem": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+        "tipo": "motivacional",
+        "texto": "Cada novo amanhecer traz uma nova oportunidade de recomeçar com fé.",
+        "imagem": "https://images.unsplash.com/photo-1470246973918-29a93221c455?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+        "tipo": "versiculo",
+        "texto": "O Senhor é o meu pastor; nada me faltará. — Salmos 23:1",
+        "imagem": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+        "tipo": "motivacional",
+        "texto": "Acredite no seu potencial e permita que a esperança guie os seus passos hoje.",
+        "imagem": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
+    }
+]
+
 def conectar_servicos():
     creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES_SHEETS)
     gc = gspread.authorize(creds)
@@ -45,7 +70,7 @@ def conectar_servicos():
     drive_service = build('drive', 'v3', credentials=creds)
     return sheet, drive_service
 
-# --- ROTA PRINCIPAL: Serve a Interface Gráfica do index.html com verificação de caminho ---
+# --- ROTA PRINCIPAL: Serve a Interface Gráfica do index.html com verificação de caminho[cite: 5] ---
 @app.get("/", response_class=HTMLResponse)
 def read_root():
     caminhos_possiveis = ["index.html", "app/index.html", "../index.html"]
@@ -75,6 +100,11 @@ def read_root():
         """
 
 # --- ROTAS DA API ---
+@app.get("/api/conteudo")
+def get_conteudo():
+    """Retorna a lista de conteúdos dinâmicos para o painel Cantinho da Clareza[cite: 13]."""
+    return CONTEUDOS_CLAREZA
+
 @app.get("/api/v1/blocks/daily")
 def get_daily_block():
     return {
