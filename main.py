@@ -1,171 +1,437 @@
-import os
-import random
-import numpy as np
-import pandas as pd
-from dotenv import load_dotenv
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Dict, Any
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Nexo — Sanctuary Master (Medicina UEL)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-base: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --border-color: #cbd5e1;
+            --border-hover: #38bdf8;
+            --accent-primary: #0284c7;
+            --accent-amber: #d97706;
+            --accent-emerald: #059669;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --danger: #dc2626;
+            --shadow-soft: 0 20px 40px -10px rgba(15, 23, 42, 0.12);
+        }
 
-load_dotenv()
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            margin: 0;
+            padding: 30px 20px;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(2, 132, 199, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(5, 150, 105, 0.1) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
 
-app = FastAPI(
-    title="Projeto Nexo Sanctuary Master API",
-    description="API Longitudinal Avançada para Preparação Medicina UEL & Painel Cantinho da Clareza",
-    version="2.5.0"
-)
+        .container { max-width: 1150px; margin: 0 auto; }
+        .top-utility-bar { display: grid; grid-template-columns: 1fr auto; gap: 20px; margin-bottom: 25px; align-items: center; }
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+        header.hero {
+            background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
+            color: white; padding: 35px 40px; border-radius: 24px;
+            box-shadow: 0 20px 40px -15px rgba(56, 189, 248, 0.35);
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative; overflow: hidden; border: 2px solid rgba(56, 189, 248, 0.2);
+        }
 
-# Base de conteúdos dinâmicos para o Cantinho da Clareza (Item 5)
-CONTEUDOS_CLAREZA = [
-    {
-        "tipo": "versiculo",
-        "texto": "Tudo posso naquele que me fortalece. — Filipenses 4:13",
-        "imagem": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80"
-    },
-    {
-        "tipo": "motivacional",
-        "texto": "Cada novo amanhecer traz uma nova oportunidade de recomeçar com fé e precisão cirúrgica rumo à UEL.",
-        "imagem": "https://images.unsplash.com/photo-1470246973918-29a93221c455?auto=format&fit=crop&w=1200&q=80"
-    },
-    {
-        "tipo": "versiculo",
-        "texto": "O Senhor é o meu pastor; nada me faltará. — Salmos 23:1",
-        "imagem": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
-    },
-    {
-        "tipo": "motivacional",
-        "texto": "A aprovação em Medicina na UEL é construída na consistência diária e na superação de cada lacuna de conhecimento.",
-        "imagem": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
-    }
-]
+        header.hero h1 {
+            font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 800; margin: 0 0 6px 0;
+            background: linear-gradient(90deg, #ffffff, #38bdf8, #34d399);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        header.hero p { font-size: 14px; color: #94a3b8; margin: 0; font-weight: 500; }
 
-@app.get("/", response_class=HTMLResponse)
-def read_root():
-    caminhos_possiveis = ["index.html", "app/index.html", "../index.html"]
-    for caminho in caminhos_possiveis:
-        if os.path.exists(caminho):
-            try:
-                with open(caminho, "r", encoding="utf-8") as f:
-                    return f.read()
-            except Exception as e:
-                return f"<h1>Erro ao ler o index.html: {str(e)}</h1>"
-    return """
-    <html>
-        <head><title>Projeto Nexo — Erro de Arquivo</title></head>
-        <body style="font-family:sans-serif; background:#060911; color:#fff; text-align:center; padding-top:50px;">
-            <h1>Projeto Nexo Sanctuary Master API</h1>
-            <p>O arquivo <b>index.html</b> não foi encontrado nos diretórios verificados.</p>
-        </body>
-    </html>
-    """
+        .hero-badge-tech {
+            background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 10px 18px; border-radius: 14px; font-weight: 700; font-size: 12px; color: #38bdf8;
+            display: flex; align-items: center; gap: 8px; backdrop-filter: blur(10px);
+        }
+        .tech-pulse { width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 10px #34d399; animation: pulseLive 2s infinite; }
+        @keyframes pulseLive { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
 
-@app.get("/api/conteudo")
-def get_conteudo():
-    """Retorna os conteúdos dinâmicos para o Cantinho da Clareza (Item 5)."""
-    return CONTEUDOS_CLAREZA
+        .clock-widget {
+            background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border-color);
+            padding: 18px 28px; border-radius: 20px; display: flex; flex-direction: column; align-items: flex-end;
+            justify-content: center; box-shadow: var(--shadow-soft); min-width: 220px;
+        }
+        .clock-time { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; color: var(--accent-primary); }
+        .clock-date { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-top: 2px; }
+        .calendar-sync-btn { background: transparent; border: none; color: var(--accent-primary); font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 6px; padding: 0; display: flex; align-items: center; gap: 4px; }
+        .calendar-sync-btn:hover { text-decoration: underline; }
 
-@app.get("/api/v1/blocks/daily")
-def get_daily_block():
-    return {
-        "total_questions": 20,
-        "discipline": "Biologia / Química / Física",
-        "status": "ready",
-        "message": "Bloco diário de treino tático carregado com sucesso."
-    }
+        .tools-bar { display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; }
+        .tool-btn {
+            background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
+            padding: 12px 20px; border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 13px;
+            display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--shadow-soft); transition: all 0.2s ease;
+        }
+        .tool-btn:hover { background: #e0f2fe; border-color: var(--accent-primary); color: var(--accent-primary); transform: translateY(-2px); }
 
-@app.get("/api/v1/recompositions/{attempt_id}")
-def get_recomposition(attempt_id: int):
-    return {
-        "attempt_id": attempt_id,
-        "discipline": "Biologia Celular",
-        "learning_gap": "Dificuldade na fosforilação oxidativa e rendimento de ATP.",
-        "micro_revisao": "A cadeia transportadora de elétrons localiza-se nas cristas mitocondriais.",
-        "exercicio_validacao": "Qual o papel direto da ATP sintase no gradiente eletroquímico?"
-    }
+        .aux-drawer {
+            background: var(--bg-card); border: 1px solid var(--border-color); padding: 24px;
+            border-radius: 20px; margin-bottom: 25px; display: none; box-shadow: var(--shadow-soft);
+        }
 
-class AcknowledgePayload(BaseModel):
-    command: str
+        /* 4. Pet Digital Dinâmico (Cão interativo com animação de movimento e som) */
+        .pet-companion {
+            position: fixed; bottom: 25px; right: 25px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.95));
+            border: 2px solid #38bdf8; padding: 16px 22px; border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(56, 189, 248, 0.3); display: flex; align-items: center; gap: 16px;
+            z-index: 1000; cursor: pointer; backdrop-filter: blur(10px); transition: transform 0.2s ease;
+        }
+        .pet-companion:hover { transform: scale(1.08) translateY(-4px); }
+        .pet-avatar { font-size: 38px; background: rgba(56, 189, 248, 0.15); padding: 8px; border-radius: 16px; border: 1px solid rgba(56, 189, 248, 0.3); animation: petBounce 1.5s infinite; }
+        @keyframes petBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        .pet-info { display: flex; flex-direction: column; }
+        .pet-bubble { font-size: 13px; color: #f8fafc; font-weight: 700; max-width: 220px; }
+        .pet-status { font-size: 11px; color: #34d399; font-weight: 700; margin-top: 3px; }
 
-@app.post("/api/v1/recompositions/{attempt_id}/acknowledge")
-def acknowledge_recomposition(attempt_id: int, payload: AcknowledgePayload):
-    return {
-        "status": "success",
-        "attempt_id": attempt_id,
-        "command_received": payload.command,
-        "message": "Leitura consolidada com sucesso."
-    }
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border-color); padding: 35px;
+            border-radius: 24px; margin-bottom: 25px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden;
+        }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-primary); }
+        .card.card-emerald::before { background: var(--accent-emerald); }
+        .card.card-amber::before { background: var(--accent-amber); }
+        .card.card-purple::before { background: #8b5cf6; }
+        .card.card-rose::before { background: #e11d48; }
 
-@app.get("/api/v1/simulated/full")
-def get_full_simulated():
-    return {
-        "total_questions": 2,
-        "questions": [
-            {
-                "id": 1,
-                "discipline": "Biologia",
-                "enunciado": "Explique o processo de fosforilação oxidativa.",
-                "alternatives": ["Alt A", "Alt B", "Alt C", "Alt D"]
+        .card-header { display: flex; align-items: center; margin-bottom: 18px; }
+        .card-header svg { width: 28px; height: 28px; fill: var(--accent-primary); margin-right: 14px; flex-shrink: 0; }
+        .card h3 { margin: 0; color: var(--text-main); font-size: 20px; font-weight: 800; }
+        .card p { color: var(--text-muted); font-size: 15px; margin-bottom: 22px; }
+
+        label { display: block; font-weight: 700; font-size: 13px; color: var(--accent-primary); margin-bottom: 8px; margin-top: 18px; text-transform: uppercase; }
+        input[type="text"], textarea {
+            width: 100%; padding: 14px 18px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px;
+            border: 1px solid var(--border-color); border-radius: 12px; background: #f8fafc; color: var(--text-main); box-sizing: border-box;
+        }
+        button.action-btn {
+            background-color: var(--accent-primary); border: none; color: white; padding: 14px 24px;
+            border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; display: inline-flex;
+            align-items: center; gap: 8px; margin-top: 14px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        }
+        .btn-success { background-color: var(--accent-emerald) !important; }
+        .response-box {
+            background: #f1f5f9; border: 1px solid var(--border-color); color: #0f172a; padding: 22px;
+            border-radius: 14px; margin-top: 20px; white-space: pre-wrap; font-family: 'JetBrains Mono', monospace; font-size: 13px;
+            border-left: 4px solid var(--accent-primary);
+        }
+        .content-display { background: #f8fafc; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-primary); padding: 22px; border-radius: 14px; margin-bottom: 20px; }
+        .timer-badge { background: #fee2e2; border: 1px solid #fecaca; color: var(--danger); padding: 8px 16px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 14px; margin-left: auto; }
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .metric-card { background: #f8fafc; border: 1px solid var(--border-color); padding: 22px; border-radius: 16px; }
+
+        /* 1. Estilo da Calculadora Moderna */
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; max-width: 340px; }
+        .calc-btn { background: #e2e8f0; border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; color: var(--text-main); }
+        .calc-btn:hover { background: #cbd5e1; }
+        .calc-btn.op { background: #bae6fd; color: #0369a1; }
+        .calc-btn.equals { background: #0284c7; color: white; grid-column: span 2; }
+    </style>
+</head>
+<body>
+
+<!-- 4. Pet Digital Dinâmico (Cão interativo flutuante com latido e reações) -->
+<div class="pet-companion" onclick="interagirPet()" title="Clique para interagir com o Pet!">
+    <div class="pet-avatar" id="petEmoji">🐶</div>
+    <div class="pet-info">
+        <span class="pet-bubble" id="petSpeech">"Au-au! Pronto para gabaritar a UEL!"</span>
+        <span class="pet-status" id="petStatus">✨ XP: 150 // Nível Foco</span>
+    </div>
+</div>
+
+<div class="container">
+    <div class="top-utility-bar">
+        <header class="hero" style="margin-bottom: 0;">
+            <div>
+                <h1>PROJETO NEXO // SANCTUARY MASTER</h1>
+                <p>Plataforma Longitudinal de Alta Performance para Medicina UEL</p>
+            </div>
+            <div class="hero-badge-tech">
+                <div class="tech-pulse"></div>
+                COPS-UEL 2027 // CORE ATIVO
+            </div>
+        </header>
+        <div class="clock-widget">
+            <div class="clock-time" id="liveClock">00:00:00</div>
+            <div class="clock-date" id="liveDate">A carregar data...</div>
+            <button class="calendar-sync-btn" onclick="agendarNoGoogleCalendar()">📅 Agendar no Google Calendar</button>
+        </div>
+    </div>
+
+    <!-- Barra de Ferramentas / Utilitários (Itens 1, 2, 3, 4, 5) -->
+    <div class="tools-bar">
+        <button class="tool-btn" onclick="toggleTool('notesDrawer')">📝 Bloco de Notas Avançado</button>
+        <button class="tool-btn" onclick="toggleTool('calcDrawer')">🧮 Calculadora Científica Moderna</button>
+        <button class="tool-btn" onclick="toggleTool('focusDrawer')">💡 Cantinho da Clareza (Fé & Motivação)</button>
+        <button class="tool-btn" onclick="toggleTool('soundDrawer')">🎵 Ambiente Sonoro Lo-Fi & Foco</button>
+        <button class="tool-btn" onclick="toggleTool('gamesDrawer')" style="border-color: var(--accent-emerald); color: var(--accent-emerald);">🎮 Pausa Ativa & Mini-Jogos</button>
+    </div>
+
+    <!-- 1. Bloco de Notas Local -->
+    <div id="notesDrawer" class="aux-drawer">
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">📝 Bloco de Notas Local com Persistência</strong>
+        <textarea id="quickNotes" rows="4" placeholder="Escreva fórmulas rápidas ou rascunhos..." oninput="salvarNotas()"></textarea>
+    </div>
+
+    <!-- 1. Calculadora Moderna e Completa -->
+    <div id="calcDrawer" class="aux-drawer">
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🧮 Calculadora Científica Moderna</strong>
+        <input type="text" id="calcDisplay" readonly style="background:#fff; font-family:'JetBrains Mono'; font-size:18px; text-align:right; margin-bottom:10px;" value="0">
+        <div class="calc-grid">
+            <button class="calc-btn op" onclick="calcAppend('Math.sqrt(')">√</button>
+            <button class="calc-btn op" onclick="calcAppend('**2')">x²</button>
+            <button class="calc-btn op" onclick="calcAppend('(')">(</button>
+            <button class="calc-btn op" onclick="calcAppend(')')">)</button>
+            <button class="calc-btn" onclick="calcAppend('7')">7</button>
+            <button class="calc-btn" onclick="calcAppend('8')">8</button>
+            <button class="calc-btn" onclick="calcAppend('9')">9</button>
+            <button class="calc-btn op" onclick="calcAppend('/')">÷</button>
+            <button class="calc-btn" onclick="calcAppend('4')">4</button>
+            <button class="calc-btn" onclick="calcAppend('5')">5</button>
+            <button class="calc-btn" onclick="calcAppend('6')">6</button>
+            <button class="calc-btn op" onclick="calcAppend('*')">×</button>
+            <button class="calc-btn" onclick="calcAppend('1')">1</button>
+            <button class="calc-btn" onclick="calcAppend('2')">2</button>
+            <button class="calc-btn" onclick="calcAppend('3')">3</button>
+            <button class="calc-btn op" onclick="calcAppend('-')">-</button>
+            <button class="calc-btn" onclick="calcAppend('0')">0</button>
+            <button class="calc-btn" onclick="calcAppend('.')">.</button>
+            <button class="calc-btn op" onclick="calcClear()">C</button>
+            <button class="calc-btn op" onclick="calcAppend('+')">+</button>
+            <button class="calc-btn equals" onclick="calcCalculate()">=</button>
+        </div>
+    </div>
+
+    <!-- 5. Cantinho da Clareza: Painel Dinâmico Conectado à API (Versículos e Motivação) -->
+    <div id="focusDrawer" class="aux-drawer">
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">💡 Cantinho da Clareza (Mensagens de Fé e Motivação)</strong>
+        <div id="cantinhoClarezaBox" style="font-style: italic; color: var(--text-main); font-size: 16px; margin-bottom: 12px; background:#fff; padding:15px; border-radius:10px; border-left:4px solid var(--accent-emerald);">
+            A carregar conteúdo dinâmico do servidor...
+        </div>
+        <button class="action-btn" onclick="carregarCantinhoClareza()" style="padding: 8px 14px; font-size: 12px; margin-top:0;">🔄 Próxima Mensagem</button>
+    </div>
+
+    <!-- 2. Sons de Foco (Lo-Fi e Ambientação Sonora Avançada via Web Audio API) -->
+    <div id="soundDrawer" class="aux-drawer">
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🎵 Ambiente Sonoro de Concentração (Lo-Fi & Natureza)</strong>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="action-btn" onclick="tocarSom('chuva')" style="background-color: var(--accent-primary); margin-top:0;">🌧️ Chuva Suave</button>
+            <button class="action-btn" onclick="tocarSom('lofi')" style="background-color: var(--accent-amber); margin-top:0;">🎧 Batidas Lo-Fi Foco</button>
+            <button class="action-btn" onclick="pararSom()" style="background-color: var(--danger); margin-top:0;">🔇 Desligar Som</button>
+        </div>
+        <div id="soundStatus" style="font-size: 13px; color: var(--accent-emerald); margin-top: 10px; font-weight: 600;"></div>
+    </div>
+
+    <!-- 3. Pausa Ativa & Mini-Jogos Relaxantes -->
+    <div id="gamesDrawer" class="aux-drawer" style="border-color: var(--accent-emerald);">
+        <strong style="color: var(--accent-emerald); display:block; margin-bottom: 8px;">🎮 Pausa Ativa & Descanso Rápido</strong>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="action-btn" onclick="iniciarRespiracao()" style="background-color: var(--accent-emerald); margin-top:0;">🧘 Respiração Guiada 4-7-8</button>
+            <button class="action-btn" onclick="gerarDesafioRelampago()" style="background-color: var(--accent-amber); margin-top:0;">⚡ Desafio Relâmpago UEL</button>
+        </div>
+        <div id="gameOutput" style="margin-top: 15px; font-size: 14px; color: var(--text-main); background: #ffffff; border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; display:none;"></div>
+    </div>
+
+    <!-- Módulo 1 -->
+    <div class="card card-emerald">
+        <div class="card-header">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <h3>01 // Bloco de Treino Diário (20 Questões UEL)</h3>
+        </div>
+        <p>Inicialize o ciclo tático diário de resolução ativa:</p>
+        <button class="action-btn btn-success" onclick="carregarBlocoDiario()">Carregar Bloco Diário</button>
+        <div id="blockResponse" class="response-box" style="display:none;"></div>
+    </div>
+
+    <!-- Módulo 2 -->
+    <div class="card card-amber">
+        <div class="card-header">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <h3>02 // Protocolo de Active Recall & Recomposição</h3>
+        </div>
+        <label for="attemptId">ID da Tentativa:</label>
+        <input type="text" id="attemptId" value="1">
+        <button class="action-btn" onclick="carregarRecomposicao()" style="background-color: var(--accent-amber);">Carregar Recomposição</button>
+        <div id="recompositionContentContainer" style="display:none; margin-top: 20px;">
+            <div class="content-display">
+                <div id="gapInfo"></div>
+                <div id="microRevisaoInfo"></div>
+                <div id="exercicioInfo"></div>
+            </div>
+            <label for="commandInput">Comando:</label>
+            <input type="text" id="commandInput" value="[NEXO_LIDO_E_COMPREENDIDO]">
+            <button class="action-btn btn-success" onclick="enviarAcknowledge()">Validar</button>
+        </div>
+        <div id="ackResponse" class="response-box" style="display:none;"></div>
+    </div>
+
+    <!-- Módulo 3 -->
+    <div class="card card-purple">
+        <div class="card-header" style="display: flex; align-items: center; width: 100%;">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <h3>03 // Simulado Oficial (60 Questões)</h3>
+            <span id="timerBadge" class="timer-badge">05:00:00</span>
+        </div>
+        <button class="action-btn" onclick="carregarSimulado()" style="background-color: #8b5cf6;">Iniciar Simulado</button>
+        <div id="simulatedContainer" style="display:none; margin-top: 20px;">
+            <div id="questionBox" class="content-display"></div>
+            <button class="action-btn btn-success" onclick="submeterSimulado()">Submeter</button>
+        </div>
+        <div id="simResponse" class="response-box" style="display:none;"></div>
+    </div>
+
+    <!-- Módulo 4 -->
+    <div class="card card-rose">
+        <div class="card-header">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            <h3>04 // Módulo Discursivo</h3>
+        </div>
+        <label>Título:</label>
+        <input type="text" id="examTitle" value="Simulado Discursivo">
+        <label>Proposta:</label>
+        <textarea id="proposalContent" rows="2">Explique a fosforilação oxidativa.</textarea>
+        <label>Resposta:</label>
+        <textarea id="studentAnswer" rows="3">A fosforilação ocorre...</textarea>
+        <button class="action-btn" onclick="enviarDiscursiva()" style="background-color: #e11d48;">Submeter Discursiva</button>
+        <div id="discResponse" class="response-box" style="display:none;"></div>
+    </div>
+
+    <!-- Módulo 5 // Telemetria Longitudinal Otimizada (Item 8) -->
+    <div class="card card-amber">
+        <div class="card-header">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+            <h3>05 // Telemetria Longitudinal (Otimizada via Python 3)</h3>
+        </div>
+        <p id="telemetryStatus" style="font-size: 13px; color: var(--accent-emerald); font-weight: 600; margin-bottom: 12px;">Sincronizando telemetria analítica com o backend Python...</p>
+        <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+            <canvas id="longitudinalChart" height="110"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.toggleTool = function(drawerId) {
+        const drawer = document.getElementById(drawerId);
+        if (drawer) {
+            drawer.style.display = drawer.style.display === 'block' ? 'none' : 'block';
+        }
+    };
+
+    // 7. Relógio e Calendário Otimizado com Google Calendar
+    window.atualizarRelogio = function() {
+        const agora = new Date();
+        const timeEl = document.getElementById('liveClock');
+        const dateEl = document.getElementById('liveDate');
+        if (timeEl) timeEl.innerText = agora.toLocaleTimeString('pt-BR');
+        if (dateEl) {
+            const opcoes = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+            dateEl.innerText = agora.toLocaleDateString('pt-BR', opcoes);
+        }
+    };
+    setInterval(window.atualizarRelogio, 1000);
+    window.atualizarRelogio();
+
+    window.agendarNoGoogleCalendar = function() {
+        const titulo = encodeURIComponent("Simulado & Bloco de Estudo - Medicina UEL");
+        const detalhes = encodeURIComponent("Sessão oficial do Projeto Nexo Sanctuary Master.");
+        window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}`, '_blank');
+    };
+
+    // 5. Cantinho da Clareza (Integração dinâmica com API Python)
+    let listaClareza = [];
+    let indexClareza = 0;
+    async function carregarCantinhoClareza() {
+        try {
+            if (listaClareza.length === 0) {
+                const res = await fetch('/api/conteudo');
+                listaClareza = await res.json();
             }
-        ]
-    }
-
-class SimulatedSubmitPayload(BaseModel):
-    answers: Dict[str, Any]
-
-@app.post("/api/v1/simulated/submit")
-def submit_simulated(payload: SimulatedSubmitPayload):
-    return {
-        "status": "evaluated",
-        "score_estimated": 78.5,
-        "feedback": "Simulado avaliado com sucesso sob os critérios COPS/UEL."
-    }
-
-class DiscursiveSubmitPayload(BaseModel):
-    title: str
-    proposal_content: str
-    student_answer: str
-
-@app.post("/api/v1/discursive/submit")
-def submit_discursive(payload: DiscursiveSubmitPayload):
-    return {
-        "status": "audited",
-        "title": payload.title,
-        "estimated_score": 8.5,
-        "feedback": "Argumentação científica coerente com o padrão UEL."
-    }
-
-# --- Item 8: Telemetria Longitudinal Otimizada via Python 3 (Pandas/NumPy) ---
-@app.get("/api/v1/telemetry/longitudinal")
-def get_longitudinal_telemetry():
-    dados_brutos = {
-        "simulado": ["Sim 1", "Sim 2", "Sim 3", "Sim 4 (Atual)", "Projeção UEL"],
-        "pontuacao": [52.0, 58.5, 64.0, 71.0, 82.5],
-        "acertos_pct": [52, 58, 64, 71, 82.5]
-    }
-    df = pd.DataFrame(dados_brutos)
-    
-    media = float(df["pontuacao"].mean())
-    desvio_padrao = float(df["pontuacao"].std(ddof=0))
-    taxa_crescimento = float(df["pontuacao"].pct_change().mean() * 100)
-    
-    return {
-        "status": "success",
-        "labels": df["simulado"].tolist(),
-        "scores": df["pontuacao"].tolist(),
-        "analytics": {
-            "media_geral": round(media, 2),
-            "desvio_padrao": round(desvio_padrao, 2),
-            "taxa_crescimento_media_pct": round(taxa_crescimento, 2),
-            "status_preparacao": "Evolução acelerada compatível com corte UEL Medicina"
+            const item = listaClareza[indexClareza];
+            const box = document.getElementById('cantinhoClarezaBox');
+            if (box) {
+                box.innerHTML = `<strong>[${item.tipo.toUpperCase()}]</strong><br>“${item.texto}”`;
+            }
+            indexClareza = (indexClareza + 1) % listaClareza.length;
+        } catch (e) {
+            console.error("Erro ao carregar Cantinho da Clareza:", e);
         }
     }
+    carregarCantinhoClareza();
+
+    // 4. Pet Digital Dinâmico (Cão interativo com áudio simulado de latido)
+    const avataresPet = ['🐶', '🐕', '🐩', '🐾'];
+    const falasPet = [
+        "Au-au! Vamos gabaritar a UEL juntos?",
+        "Coragem! A vaga na Medicina está logo ali!",
+        "Respire fundo e mantenha o foco longitudinal!"
+    ];
+    let xpPet = 150;
+    let petIdx = 0;
+    window.interagirPet = function() {
+        petIdx = (petIdx + 1) % avataresPet.length;
+        document.getElementById('petEmoji').innerText = avataresPet[petIdx];
+        const falaRand = falasPet[Math.floor(Math.random() * falasPet.length)];
+        document.getElementById('petSpeech').innerText = `"${falaRand}"`;
+        xpPet += 25;
+        document.getElementById('petStatus').innerText = `✨ XP: ${xpPet} // Energia Máxima`;
+        
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(320, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(160, ctx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.15);
+        } catch(err){}
+    };
+
+    // 1. Calculadora Moderna
+    let calcValue = "";
+    window.calcAppend = function(val) {
+        if (calcValue === "0" && val !== ".") calcValue = "";
+        calcValue += val;
+        document.getElementById('calcDisplay').value = calcValue;
+    };
+    window.calcClear = function() {
+        calcValue = "0";
+        document.getElementById('calcDisplay').value = calcValue;
+    };
+    window.calcCalculate = function() {
+        try {
+            calcValue = eval(calcValue).toString();
+            document.getElementById('calcDisplay').value = calcValue;
+        } catch (e) {
+            document.getElementById('calcDisplay').value = "Erro";
+            calcValue = "0";
+        }
+    };
+
+    // 2. Sons de Foco (Web Audio API)
+    let audioCtx = null;
+    let noiseNode = null;
+    window.tocarSom = function(tipo) {
+        window.pararSom();
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const bufferSize = 2 * audioCtx.sampleRate;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sample
