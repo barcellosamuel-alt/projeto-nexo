@@ -1,11 +1,7 @@
 import os
-import io
 import random
-import gspread
-from google.oauth2.service_account import Credentials
-from google import genai
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
+import numpy as np
+import pandas as pd
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
@@ -17,8 +13,8 @@ load_dotenv()
 
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
-    description="API Longitudinal para Preparação Medicina UEL",
-    version="1.0.0"
+    description="API Longitudinal Avançada para Preparação Medicina UEL & Painel Cantinho da Clareza",
+    version="2.5.0"
 )
 
 app.add_middleware(
@@ -29,17 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-SCOPES_SHEETS = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
-]
-CREDENTIALS_FILE = "credentials.json"
-SPREADSHEET_ID = os.getenv("GOOGLE_SHEET_ID")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
-client_ai = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
-
-# Base de conteúdos dinâmicos para o painel motivacional e evangélico "Cantinho da Clareza"[cite: 13]
+# Base de conteúdos dinâmicos para o Cantinho da Clareza (Item 5)
 CONTEUDOS_CLAREZA = [
     {
         "tipo": "versiculo",
@@ -48,7 +34,7 @@ CONTEUDOS_CLAREZA = [
     },
     {
         "tipo": "motivacional",
-        "texto": "Cada novo amanhecer traz uma nova oportunidade de recomeçar com fé.",
+        "texto": "Cada novo amanhecer traz uma nova oportunidade de recomeçar com fé e precisão cirúrgica rumo à UEL.",
         "imagem": "https://images.unsplash.com/photo-1470246973918-29a93221c455?auto=format&fit=crop&w=1200&q=80"
     },
     {
@@ -58,51 +44,34 @@ CONTEUDOS_CLAREZA = [
     },
     {
         "tipo": "motivacional",
-        "texto": "Acredite no seu potencial e permita que a esperança guie os seus passos hoje.",
+        "texto": "A aprovação em Medicina na UEL é construída na consistência diária e na superação de cada lacuna de conhecimento.",
         "imagem": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
     }
 ]
 
-def conectar_servicos():
-    creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES_SHEETS)
-    gc = gspread.authorize(creds)
-    sheet = gc.open_by_key(SPREADSHEET_ID)
-    drive_service = build('drive', 'v3', credentials=creds)
-    return sheet, drive_service
-
-# --- ROTA PRINCIPAL: Serve a Interface Gráfica do index.html com verificação de caminho[cite: 5] ---
 @app.get("/", response_class=HTMLResponse)
 def read_root():
     caminhos_possiveis = ["index.html", "app/index.html", "../index.html"]
-    caminho_encontrado = None
-    
     for caminho in caminhos_possiveis:
         if os.path.exists(caminho):
-            caminho_encontrado = caminho
-            break
-            
-    if caminho_encontrado:
-        try:
-            with open(caminho_encontrado, "r", encoding="utf-8") as f:
-                return f.read()
-        except Exception as e:
-            return f"<h1>Erro ao ler o index.html: {str(e)}</h1>"
-    else:
-        return """
-        <html>
-            <head><title>Projeto Nexo — Erro de Arquivo</title></head>
-            <body style="font-family:sans-serif; background:#060911; color:#fff; text-align:center; padding-top:50px;">
-                <h1>Projeto Nexo Sanctuary Master API</h1>
-                <p>O arquivo <b>index.html</b> não foi encontrado nos diretórios verificados.</p>
-                <p>Certifique-se de que o <b>index.html</b> está na raiz do repositório junto com o main.py.</p>
-            </body>
-        </html>
-        """
+            try:
+                with open(caminho, "r", encoding="utf-8") as f:
+                    return f.read()
+            except Exception as e:
+                return f"<h1>Erro ao ler o index.html: {str(e)}</h1>"
+    return """
+    <html>
+        <head><title>Projeto Nexo — Erro de Arquivo</title></head>
+        <body style="font-family:sans-serif; background:#060911; color:#fff; text-align:center; padding-top:50px;">
+            <h1>Projeto Nexo Sanctuary Master API</h1>
+            <p>O arquivo <b>index.html</b> não foi encontrado nos diretórios verificados.</p>
+        </body>
+    </html>
+    """
 
-# --- ROTAS DA API ---
 @app.get("/api/conteudo")
 def get_conteudo():
-    """Retorna a lista de conteúdos dinâmicos para o painel Cantinho da Clareza[cite: 13]."""
+    """Retorna os conteúdos dinâmicos para o Cantinho da Clareza (Item 5)."""
     return CONTEUDOS_CLAREZA
 
 @app.get("/api/v1/blocks/daily")
@@ -111,7 +80,7 @@ def get_daily_block():
         "total_questions": 20,
         "discipline": "Biologia / Química / Física",
         "status": "ready",
-        "message": "Bloco diário de treino carregado com sucesso."
+        "message": "Bloco diário de treino tático carregado com sucesso."
     }
 
 @app.get("/api/v1/recompositions/{attempt_id}")
@@ -173,4 +142,30 @@ def submit_discursive(payload: DiscursiveSubmitPayload):
         "title": payload.title,
         "estimated_score": 8.5,
         "feedback": "Argumentação científica coerente com o padrão UEL."
+    }
+
+# --- Item 8: Telemetria Longitudinal Otimizada via Python 3 (Pandas/NumPy) ---
+@app.get("/api/v1/telemetry/longitudinal")
+def get_longitudinal_telemetry():
+    dados_brutos = {
+        "simulado": ["Sim 1", "Sim 2", "Sim 3", "Sim 4 (Atual)", "Projeção UEL"],
+        "pontuacao": [52.0, 58.5, 64.0, 71.0, 82.5],
+        "acertos_pct": [52, 58, 64, 71, 82.5]
+    }
+    df = pd.DataFrame(dados_brutos)
+    
+    media = float(df["pontuacao"].mean())
+    desvio_padrao = float(df["pontuacao"].std(ddof=0))
+    taxa_crescimento = float(df["pontuacao"].pct_change().mean() * 100)
+    
+    return {
+        "status": "success",
+        "labels": df["simulado"].tolist(),
+        "scores": df["pontuacao"].tolist(),
+        "analytics": {
+            "media_geral": round(media, 2),
+            "desvio_padrao": round(desvio_padrao, 2),
+            "taxa_crescimento_media_pct": round(taxa_crescimento, 2),
+            "status_preparacao": "Evolução acelerada compatível com corte UEL Medicina"
+        }
     }
