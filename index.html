@@ -83,7 +83,6 @@
             border-radius: 20px; margin-bottom: 25px; display: none; box-shadow: var(--shadow-soft);
         }
 
-        /* 4. Pet Digital Dinâmico (Cão interativo com animação de movimento e som) */
         .pet-companion {
             position: fixed; bottom: 25px; right: 25px;
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.95));
@@ -131,10 +130,6 @@
         }
         .content-display { background: #f8fafc; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-primary); padding: 22px; border-radius: 14px; margin-bottom: 20px; }
         .timer-badge { background: #fee2e2; border: 1px solid #fecaca; color: var(--danger); padding: 8px 16px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 14px; margin-left: auto; }
-        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-        .metric-card { background: #f8fafc; border: 1px solid var(--border-color); padding: 22px; border-radius: 16px; }
-
-        /* 1. Estilo da Calculadora Moderna */
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; max-width: 340px; }
         .calc-btn { background: #e2e8f0; border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; color: var(--text-main); }
         .calc-btn:hover { background: #cbd5e1; }
@@ -144,7 +139,6 @@
 </head>
 <body>
 
-<!-- 4. Pet Digital Dinâmico (Cão interativo flutuante com latido e reações) -->
 <div class="pet-companion" onclick="interagirPet()" title="Clique para interagir com o Pet!">
     <div class="pet-avatar" id="petEmoji">🐶</div>
     <div class="pet-info">
@@ -172,7 +166,6 @@
         </div>
     </div>
 
-    <!-- Barra de Ferramentas / Utilitários (Itens 1, 2, 3, 4, 5) -->
     <div class="tools-bar">
         <button class="tool-btn" onclick="toggleTool('notesDrawer')">📝 Bloco de Notas Avançado</button>
         <button class="tool-btn" onclick="toggleTool('calcDrawer')">🧮 Calculadora Científica Moderna</button>
@@ -181,13 +174,11 @@
         <button class="tool-btn" onclick="toggleTool('gamesDrawer')" style="border-color: var(--accent-emerald); color: var(--accent-emerald);">🎮 Pausa Ativa & Mini-Jogos</button>
     </div>
 
-    <!-- 1. Bloco de Notas Local -->
     <div id="notesDrawer" class="aux-drawer">
         <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">📝 Bloco de Notas Local com Persistência</strong>
         <textarea id="quickNotes" rows="4" placeholder="Escreva fórmulas rápidas ou rascunhos..." oninput="salvarNotas()"></textarea>
     </div>
 
-    <!-- 1. Calculadora Moderna e Completa -->
     <div id="calcDrawer" class="aux-drawer">
         <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🧮 Calculadora Científica Moderna</strong>
         <input type="text" id="calcDisplay" readonly style="background:#fff; font-family:'JetBrains Mono'; font-size:18px; text-align:right; margin-bottom:10px;" value="0">
@@ -216,7 +207,6 @@
         </div>
     </div>
 
-    <!-- 5. Cantinho da Clareza: Painel Dinâmico Conectado à API (Versículos e Motivação) -->
     <div id="focusDrawer" class="aux-drawer">
         <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">💡 Cantinho da Clareza (Mensagens de Fé e Motivação)</strong>
         <div id="cantinhoClarezaBox" style="font-style: italic; color: var(--text-main); font-size: 16px; margin-bottom: 12px; background:#fff; padding:15px; border-radius:10px; border-left:4px solid var(--accent-emerald);">
@@ -225,7 +215,6 @@
         <button class="action-btn" onclick="carregarCantinhoClareza()" style="padding: 8px 14px; font-size: 12px; margin-top:0;">🔄 Próxima Mensagem</button>
     </div>
 
-    <!-- 2. Sons de Foco (Lo-Fi e Ambientação Sonora Avançada via Web Audio API) -->
     <div id="soundDrawer" class="aux-drawer">
         <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🎵 Ambiente Sonoro de Concentração (Lo-Fi & Natureza)</strong>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -236,7 +225,6 @@
         <div id="soundStatus" style="font-size: 13px; color: var(--accent-emerald); margin-top: 10px; font-weight: 600;"></div>
     </div>
 
-    <!-- 3. Pausa Ativa & Mini-Jogos Relaxantes -->
     <div id="gamesDrawer" class="aux-drawer" style="border-color: var(--accent-emerald);">
         <strong style="color: var(--accent-emerald); display:block; margin-bottom: 8px;">🎮 Pausa Ativa & Descanso Rápido</strong>
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
@@ -324,26 +312,36 @@
 </div>
 
 <script>
+    // 7. Relógio Robusto e Blindado contra falhas
+    function iniciarRelogio() {
+        const atualizar = () => {
+            const agora = new Date();
+            const timeEl = document.getElementById('liveClock');
+            const dateEl = document.getElementById('liveDate');
+            if (timeEl) {
+                timeEl.innerText = agora.toLocaleTimeString('pt-BR');
+            }
+            if (dateEl) {
+                const opcoes = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+                dateEl.innerText = agora.toLocaleDateString('pt-BR', opcoes);
+            }
+        };
+        atualizar();
+        setInterval(atualizar, 1000);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciarRelogio);
+    } else {
+        iniciarRelogio();
+    }
+
     window.toggleTool = function(drawerId) {
         const drawer = document.getElementById(drawerId);
         if (drawer) {
             drawer.style.display = drawer.style.display === 'block' ? 'none' : 'block';
         }
     };
-
-    // 7. Relógio e Calendário Otimizado com Google Calendar
-    window.atualizarRelogio = function() {
-        const agora = new Date();
-        const timeEl = document.getElementById('liveClock');
-        const dateEl = document.getElementById('liveDate');
-        if (timeEl) timeEl.innerText = agora.toLocaleTimeString('pt-BR');
-        if (dateEl) {
-            const opcoes = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
-            dateEl.innerText = agora.toLocaleDateString('pt-BR', opcoes);
-        }
-    };
-    setInterval(window.atualizarRelogio, 1000);
-    window.atualizarRelogio();
 
     window.agendarNoGoogleCalendar = function() {
         const titulo = encodeURIComponent("Simulado & Bloco de Estudo - Medicina UEL");
@@ -354,7 +352,7 @@
     // 5. Cantinho da Clareza (Integração dinâmica com API Python)
     let listaClareza = [];
     let indexClareza = 0;
-    async function carregarCantinhoClareza() {
+    window.carregarCantinhoClareza = async function() {
         try {
             if (listaClareza.length === 0) {
                 const res = await fetch('/api/conteudo');
@@ -369,8 +367,8 @@
         } catch (e) {
             console.error("Erro ao carregar Cantinho da Clareza:", e);
         }
-    }
-    carregarCantinhoClareza();
+    };
+    window.carregarCantinhoClareza();
 
     // 4. Pet Digital Dinâmico (Cão interativo com áudio simulado de latido)
     const avataresPet = ['🐶', '🐕', '🐩', '🐾'];
@@ -401,4 +399,204 @@
             osc.connect(gain);
             gain.connect(ctx.destination);
             osc.start();
-            osc.stop(ctx.currentTime + 0
+            osc.stop(ctx.currentTime + 0.15);
+        } catch(err){}
+    };
+
+    // 1. Calculadora Moderna
+    let calcValue = "";
+    window.calcAppend = function(val) {
+        if (calcValue === "0" && val !== ".") calcValue = "";
+        calcValue += val;
+        document.getElementById('calcDisplay').value = calcValue;
+    };
+    window.calcClear = function() {
+        calcValue = "0";
+        document.getElementById('calcDisplay').value = calcValue;
+    };
+    window.calcCalculate = function() {
+        try {
+            calcValue = eval(calcValue).toString();
+            document.getElementById('calcDisplay').value = calcValue;
+        } catch (e) {
+            document.getElementById('calcDisplay').value = "Erro";
+            calcValue = "0";
+        }
+    };
+
+    // 2. Sons de Foco (Web Audio API)
+    let audioCtx = null;
+    let noiseNode = null;
+    window.tocarSom = function(tipo) {
+        window.pararSom();
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const bufferSize = 2 * audioCtx.sampleRate;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+            noiseNode = audioCtx.createBufferSource();
+            noiseNode.buffer = noiseBuffer;
+            noiseNode.loop = true;
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = tipo === 'chuva' ? 'lowpass' : 'bandpass';
+            filter.frequency.value = tipo === 'chuva' ? 700 : 1500;
+            noiseNode.connect(filter);
+            filter.connect(audioCtx.destination);
+            noiseNode.start();
+            document.getElementById('soundStatus').innerText = `▶ Som ativo: ${tipo === 'chuva' ? 'Chuva Suave' : 'Lo-Fi Foco'}`;
+        } catch (e) {
+            document.getElementById('soundStatus').innerText = "Erro ao reproduzir áudio.";
+        }
+    };
+
+    window.pararSom = function() {
+        if (noiseNode) { try { noiseNode.stop(); noiseNode.disconnect(); } catch(e){} noiseNode = null; }
+        if (audioCtx) { try { audioCtx.close(); } catch(e){} audioCtx = null; }
+        const st = document.getElementById('soundStatus');
+        if (st) st.innerText = "🔇 Som desligado.";
+    };
+
+    // 3. Pausa Ativa & Mini-Jogos
+    window.iniciarRespiracao = function() {
+        const out = document.getElementById('gameOutput');
+        if (!out) return;
+        out.style.display = 'block';
+        out.innerHTML = "🧘 <strong>Respiração Guiada 4-7-8:</strong><br>1. Inspire pelo nariz contando até 4.<br>2. Segure o ar contando até 7.<br>3. Expire suavemente pela boca contando até 8.";
+    };
+
+    window.gerarDesafioRelampago = function() {
+        const out = document.getElementById('gameOutput');
+        if (!out) return;
+        out.style.display = 'block';
+        out.innerHTML = "⚡ <strong>Desafio Relâmpago UEL:</strong><br>Qual é o principal neurotransmissor envolvido na junção neuromuscular? <br><strong>Resposta: Acetilcolina.</strong>";
+    };
+
+    window.salvarNotas = function() {
+        const notesEl = document.getElementById('quickNotes');
+        if (notesEl) localStorage.setItem('nexo_quick_notes', notesEl.value);
+    };
+
+    // 8. Inicialização da Telemetria Longitudinal via Endpoint Python 3
+    document.addEventListener("DOMContentLoaded", async () => {
+        const canvasEl = document.getElementById('longitudinalChart');
+        const statusEl = document.getElementById('telemetryStatus');
+        
+        try {
+            const res = await fetch('/api/v1/telemetry/longitudinal');
+            const telemetryData = await res.json();
+            
+            if (canvasEl && telemetryData.status === 'success') {
+                new Chart(canvasEl.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: telemetryData.labels,
+                        datasets: [{
+                            label: 'Desempenho (Pts) - Backend Python 3',
+                            data: telemetryData.scores,
+                            borderColor: '#0284c7',
+                            backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: { responsive: true }
+                });
+                if (statusEl) {
+                    statusEl.innerText = `Telemetria Otimizada: Média ${telemetryData.analytics.media_geral} pts | ${telemetryData.analytics.status_preparacao}`;
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao carregar telemetria do backend:", e);
+            if (statusEl) statusEl.innerText = "Erro ao carregar dados do servidor Python.";
+        }
+
+        const savedNotes = localStorage.getItem('nexo_quick_notes');
+        if (savedNotes) {
+            const notesEl = document.getElementById('quickNotes');
+            if (notesEl) notesEl.value = savedNotes;
+        }
+    });
+
+    window.carregarBlocoDiario = async function() {
+        const box = document.getElementById('blockResponse');
+        if (!box) return;
+        box.style.display = 'block';
+        box.innerText = "A carregar...";
+        try {
+            const res = await fetch(`/api/v1/blocks/daily`);
+            const data = await res.json();
+            box.innerText = JSON.stringify(data, null, 2);
+        } catch (err) { box.innerText = "Erro: " + err; }
+    };
+
+    window.carregarRecomposicao = async function() {
+        const attemptId = document.getElementById('attemptId').value;
+        document.getElementById('recompositionContentContainer').style.display = 'block';
+        try {
+            const res = await fetch(`/api/v1/recompositions/${attemptId}`);
+            const data = await res.json();
+            document.getElementById('gapInfo').innerText = data.learning_gap;
+            document.getElementById('microRevisaoInfo').innerText = data.micro_revisao;
+            document.getElementById('exercicioInfo').innerText = data.exercicio_validacao;
+        } catch (err) { document.getElementById('gapInfo').innerText = "Erro: " + err; }
+    };
+
+    window.enviarAcknowledge = async function() {
+        const attemptId = document.getElementById('attemptId').value;
+        const command = document.getElementById('commandInput').value;
+        const box = document.getElementById('ackResponse');
+        box.style.display = 'block';
+        try {
+            const res = await fetch(`/api/v1/recompositions/${attemptId}/acknowledge`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command })
+            });
+            box.innerText = JSON.stringify(await res.json(), null, 2);
+        } catch (err) { box.innerText = "Erro: " + err; }
+    };
+
+    window.carregarSimulado = async function() {
+        document.getElementById('simulatedContainer').style.display = 'block';
+        try {
+            const res = await fetch(`/api/v1/simulated/full`);
+            const data = await res.json();
+            document.getElementById('questionBox').innerText = JSON.stringify(data, null, 2);
+        } catch (err) { document.getElementById('questionBox').innerText = "Erro: " + err; }
+    };
+
+    window.submeterSimulado = async function() {
+        const box = document.getElementById('simResponse');
+        box.style.display = 'block';
+        try {
+            const res = await fetch(`/api/v1/simulated/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ answers: { 1: "A" } })
+            });
+            box.innerText = JSON.stringify(await res.json(), null, 2);
+        } catch (err) { box.innerText = "Erro: " + err; }
+    };
+
+    window.enviarDiscursiva = async function() {
+        const box = document.getElementById('discResponse');
+        box.style.display = 'block';
+        try {
+            const res = await fetch(`/api/v1/discursive/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: document.getElementById('examTitle').value,
+                    proposal_content: document.getElementById('proposalContent').value,
+                    student_answer: document.getElementById('studentAnswer').value
+                })
+            });
+            box.innerText = JSON.stringify(await res.json(), null, 2);
+        } catch (err) { box.innerText = "Erro: " + err; }
+    };
+</script>
+
+</body>
+</html>
