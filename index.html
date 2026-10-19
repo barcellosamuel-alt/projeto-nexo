@@ -9,7 +9,7 @@
     <style>
         :root {
             --bg-base: #04070d;
-            --bg-card: rgba(13, 20, 35, 0.82);
+            --bg-card: rgba(13, 20, 35, 0.85);
             --border-glow: rgba(56, 189, 248, 0.35);
             --border-hover: rgba(56, 189, 248, 0.9);
             --accent-cyan: #38bdf8;
@@ -22,7 +22,7 @@
             --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.75);
         }
 
-        * { box-sizing: border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        * { box-sizing: border-box; }
         
         body {
             font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -50,11 +50,19 @@
             border: 2px solid rgba(56, 189, 248, 0.45);
             backdrop-filter: blur(20px);
         }
+        
+        /* Título Dinâmico com Brilho e Movimento Neon */
         header.hero h1 {
-            font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 800; margin: 0 0 8px 0;
-            background: linear-gradient(90deg, #ffffff, #38bdf8, #34d399);
+            font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 800; margin: 0 0 8px 0;
+            background: linear-gradient(90deg, #38bdf8, #34d399, #ffffff, #38bdf8);
+            background-size: 300% auto;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(56,189,248,0.4));
+            animation: neonGlowFlow 6s linear infinite;
+        }
+        @keyframes neonGlowFlow {
+            0% { background-position: 0% 50%; filter: drop-shadow(0 0 10px rgba(56,189,248,0.4)); }
+            50% { background-position: 100% 50%; filter: drop-shadow(0 0 22px rgba(52,211,153,0.7)); }
+            100% { background-position: 0% 50%; filter: drop-shadow(0 0 10px rgba(56,189,248,0.4)); }
         }
         header.hero p { font-size: 14px; color: var(--text-muted); margin: 0; font-weight: 500; }
 
@@ -87,7 +95,7 @@
             background: var(--bg-card); border: 1px solid var(--border-glow); color: var(--text-main);
             padding: 14px 22px; border-radius: 16px; cursor: pointer; font-weight: 700; font-size: 13px;
             display: inline-flex; align-items: center; gap: 10px; box-shadow: var(--shadow-neon);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px); transition: all 0.25s ease;
         }
         .tool-btn:hover {
             background: rgba(56, 189, 248, 0.18); border-color: var(--border-hover); color: var(--accent-cyan);
@@ -129,7 +137,7 @@
             background-color: var(--accent-cyan); border: none; color: #04070d; padding: 16px 28px;
             border-radius: 14px; cursor: pointer; font-weight: 800; font-size: 14px;
             display: inline-flex; align-items: center; gap: 10px; margin-top: 16px;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); transition: all 0.25s ease;
         }
         button.action-btn:hover { background-color: #7dd3fc; box-shadow: 0 0 35px rgba(56, 189, 248, 0.8); transform: translateY(-2px); }
         .btn-success { background-color: var(--accent-emerald) !important; color: #04070d !important; box-shadow: 0 0 20px rgba(5, 150, 105, 0.5) !important; }
@@ -143,44 +151,42 @@
         .content-display { background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-glow); border-left: 5px solid var(--accent-cyan); padding: 24px; border-radius: 16px; margin-bottom: 24px; }
         .timer-badge { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fb7185; padding: 10px 18px; border-radius: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 14px; margin-left: auto; box-shadow: 0 0 15px rgba(244,63,94,0.3); }
 
-        /* Cantinho da Clareza Refinado */
+        /* Cantinho da Clareza */
         .quote-display { text-align: center; padding: 20px; }
         .quote-image { width: 100%; height: 260px; object-fit: cover; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border-glow); box-shadow: 0 0 30px rgba(0,0,0,0.6); }
         .quote-text { font-size: 20px; font-style: italic; color: #f8fafc; font-weight: 600; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
         .quote-badge { display: inline-block; padding: 8px 18px; border-radius: 20px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; font-weight: 800; box-shadow: 0 0 15px rgba(56,189,248,0.3); }
 
-        /* Rádio Mixer Estilizado */
+        /* Rádio Mixer */
         .radio-mixer-box { background: rgba(9, 13, 22, 0.9); border: 1px solid var(--border-glow); padding: 24px; border-radius: 20px; box-shadow: inset 0 0 25px rgba(56,189,248,0.15); }
         .slider-group { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
         .slider-group label { font-size: 12px; margin: 0; color: var(--accent-cyan); }
         input[type="range"] { accent-color: var(--accent-cyan); width: 100%; cursor: pointer; }
 
-        /* Widget de Entretenimento de Alta Performance (Flashcards UEL / Pomodoro) */
-        .uel-flashcard-widget {
+        /* Widget de Entretenimento Digital Interativo (Mini-Game Foco UEL) */
+        .arcade-widget {
             position: fixed; bottom: 25px; right: 25px; z-index: 1000;
-            background: linear-gradient(135deg, rgba(13, 20, 35, 0.95), rgba(30, 27, 75, 0.95));
-            border: 2px solid var(--accent-emerald); padding: 20px; border-radius: 24px;
-            box-shadow: 0 0 35px rgba(52, 211, 153, 0.3); backdrop-filter: blur(20px);
-            width: 300px;
+            background: linear-gradient(135deg, rgba(13, 20, 35, 0.96), rgba(30, 27, 75, 0.96));
+            border: 2px solid var(--accent-emerald); padding: 18px; border-radius: 24px;
+            box-shadow: 0 0 40px rgba(52, 211, 153, 0.35); backdrop-filter: blur(20px);
+            width: 280px; text-align: center;
         }
-        .flashcard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 12px; font-weight: 800; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 1px; }
-        .flashcard-question { font-size: 13px; font-weight: 700; color: #f8fafc; margin-bottom: 12px; min-height: 40px; }
-        .flashcard-answer { font-size: 12px; color: var(--accent-cyan); font-style: italic; margin-bottom: 12px; display: none; }
+        .arcade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; font-weight: 800; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 1px; }
+        .arcade-screen { background: #04070d; border: 1px solid var(--border-glow); border-radius: 12px; padding: 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-cyan); margin-bottom: 12px; min-height: 65px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-<!-- Widget de Alta Performance Substituto do Pet (Flashcards & Foco UEL) -->
-<div class="uel-flashcard-widget" id="flashcardWidget">
-    <div class="flashcard-header">
-        <span>⚡ Flashcard UEL</span>
-        <button onclick="fecharFlashcardWidget()" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-weight:bold;">✕</button>
+<!-- Widget de Entretenimento Digital Interativo (Substituto do Pet) -->
+<div class="arcade-widget" id="arcadeWidget">
+    <div class="arcade-header">
+        <span>🎮 Reflexo Tático UEL</span>
+        <button onclick="document.getElementById('arcadeWidget').style.display='none'" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-weight:bold;">✕</button>
     </div>
-    <div class="flashcard-question" id="fcQuestion">Carregando desafio tático...</div>
-    <div class="flashcard-answer" id="fcAnswer"></div>
+    <div class="arcade-screen" id="arcadeScreen">Clique em 'Iniciar' para treinar foco rápido!</div>
     <div style="display: flex; gap: 8px;">
-        <button class="action-btn" onclick="revelarRespostaFC()" style="padding: 8px 12px; font-size: 11px; margin:0; flex:1; background:var(--accent-emerald); color:#04070d;">Ver Resposta</button>
-        <button class="action-btn" onclick="proximoFlashcard()" style="padding: 8px 12px; font-size: 11px; margin:0; flex:1;">Próximo</button>
+        <button class="action-btn" onclick="iniciarMiniGame()" style="padding: 8px 12px; font-size: 11px; margin:0; flex:1; background:var(--accent-emerald); color:#04070d;">Iniciar</button>
+        <button class="action-btn" onclick="pontuarMiniGame()" style="padding: 8px 12px; font-size: 11px; margin:0; flex:1;" id="btnAcaoGame" disabled>Foco!</button>
     </div>
 </div>
 
@@ -188,7 +194,7 @@
     <div class="top-utility-bar">
         <header class="hero">
             <div>
-                <h1>PROJETO NEXO // SANCTUARY MASTER</h1>
+                <h1>PROJETO NEXO</h1>
                 <p>Plataforma Longitudinal de Alta Performance para Medicina UEL</p>
             </div>
             <div class="hero-badge-tech"><div class="tech-pulse"></div>COPS-UEL 2027 // CORE ATIVO</div>
@@ -200,12 +206,12 @@
         </div>
     </div>
 
-    <!-- Barra de Ferramentas com Ações Validadas -->
+    <!-- Barra de Ferramentas (Com Escopo Global Ativo) -->
     <div class="tools-bar">
-        <button class="tool-btn" onclick="toggleTool('notesDrawer')">📝 Bloco de Notas</button>
-        <button class="tool-btn" onclick="toggleTool('calcDrawer')">🧮 Calculadora</button>
-        <button class="tool-btn" onclick="toggleTool('radioDrawer')">📻 Rádio & Mixer Lo-Fi</button>
-        <button class="tool-btn" onclick="toggleTool('quoteDrawer')">✝️ Cantinho da Clareza</button>
+        <button class="tool-btn" onclick="window.toggleTool('notesDrawer')">📝 Bloco de Notas</button>
+        <button class="tool-btn" onclick="window.toggleTool('calcDrawer')">🧮 Calculadora</button>
+        <button class="tool-btn" onclick="window.toggleTool('radioDrawer')">📻 Rádio & Mixer Lo-Fi</button>
+        <button class="tool-btn" onclick="window.toggleTool('quoteDrawer')">✝️ Cantinho da Clareza</button>
     </div>
 
     <!-- Notas -->
@@ -221,11 +227,11 @@
     <div id="calcDrawer" class="aux-drawer">
         <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">🧮 Calculadora Científica Master</strong>
         <input type="text" id="calcInput" placeholder="Ex: sqrt(144) + 50" style="margin-top:0;">
-        <button class="action-btn" onclick="calcularResultado()" style="margin-top:14px;">Calcular</button>
+        <button class="action-btn" onclick="calcularResultado()" style="margin-top:14px;">Calcalcular</button>
         <div id="calcResult" style="font-family:'JetBrains Mono'; font-size:16px; color:var(--accent-emerald); font-weight:700; margin-top:14px; text-shadow: 0 0 10px rgba(52,211,153,0.4);"></div>
     </div>
 
-    <!-- Rádio Streaming & Mixer Moderno -->
+    <!-- Rádio Streaming & Mixer -->
     <div id="radioDrawer" class="aux-drawer">
         <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">📻 Rádio Streaming & Mixer Foco Total</strong>
         <div class="radio-mixer-box">
@@ -312,7 +318,7 @@
         <div id="discResponse" class="response-box" style="display:none;"></div>
     </div>
 
-    <!-- Módulo 5 // Telemetria Longitudinal (Corrigido e Analítico) -->
+    <!-- Módulo 5 // Telemetria Longitudinal (Totalmente Restaurado) -->
     <div class="card card-amber">
         <div class="card-header">
             <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
@@ -326,15 +332,251 @@
 </div>
 
 <script>
-    // --- 1. Controle de Gavetas (*Tools*) Garantido ---
-    function toggleTool(drawerId) {
+    // --- 1. Controle de Gavetas com Escopo Global ---
+    window.toggleTool = function(drawerId) {
         const drawer = document.getElementById(drawerId);
         if (drawer) {
             drawer.style.display = drawer.style.display === 'block' ? 'none' : 'block';
         }
-    }
+    };
 
-    // --- 2. Relógio & Google Calendar Corrigidos ---
+    // --- 2. Relógio Ativo & Google Calendar ---
     function atualizarRelogio() {
         const agora = new Date();
         const timeEl = document.getElementById('liveClock');
+        const dateEl = document.getElementById('liveDate');
+        if (timeEl) timeEl.innerText = agora.toLocaleTimeString('pt-BR');
+        if (dateEl) {
+            const opcoes = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+            dateEl.innerText = agora.toLocaleDateString('pt-BR', opcoes);
+        }
+    }
+    setInterval(atualizarRelogio, 1000);
+    atualizarRelogio();
+
+    window.agendarNoGoogleCalendar = function() {
+        const titulo = encodeURIComponent("Simulado & Bloco de Estudo - Medicina UEL");
+        const detalhes = encodeURIComponent("Sessão oficial do Projeto Nexo Sanctuary Master.");
+        window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}`, '_blank');
+    };
+
+    // --- 3. Cantinho da Clareza ---
+    let quotesList = [];
+    let quoteIdx = 0;
+    async function carregarCantinhoClareza() {
+        try {
+            const res = await fetch('/api/v1/quotes');
+            const data = await res.json();
+            quotesList = data.quotes;
+            renderizarMensagemClareza();
+        } catch(e) { console.error("Erro ao carregar Cantinho da Clareza:", e); }
+    }
+    function renderizarMensagemClareza() {
+        if (!quotesList.length) return;
+        const q = quotesList[quoteIdx % quotesList.length];
+        const display = document.getElementById('quoteDisplay');
+        display.innerHTML = `
+            <img class="quote-image" src="${q.imagem}" alt="Mensagem Inspiracional">
+            <span class="quote-badge" style="background:${q.tipo === 'versiculo' ? 'rgba(56,189,248,0.2)' : 'rgba(251,191,36,0.2)'};color:${q.tipo === 'versiculo' ? '#38bdf8' : '#fbbf24'};border:1px solid ${q.tipo === 'versiculo' ? '#38bdf8' : '#fbbf24'};">${q.tipo === 'versiculo' ? '📖 Palavra de Fé' : '✨ Motivação'}</span>
+            <div class="quote-text">"${q.texto}"</div>
+        `;
+    }
+    window.proximaFrase = function() {
+        quoteIdx++;
+        renderizarMensagemClareza();
+    };
+
+    // --- 4. Rádio Streaming & Mixer ---
+    let radioPlaying = false;
+    window.alternarRadio = function() {
+        const audio = document.getElementById('streamAudio');
+        const status = document.getElementById('radioStatus');
+        const btn = document.getElementById('btnRadioToggle');
+        if (!radioPlaying) {
+            audio.play().then(() => {
+                radioPlaying = true;
+                status.innerText = "▶ Rádio Lo-Fi Cristã (Transmitindo Ao Vivo)";
+                btn.innerText = "Pausar Rádio";
+            }).catch(err => { status.innerText = "Erro ao reproduzir stream."; });
+        } else {
+            audio.pause();
+            radioPlaying = false;
+            status.innerText = "⏸ Rádio Pausada";
+            btn.innerText = "Ligar Rádio";
+        }
+    };
+    window.ajustarVolume = function(val) {
+        const audio = document.getElementById('streamAudio');
+        audio.volume = val / 100;
+        document.getElementById('volLabel').innerText = val;
+    };
+
+    // --- 5. Telemetria Longitudinal (Gráfico Blindado) ---
+    let telemetryChart = null;
+    async function carregarTelemetria() {
+        try {
+            const res = await fetch('/api/v1/telemetry');
+            const data = await res.json();
+            const labels = data.telemetry.map(t => t.label);
+            const scores = data.telemetry.map(t => t.score);
+            labels.push('Projeção UEL');
+            scores.push(data.stats.projection);
+
+            const canvasEl = document.getElementById('longitudinalChart');
+            if (canvasEl) {
+                if (telemetryChart) telemetryChart.destroy();
+                telemetryChart = new Chart(canvasEl.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Desempenho Real vs Projeção (Pts)',
+                            data: scores,
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.35,
+                            pointBackgroundColor: '#38bdf8',
+                            pointBorderColor: '#ffffff',
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } } },
+                        scales: {
+                            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' } },
+                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' }, suggestedMin: 40, suggestedMax: 100 }
+                        }
+                    }
+                });
+            }
+
+            const statsEl = document.getElementById('telemetryStats');
+            if (statsEl) {
+                statsEl.innerHTML = '';
+                const stats = [
+                    ['Média Geral', data.stats.mean],
+                    ['Máximo', data.stats.max],
+                    ['Corte UEL Est.', data.stats.corte_uel + ' pts'],
+                    ['Projeção Master', data.stats.projection + ' pts']
+                ];
+                stats.forEach(([label, val]) => {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'background:rgba(15,23,42,0.85);border:1px solid var(--border-glow);padding:16px;border-radius:14px;text-align:center;box-shadow:0 0 15px rgba(56,189,248,0.15);';
+                    div.innerHTML = `<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;letter-spacing:1px;">${label}</div><div style="font-size:20px;font-weight:800;color:var(--accent-cyan);margin-top:6px;text-shadow:0 0 10px rgba(56,189,248,0.4);">${val}</div>`;
+                    statsEl.appendChild(div);
+                });
+            }
+        } catch (e) { console.error("Erro ao carregar telemetria:", e); }
+    }
+
+    // --- 6. Mini-Game Digital Interativo (Reflexo Tático UEL) ---
+    let gameAtivo = false;
+    let timeoutGame = null;
+    let tempoInicio = 0;
+    window.iniciarMiniGame = function() {
+        const screen = document.getElementById('arcadeScreen');
+        const btnAcao = document.getElementById('btnAcaoGame');
+        screen.innerText = "Aguarde o sinal... Foco total!";
+        screen.style.color = "#fbbf24";
+        btnAcao.disabled = true;
+        gameAtivo = false;
+        
+        const delay = Math.random() * 2000 + 1500;
+        timeoutGame = setTimeout(() => {
+            screen.innerText = "⚡ CLIQUE EM FOCO AGORA!";
+            screen.style.color = "#34d399";
+            tempoInicio = Date.now();
+            gameAtivo = true;
+            btnAcao.disabled = false;
+        }, delay);
+    };
+
+    window.pontuarMiniGame = function() {
+        const screen = document.getElementById('arcadeScreen');
+        const btnAcao = document.getElementById('btnAcaoGame');
+        if (!gameAtivo) {
+            screen.innerText = "❌ Muito cedo! Tente de novo.";
+            screen.style.color = "#f43f5e";
+            return;
+        }
+        const tempoReacao = Date.now() - tempoInicio;
+        screen.innerText = `✅ Incrível! ${tempoReacao}ms. Reflexo de aprovado na UEL!`;
+        screen.style.color = "#38bdf8";
+        gameAtivo = false;
+        btnAcao.disabled = true;
+    };
+
+    // --- Inicialização Automática Completa ---
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarCantinhoClareza();
+        carregarTelemetria();
+    });
+
+    window.carregarBlocoDiario = async function() {
+        const box = document.getElementById('blockResponse');
+        box.style.display = 'block';
+        const res = await fetch('/api/v1/blocks/daily');
+        box.innerText = JSON.stringify(await res.json(), null, 2);
+    };
+    window.carregarRecomposicao = async function() {
+        const id = document.getElementById('attemptId').value;
+        document.getElementById('recompositionContentContainer').style.display = 'block';
+        const res = await fetch(`/api/v1/recompositions/${id}`);
+        const data = await res.json();
+        document.getElementById('gapInfo').innerText = data.learning_gap;
+        document.getElementById('microRevisaoInfo').innerText = data.micro_revisao;
+        document.getElementById('exercicioInfo').innerText = data.exercicio_validacao;
+    };
+    window.enviarAcknowledge = async function() {
+        const id = document.getElementById('attemptId').value;
+        const cmd = document.getElementById('commandInput').value;
+        const box = document.getElementById('ackResponse');
+        box.style.display = 'block';
+        const res = await fetch(`/api/v1/recompositions/${id}/acknowledge`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({command: cmd})
+        });
+        box.innerText = JSON.stringify(await res.json(), null, 2);
+    };
+    window.carregarSimulado = async function() {
+        document.getElementById('simulatedContainer').style.display = 'block';
+        const res = await fetch('/api/v1/simulated/full');
+        document.getElementById('questionBox').innerText = JSON.stringify(await res.json(), null, 2);
+    };
+    window.submeterSimulado = async function() {
+        const box = document.getElementById('simResponse');
+        box.style.display = 'block';
+        const res = await fetch('/api/v1/simulated/submit', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({answers: {1: 'A'}}) });
+        box.innerText = JSON.stringify(await res.json(), null, 2);
+    };
+    window.enviarDiscursiva = async function() {
+        const box = document.getElementById('discResponse');
+        box.style.display = 'block';
+        const res = await fetch('/api/v1/discursive/submit', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ title: document.getElementById('examTitle').value, proposal_content: document.getElementById('proposalContent').value, student_answer: document.getElementById('studentAnswer').value })
+        });
+        box.innerText = JSON.stringify(await res.json(), null, 2);
+    };
+    window.calcularResultado = function() {
+        try {
+            const expr = document.getElementById('calcInput').value;
+            const res = Function('"use strict";return (' + expr.replace(/sqrt/g, 'Math.sqrt') + ')')();
+            document.getElementById('calcResult').innerText = "Resultado: " + res;
+        } catch(e) { document.getElementById('calcResult').innerText = "Erro na expressão."; }
+    };
+    window.salvarNota = async function() {
+        const title = document.getElementById('noteTitle').value;
+        const content = document.getElementById('noteContent').value;
+        if (!content) return;
+        await fetch('/api/v1/notes', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({title, content}) });
+        document.getElementById('noteTitle').value = '';
+        document.getElementById('noteContent').value = '';
+        alert('Nota salva com sucesso!');
+    };
+</script>
+</body>
+</html>
