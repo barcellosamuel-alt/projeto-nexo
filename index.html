@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto Nexo — Sanctuary Master (Medicina UEL)</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <!-- Chart.js para o Gráfico Longitudinal -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --bg-base: #f1f5f9;
-            --bg-card: rgba(255, 255, 255, 0.92);
+            --bg-card: rgba(255, 255, 255, 0.94);
             --border-color: #cbd5e1;
             --border-hover: #38bdf8;
             --accent-primary: #0284c7;
@@ -35,304 +34,120 @@
             background-attachment: fixed;
         }
 
-        .container {
-            max-width: 1150px;
-            margin: 0 auto;
-        }
-
-        .top-utility-bar {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 20px;
-            margin-bottom: 25px;
-            align-items: center;
-        }
+        .container { max-width: 1150px; margin: 0 auto; }
+        .top-utility-bar { display: grid; grid-template-columns: 1fr auto; gap: 20px; margin-bottom: 25px; align-items: center; }
 
         header.hero {
             background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e1b4b 100%);
-            color: white;
-            padding: 35px 40px;
-            border-radius: 24px;
+            color: white; padding: 35px 40px; border-radius: 24px;
             box-shadow: 0 20px 40px -15px rgba(56, 189, 248, 0.35);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid transparent;
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative; overflow: hidden; border: 2px solid transparent;
         }
 
         header.hero h1 {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 28px;
-            font-weight: 800;
-            margin: 0 0 6px 0;
-            letter-spacing: -0.5px;
+            font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 800; margin: 0 0 6px 0;
             background: linear-gradient(90deg, #ffffff, #38bdf8, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        header.hero p {
-            font-size: 14px;
-            color: #94a3b8;
-            margin: 0;
-            font-weight: 500;
-        }
+        header.hero p { font-size: 14px; color: #94a3b8; margin: 0; font-weight: 500; }
 
         .hero-badge-tech {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            padding: 10px 18px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 12px;
-            color: #38bdf8;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 10px 18px; border-radius: 14px; font-weight: 700; font-size: 12px; color: #38bdf8;
+            display: flex; align-items: center; gap: 8px; backdrop-filter: blur(10px);
         }
-
-        .tech-pulse {
-            width: 8px; height: 8px;
-            background: #34d399;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #34d399;
-            animation: pulseLive 2s infinite;
-        }
-
-        @keyframes pulseLive {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 15px #34d399; }
-            100% { transform: scale(0.95); opacity: 0.8; }
-        }
+        .tech-pulse { width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 10px #34d399; animation: pulseLive 2s infinite; }
+        @keyframes pulseLive { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
 
         .clock-widget {
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            padding: 18px 28px;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: center;
-            box-shadow: var(--shadow-soft);
-            min-width: 220px;
+            background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border-color);
+            padding: 18px 28px; border-radius: 20px; display: flex; flex-direction: column; align-items: flex-end;
+            justify-content: center; box-shadow: var(--shadow-soft); min-width: 220px;
         }
-
-        .clock-time {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent-primary);
-        }
-
-        .clock-date {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-            margin-top: 2px;
-        }
-
-        .calendar-sync-btn {
-            background: transparent;
-            border: none;
-            color: var(--accent-primary);
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 6px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+        .clock-time { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; color: var(--accent-primary); }
+        .clock-date { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-top: 2px; }
+        .calendar-sync-btn { background: transparent; border: none; color: var(--accent-primary); font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 6px; padding: 0; display: flex; align-items: center; gap: 4px; }
         .calendar-sync-btn:hover { text-decoration: underline; }
 
-        .tools-bar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
+        .tools-bar { display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; }
         .tool-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 12px 20px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: var(--shadow-soft);
-            transition: all 0.2s ease;
+            background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
+            padding: 12px 20px; border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 13px;
+            display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--shadow-soft); transition: all 0.2s ease;
         }
-
-        .tool-btn:hover {
-            background: #e0f2fe;
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-            transform: translateY(-2px);
-        }
+        .tool-btn:hover { background: #e0f2fe; border-color: var(--accent-primary); color: var(--accent-primary); transform: translateY(-2px); }
 
         .aux-drawer {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 24px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            display: none;
-            box-shadow: var(--shadow-soft);
+            background: var(--bg-card); border: 1px solid var(--border-color); padding: 24px;
+            border-radius: 20px; margin-bottom: 25px; display: none; box-shadow: var(--shadow-soft);
         }
 
+        /* Pet Digital Dinâmico (Cão interativo flutuante) */
         .pet-companion {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
+            position: fixed; bottom: 25px; right: 25px;
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.95));
-            border: 2px solid #38bdf8;
-            padding: 16px 22px;
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(56, 189, 248, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            z-index: 1000;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
+            border: 2px solid #38bdf8; padding: 16px 22px; border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(56, 189, 248, 0.3); display: flex; align-items: center; gap: 16px;
+            z-index: 1000; cursor: pointer; backdrop-filter: blur(10px); transition: transform 0.2s ease;
         }
+        .pet-companion:hover { transform: scale(1.05); }
         .pet-avatar { font-size: 38px; background: rgba(56, 189, 248, 0.15); padding: 8px; border-radius: 16px; border: 1px solid rgba(56, 189, 248, 0.3); }
         .pet-info { display: flex; flex-direction: column; }
         .pet-bubble { font-size: 13px; color: #f8fafc; font-weight: 700; max-width: 210px; }
         .pet-status { font-size: 11px; color: #34d399; font-weight: 700; margin-top: 3px; }
 
         .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 35px;
-            border-radius: 24px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow-soft);
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border-color); padding: 35px;
+            border-radius: 24px; margin-bottom: 25px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden;
         }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--accent-primary);
-        }
-
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-primary); }
         .card.card-emerald::before { background: var(--accent-emerald); }
         .card.card-amber::before { background: var(--accent-amber); }
         .card.card-purple::before { background: #8b5cf6; }
         .card.card-rose::before { background: #e11d48; }
 
-        .card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .card-header svg {
-            width: 28px; height: 28px;
-            fill: var(--accent-primary);
-            margin-right: 14px;
-            flex-shrink: 0;
-        }
-
+        .card-header { display: flex; align-items: center; margin-bottom: 18px; }
+        .card-header svg { width: 28px; height: 28px; fill: var(--accent-primary); margin-right: 14px; flex-shrink: 0; }
         .card h3 { margin: 0; color: var(--text-main); font-size: 20px; font-weight: 800; }
         .card p { color: var(--text-muted); font-size: 15px; margin-bottom: 22px; }
 
-        label {
-            display: block;
-            font-weight: 700;
-            font-size: 13px;
-            color: var(--accent-primary);
-            margin-bottom: 8px;
-            margin-top: 18px;
-            text-transform: uppercase;
-        }
-
+        label { display: block; font-weight: 700; font-size: 13px; color: var(--accent-primary); margin-bottom: 8px; margin-top: 18px; text-transform: uppercase; }
         input[type="text"], textarea {
-            width: 100%;
-            padding: 14px 18px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background: #f8fafc;
-            color: var(--text-main);
-            box-sizing: border-box;
+            width: 100%; padding: 14px 18px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px;
+            border: 1px solid var(--border-color); border-radius: 12px; background: #f8fafc; color: var(--text-main); box-sizing: border-box;
         }
-
         button.action-btn {
-            background-color: var(--accent-primary);
-            border: none;
-            color: white;
-            padding: 14px 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 14px;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+            background-color: var(--accent-primary); border: none; color: white; padding: 14px 24px;
+            border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; display: inline-flex;
+            align-items: center; gap: 8px; margin-top: 14px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
         }
-
         .btn-success { background-color: var(--accent-emerald) !important; }
         .response-box {
-            background: #f1f5f9;
-            border: 1px solid var(--border-color);
-            color: #0f172a;
-            padding: 22px;
-            border-radius: 14px;
-            margin-top: 20px;
-            white-space: pre-wrap;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
+            background: #f1f5f9; border: 1px solid var(--border-color); color: #0f172a; padding: 22px;
+            border-radius: 14px; margin-top: 20px; white-space: pre-wrap; font-family: 'JetBrains Mono', monospace; font-size: 13px;
             border-left: 4px solid var(--accent-primary);
         }
-        .content-display {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-left: 5px solid var(--accent-primary);
-            padding: 22px;
-            border-radius: 14px;
-            margin-bottom: 20px;
-        }
-        .timer-badge {
-            background: #fee2e2;
-            border: 1px solid #fecaca;
-            color: var(--danger);
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 800;
-            font-size: 14px;
-            margin-left: auto;
-        }
+        .content-display { background: #f8fafc; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-primary); padding: 22px; border-radius: 14px; margin-bottom: 20px; }
+        .timer-badge { background: #fee2e2; border: 1px solid #fecaca; color: var(--danger); padding: 8px 16px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 14px; margin-left: auto; }
         .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
         .metric-card { background: #f8fafc; border: 1px solid var(--border-color); padding: 22px; border-radius: 16px; }
+
+        /* Estilo da Calculadora Moderna */
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; max-width: 320px; }
+        .calc-btn { background: #e2e8f0; border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; color: var(--text-main); }
+        .calc-btn:hover { background: #cbd5e1; }
+        .calc-btn.op { background: #bae6fd; color: #0369a1; }
+        .calc-btn.equals { background: #0284c7; color: white; grid-column: span 2; }
     </style>
 </head>
 <body>
 
+<!-- Pet Digital (Cão Interativo Dinâmico) -->
 <div class="pet-companion" onclick="interagirPet()">
-    <div class="pet-avatar" id="petEmoji">🦊</div>
+    <div class="pet-avatar" id="petEmoji">🐶</div>
     <div class="pet-info">
-        <span class="pet-bubble" id="petSpeech">"Olá! Vamos gabaritar a UEL juntos?"</span>
+        <span class="pet-bubble" id="petSpeech">"Au-au! Hora de focar na UEL!"</span>
         <span class="pet-status" id="petStatus">✨ XP: 150 // Nível Foco</span>
     </div>
 </div>
@@ -356,49 +171,71 @@
         </div>
     </div>
 
+    <!-- Barra de Ferramentas / Utilitários (Itens 1, 2, 3, 4, 5) -->
     <div class="tools-bar">
-        <button class="tool-btn" onclick="toggleTool('notesDrawer')">📝 Bloco de Notas</button>
-        <button class="tool-btn" onclick="toggleTool('calcDrawer')">🧮 Mini Calculadora</button>
-        <button class="tool-btn" onclick="toggleTool('focusDrawer')">💡 Pílula de Bem-Estar</button>
-        <button class="tool-btn" onclick="toggleTool('soundDrawer')">🎵 Sons de Foco (Lo-Fi)</button>
-        <button class="tool-btn" onclick="toggleTool('gamesDrawer')" style="border-color: var(--accent-emerald); color: var(--accent-emerald);">🎮 Pausa & Mini-Jogos</button>
+        <button class="tool-btn" onclick="toggleTool('notesDrawer')">📝 Bloco de Notas Avançado</button>
+        <button class="tool-btn" onclick="toggleTool('calcDrawer')">🧮 Calculadora Científica</button>
+        <button class="tool-btn" onclick="toggleTool('focusDrawer')">💡 Cantinho da Clareza (Fé & Motivação)</button>
+        <button class="tool-btn" onclick="toggleTool('soundDrawer')">🎵 Ambiente Sonoro Lo-Fi & Foco</button>
+        <button class="tool-btn" onclick="toggleTool('gamesDrawer')" style="border-color: var(--accent-emerald); color: var(--accent-emerald);">🎮 Pausa Ativa & Mini-Jogos</button>
     </div>
 
+    <!-- 1. Bloco de Notas e Calculadora Moderna -->
     <div id="notesDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">📝 Bloco de Notas Local</strong>
-        <textarea id="quickNotes" rows="4" placeholder="Escreva fórmulas rápidas..." oninput="salvarNotas()"></textarea>
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">📝 Bloco de Notas Local com Persistência</strong>
+        <textarea id="quickNotes" rows="4" placeholder="Escreva fórmulas rápidas ou rascunhos..." oninput="salvarNotas()"></textarea>
     </div>
 
     <div id="calcDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🧮 Calculadora de Apoio Rápido</strong>
-        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-            <input type="text" id="calcInput" placeholder="Ex: 50 * 2" style="margin-top:0;">
-            <button class="action-btn" onclick="calcularResultado()" style="margin-top:0;">Calcular</button>
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🧮 Calculadora Moderna & Científica</strong>
+        <input type="text" id="calcDisplay" readonly style="background:#fff; font-family:'JetBrains Mono'; font-size:18px; text-align:right; margin-bottom:10px;" value="0">
+        <div class="calc-grid">
+            <button class="calc-btn" onclick="calcAppend('7')">7</button>
+            <button class="calc-btn" onclick="calcAppend('8')">8</button>
+            <button class="calc-btn" onclick="calcAppend('9')">9</button>
+            <button class="calc-btn op" onclick="calcAppend('/')">÷</button>
+            <button class="calc-btn" onclick="calcAppend('4')">4</button>
+            <button class="calc-btn" onclick="calcAppend('5')">5</button>
+            <button class="calc-btn" onclick="calcAppend('6')">6</button>
+            <button class="calc-btn op" onclick="calcAppend('*')">×</button>
+            <button class="calc-btn" onclick="calcAppend('1')">1</button>
+            <button class="calc-btn" onclick="calcAppend('2')">2</button>
+            <button class="calc-btn" onclick="calcAppend('3')">3</button>
+            <button class="calc-btn op" onclick="calcAppend('-')">-</button>
+            <button class="calc-btn" onclick="calcAppend('0')">0</button>
+            <button class="calc-btn" onclick="calcAppend('.')">.</button>
+            <button class="calc-btn op" onclick="calcClear()">C</button>
+            <button class="calc-btn op" onclick="calcAppend('+')">+</button>
+            <button class="calc-btn equals" onclick="calcCalculate()">=</button>
         </div>
-        <div id="calcResult" style="font-family: 'JetBrains Mono'; font-size: 14px; color: var(--accent-emerald); font-weight: 700;"></div>
     </div>
 
+    <!-- 5. Cantinho da Clareza: Painel Dinâmico Conectado à API (Versículos e Motivação) -->
     <div id="focusDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">💡 Cantinho da Clareza</strong>
-        <p id="pillText" style="font-style: italic; color: var(--text-main); font-size: 15px; margin: 0 0 12px 0;">"A aprovação em Medicina na UEL é construída na consistência diária."</p>
-        <button class="action-btn" onclick="proximaPilula()" style="padding: 8px 14px; font-size: 12px; margin-top:0;">🔄 Nova Pílula</button>
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">💡 Cantinho da Clareza (Mensagens de Fé e Motivação)</strong>
+        <div id="cantinhoClarezaBox" style="font-style: italic; color: var(--text-main); font-size: 16px; margin-bottom: 12px; background:#fff; padding:15px; border-radius:10px; border-left:4px solid var(--accent-emerald);">
+            A carregar conteúdo dinâmico do servidor...
+        </div>
+        <button class="action-btn" onclick="carregarCantinhoClareza()" style="padding: 8px 14px; font-size: 12px; margin-top:0;">🔄 Próxima Mensagem</button>
     </div>
 
+    <!-- 2. Sons de Foco (Lo-Fi e Ambientação Sonora Avançada via Web Audio API) -->
     <div id="soundDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🎵 Ambiente Sonoro</strong>
+        <strong style="color: var(--accent-primary); display:block; margin-bottom: 8px;">🎵 Ambiente Sonoro de Concentração (Lo-Fi & Natureza)</strong>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="action-btn" onclick="tocarSom('chuva')" style="background-color: var(--accent-primary); margin-top:0;">🌧️ Chuva</button>
-            <button class="action-btn" onclick="tocarSom('cafe')" style="background-color: var(--accent-amber); margin-top:0;">☕ Cafeteria</button>
-            <button class="action-btn" onclick="pararSom()" style="background-color: var(--danger); margin-top:0;">🔇 Desligar</button>
+            <button class="action-btn" onclick="tocarSom('chuva')" style="background-color: var(--accent-primary); margin-top:0;">🌧️ Chuva Suave</button>
+            <button class="action-btn" onclick="tocarSom('lofi')" style="background-color: var(--accent-amber); margin-top:0;">🎧 Batidas Lo-Fi Foco</button>
+            <button class="action-btn" onclick="pararSom()" style="background-color: var(--danger); margin-top:0;">🔇 Desligar Som</button>
         </div>
         <div id="soundStatus" style="font-size: 13px; color: var(--accent-emerald); margin-top: 10px; font-weight: 600;"></div>
     </div>
 
+    <!-- 3. Pausa Ativa & Mini-Jogos Relaxantes -->
     <div id="gamesDrawer" class="aux-drawer" style="border-color: var(--accent-emerald);">
-        <strong style="color: var(--accent-emerald); display:block; margin-bottom: 8px;">🎮 Pausa Ativa</strong>
+        <strong style="color: var(--accent-emerald); display:block; margin-bottom: 8px;">🎮 Pausa Ativa & Descanso Rápido</strong>
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <button class="action-btn" onclick="iniciarRespiracao()" style="background-color: var(--accent-emerald); margin-top:0;">🧘 Respiração</button>
-            <button class="action-btn" onclick="gerarDesafioRelampago()" style="background-color: var(--accent-amber); margin-top:0;">⚡ Desafio Relâmpago</button>
+            <button class="action-btn" onclick="iniciarRespiracao()" style="background-color: var(--accent-emerald); margin-top:0;">🧘 Respiração Guiada 4-7-8</button>
+            <button class="action-btn" onclick="gerarDesafioRelampago()" style="background-color: var(--accent-amber); margin-top:0;">⚡ Desafio Relâmpago UEL</button>
         </div>
         <div id="gameOutput" style="margin-top: 15px; font-size: 14px; color: var(--text-main); background: #ffffff; border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; display:none;"></div>
     </div>
@@ -409,7 +246,7 @@
             <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
             <h3>01 // Bloco de Treino Diário (20 Questões UEL)</h3>
         </div>
-        <p>Inicialize o ciclo tático diário de resolução ativa:</p>
+        <p>Inicialize o ciclo tático diário de resolução ativa[cite: 1]:</p>
         <button class="action-btn btn-success" onclick="carregarBlocoDiario()">Carregar Bloco Diário</button>
         <div id="blockResponse" class="response-box" style="display:none;"></div>
     </div>
@@ -480,7 +317,6 @@
 </div>
 
 <script>
-    // Funções globais declaradas corretamente
     window.toggleTool = function(drawerId) {
         const drawer = document.getElementById(drawerId);
         if (drawer) {
@@ -488,6 +324,7 @@
         }
     };
 
+    // 7. Relógio e Calendário Otimizado com Google Calendar
     window.atualizarRelogio = function() {
         const agora = new Date();
         const timeEl = document.getElementById('liveClock');
@@ -507,28 +344,83 @@
         window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}`, '_blank');
     };
 
-    const pilulasFoco = [
-        "\"A aprovação em Medicina na UEL é construída na consistência diária.\"",
-        "\"O sofrimento é momentâneo; o distintivo de Médico da UEL é eterno.\"",
-        "\"Errar uma questão no simulado revela exatamente o ponto forte a ajustar.\""
+    // 5. Cantinho da Clareza (Integração dinâmica com API Python)
+    let listaClareza = [];
+    let indexClareza = 0;
+    async function carregarCantinhoClareza() {
+        try {
+            if (listaClareza.length === 0) {
+                const res = await fetch('/api/conteudo');
+                listaClareza = await res.json();
+            }
+            const item = listaClareza[indexClareza];
+            const box = document.getElementById('cantinhoClarezaBox');
+            if (box) {
+                box.innerHTML = `<strong>[${item.tipo.toUpperCase()}]</strong><br>“${item.texto}”`;
+            }
+            indexClareza = (indexClareza + 1) % listaClareza.length;
+        } catch (e) {
+            console.error("Erro ao carregar Cantinho da Clareza:", e);
+        }
+    }
+    carregarCantinhoClareza();
+
+    // 4. Pet Digital Dinâmico (Cão interativo com áudio simulado de latido)
+    const avataresPet = ['🐶', '🐕', '🐩', '🐾'];
+    const falasPet = [
+        "Au-au! Vamos gabaritar a UEL juntos?",
+        "Coragem! A vaga na Medicina está logo ali!",
+        "Respire fundo e mantenha o foco longitudinal!"
     ];
-    let pillIndex = 0;
-    window.proximaPilula = function() {
-        pillIndex = (pillIndex + 1) % pilulasFoco.length;
-        const el = document.getElementById('pillText');
-        if (el) el.innerText = pilulasFoco[pillIndex];
-    };
-
-    const avataresPet = ['🦊', '🐱', '🐶', '🐼', '🐨'];
     let xpPet = 150;
-    let avatarIndex = 0;
+    let petIdx = 0;
     window.interagirPet = function() {
-        avatarIndex = (avatarIndex + 1) % avataresPet.length;
-        document.getElementById('petEmoji').innerText = avataresPet[avatarIndex];
-        xpPet += 20;
-        document.getElementById('petStatus').innerText = `✨ XP: ${xpPet} // Foco Total`;
+        petIdx = (petIdx + 1) % avataresPet.length;
+        document.getElementById('petEmoji').innerText = avataresPet[petIdx];
+        const falaRand = falasPet[Math.floor(Math.random() * falasPet.length)];
+        document.getElementById('petSpeech').innerText = `"${falaRand}"`;
+        xpPet += 25;
+        document.getElementById('petStatus').innerText = `✨ XP: ${xpPet} // Energia Máxima`;
+        
+        // Emissão de som sintético de latido leve via Web Audio API
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(300, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.15);
+        } catch(err){}
     };
 
+    // 1. Calculadora Moderna
+    let calcValue = "";
+    window.calcAppend = function(val) {
+        if (calcValue === "0" && val !== ".") calcValue = "";
+        calcValue += val;
+        document.getElementById('calcDisplay').value = calcValue;
+    };
+    window.calcClear = function() {
+        calcValue = "0";
+        document.getElementById('calcDisplay').value = calcValue;
+    };
+    window.calcCalculate = function() {
+        try {
+            calcValue = eval(calcValue).toString();
+            document.getElementById('calcDisplay').value = calcValue;
+        } catch (e) {
+            document.getElementById('calcDisplay').value = "Erro";
+            calcValue = "0";
+        }
+    };
+
+    // 2. Sons de Foco (Web Audio API)
     let audioCtx = null;
     let noiseNode = null;
     window.tocarSom = function(tipo) {
@@ -544,11 +436,11 @@
             noiseNode.loop = true;
             const filter = audioCtx.createBiquadFilter();
             filter.type = tipo === 'chuva' ? 'lowpass' : 'bandpass';
-            filter.frequency.value = tipo === 'chuva' ? 800 : 1200;
+            filter.frequency.value = tipo === 'chuva' ? 700 : 1500;
             noiseNode.connect(filter);
             filter.connect(audioCtx.destination);
             noiseNode.start();
-            document.getElementById('soundStatus').innerText = `▶ Som ativo: ${tipo}`;
+            document.getElementById('soundStatus').innerText = `▶ Som ativo: ${tipo === 'chuva' ? 'Chuva Suave' : 'Lo-Fi Foco'}`;
         } catch (e) {
             document.getElementById('soundStatus').innerText = "Erro ao reproduzir áudio.";
         }
@@ -561,33 +453,24 @@
         if (st) st.innerText = "🔇 Som desligado.";
     };
 
+    // 3. Pausa Ativa & Mini-Jogos
     window.iniciarRespiracao = function() {
         const out = document.getElementById('gameOutput');
         if (!out) return;
         out.style.display = 'block';
-        out.innerHTML = "🧘 <strong>Respiração 4-7-8:</strong><br>Inspira (4s) -> Segura (7s) -> Expira (8s).";
+        out.innerHTML = "🧘 <strong>Respiração Guiada 4-7-8:</strong><br>1. Inspire pelo nariz contando até 4.<br>2. Segure o ar contando até 7.<br>3. Expire suavemente pela boca contando até 8.";
     };
 
     window.gerarDesafioRelampago = function() {
         const out = document.getElementById('gameOutput');
         if (!out) return;
         out.style.display = 'block';
-        out.innerHTML = "⚡ <strong>Desafio UEL:</strong><br>Organela de síntese de lipídios?<br><strong>Retículo Endoplasmático Liso.</strong>";
+        out.innerHTML = "⚡ <strong>Desafio Relâmpago UEL:</strong><br>Qual é o principal neurotransmissor envolvido na junção neuromuscular? <br><strong>Resposta: Acetilcolina.</strong>";
     };
 
     window.salvarNotas = function() {
         const notesEl = document.getElementById('quickNotes');
         if (notesEl) localStorage.setItem('nexo_quick_notes', notesEl.value);
-    };
-
-    window.calcularResultado = function() {
-        const inputEl = document.getElementById('calcInput');
-        const resEl = document.getElementById('calcResult');
-        if (!inputEl || !resEl) return;
-        try {
-            const res = Function('"use strict";return (' + inputEl.value + ')')();
-            resEl.innerText = "Resultado: " + res;
-        } catch (e) { resEl.innerText = "Expressão inválida."; }
     };
 
     document.addEventListener("DOMContentLoaded", () => {
