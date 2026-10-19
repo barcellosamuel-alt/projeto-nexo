@@ -2,7 +2,7 @@ import os
 import json
 import datetime
 from typing import Dict, Any
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -13,7 +13,7 @@ load_dotenv()
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
     description="API Longitudinal de Alta Performance para Preparação Medicina UEL — Python 3",
-    version="4.5.0"
+    version="5.0.0"
 )
 
 app.add_middleware(
@@ -39,26 +39,32 @@ def _save_local_db(data: Dict[str, Any]) -> None:
     with open(LOCAL_DB, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+# --- Cantinho da Clareza (Repertório Ampliado) ---
 CONTEUDOS_CLAREZA = [
     {
-        "tipo": "versiculo",
-        "texto": "Tudo posso naquele que me fortalece. — Filipenses 4:13",
-        "imagem": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80"
+        "texto": "O Senhor é o meu pastor; nada me faltará.",
+        "referencia": "Salmos 23:1",
+        "imagem": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
     },
     {
-        "tipo": "motivacional",
-        "texto": "Cada novo amanhecer traz uma nova oportunidade de recomeçar com fé e precisão rumo à UEL.",
-        "imagem": "https://images.unsplash.com/photo-1470246973918-29a93221c455?auto=format&fit=crop&w=1200&q=80"
+        "texto": "Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.",
+        "referencia": "Salmos 119:105",
+        "imagem": "https://images.unsplash.com/photo-1519681393784-d120267933ba"
     },
     {
-        "tipo": "versiculo",
-        "texto": "O Senhor é o meu pastor; nada me faltará. — Salmos 23:1",
-        "imagem": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+        "texto": "Tudo posso naquele que me fortalece.",
+        "referencia": "Filipenses 4:13",
+        "imagem": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05"
     },
     {
-        "tipo": "motivacional",
-        "texto": "A aprovação em Medicina na UEL é construída na consistência diária.",
-        "imagem": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
+        "texto": "Confie no Senhor de todo o seu coração e não se apoie em sua própria inteligência.",
+        "referencia": "Provérbios 3:5",
+        "imagem": "https://images.unsplash.com/photo-1506744038136-46273834b3fb"
+    },
+    {
+        "texto": "Ainda que eu caminhe pelo vale da sombra da morte, não temerei mal nenhum, pois tu estás comigo.",
+        "referencia": "Salmos 23:4",
+        "imagem": "https://images.unsplash.com/photo-1426604966848-d7adac902bff"
     }
 ]
 
@@ -66,7 +72,9 @@ CONTEUDOS_CLAREZA = [
 def get_quotes():
     return {"quotes": CONTEUDOS_CLAREZA}
 
+# --- Gerenciamento de Notas (CRUD Completo) ---
 class NotePayload(BaseModel):
+    id: Optional[int] = None
     title: str = ""
     content: str
     category: str = "geral"
@@ -77,19 +85,43 @@ def list_notes():
     return {"notes": db.get("notes", [])}
 
 @app.post("/api/v1/notes")
-def create_note(payload: NotePayload):
+def save_note(payload: NotePayload):
     db = _load_local_db()
-    note = {
-        "id": len(db.get("notes", [])) + 1,
+    notes = db.get("notes", [])
+    if payload.id:
+        for n in notes:
+            if n["id"] == payload.id:
+                n["title"] = payload.title
+                n["content"] = payload.content
+                n["category"] = payload.category
+                n["updated_at"] = datetime.datetime.utcnow().isoformat() + "Z"
+                _save_local_db(db)
+                return {"status": "updated", "note": n}
+    
+    new_note = {
+        "id": len(notes) + 1,
         "title": payload.title,
         "content": payload.content,
         "category": payload.category,
         "created_at": datetime.datetime.utcnow().isoformat() + "Z",
     }
-    db.setdefault("notes", []).append(note)
+    notes.append(new_note)
+    db["notes"] = notes
     _save_local_db(db)
-    return {"status": "created", "note": note}
+    return {"status": "created", "note": new_note}
 
+@app.delete("/api/v1/notes/{note_id}")
+def delete_note(note_id: int):
+    db = _load_local_db()
+    notes = db.get("notes", [])
+    filtered = [n for n in notes if n["id"] != note_id]
+    if len(filtered) == len(notes):
+        raise HTTPException(status_code=404, detail="Nota não encontrada.")
+    db["notes"] = filtered
+    _save_local_db(db)
+    return {"status": "deleted", "id": note_id}
+
+# --- Telemetria Longitudinal ---
 @app.get("/api/v1/telemetry")
 def get_telemetry():
     db = _load_local_db()
