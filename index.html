@@ -9,17 +9,17 @@
     <style>
         :root {
             --bg-base: #04070d;
-            --bg-card: rgba(13, 20, 35, 0.75);
+            --bg-card: rgba(13, 20, 35, 0.82);
             --border-glow: rgba(56, 189, 248, 0.35);
-            --border-hover: rgba(56, 189, 248, 0.85);
+            --border-hover: rgba(56, 189, 248, 0.9);
             --accent-cyan: #38bdf8;
             --accent-emerald: #34d399;
             --accent-amber: #fbbf24;
             --accent-rose: #f43f5e;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --shadow-neon: 0 0 30px rgba(56, 189, 248, 0.15);
-            --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            --shadow-neon: 0 0 35px rgba(56, 189, 248, 0.18);
+            --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.75);
         }
 
         * { box-sizing: border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -31,9 +31,9 @@
             margin: 0; padding: 40px 20px;
             line-height: 1.6;
             background-image: 
-                radial-gradient(circle at 15% 10%, rgba(2, 132, 199, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 85% 90%, rgba(5, 150, 105, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
+                radial-gradient(circle at 15% 10%, rgba(2, 132, 199, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 85% 90%, rgba(5, 150, 105, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
             background-attachment: fixed;
             overflow-x: hidden;
         }
@@ -41,20 +41,14 @@
         .container { max-width: 1200px; margin: 0 auto; }
         .top-utility-bar { display: grid; grid-template-columns: 1fr auto; gap: 24px; margin-bottom: 30px; align-items: center; }
 
-        /* Hero com Efeito Neon Avançado */
         header.hero {
-            background: linear-gradient(135deg, rgba(9, 13, 22, 0.95) 0%, rgba(15, 23, 42, 0.9) 50%, rgba(30, 27, 75, 0.85) 100%);
+            background: linear-gradient(135deg, rgba(9, 13, 22, 0.95) 0%, rgba(15, 23, 42, 0.92) 50%, rgba(30, 27, 75, 0.88) 100%);
             color: white; padding: 40px; border-radius: 28px;
             box-shadow: 0 0 50px rgba(56, 189, 248, 0.25), var(--shadow-card);
             display: flex; justify-content: space-between; align-items: center;
             position: relative; overflow: hidden;
-            border: 2px solid rgba(56, 189, 248, 0.4);
+            border: 2px solid rgba(56, 189, 248, 0.45);
             backdrop-filter: blur(20px);
-        }
-        header.hero::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%);
-            pointer-events: none;
         }
         header.hero h1 {
             font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 800; margin: 0 0 8px 0;
@@ -77,19 +71,17 @@
             100% { transform: scale(0.95); opacity: 0.8; } 
         }
 
-        /* Relógio Widget Estilizado */
         .clock-widget {
             background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glow);
             padding: 22px 32px; border-radius: 24px; display: flex; flex-direction: column; align-items: flex-end;
             justify-content: center; box-shadow: var(--shadow-neon), var(--shadow-card); min-width: 240px;
         }
-        .clock-widget:hover { border-color: var(--border-hover); box-shadow: 0 0 40px rgba(56, 189, 248, 0.35); }
-        .clock-time { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--accent-cyan); text-shadow: 0 0 10px rgba(56,189,248,0.4); }
+        .clock-widget:hover { border-color: var(--border-hover); box-shadow: 0 0 40px rgba(56, 189, 248, 0.4); }
+        .clock-time { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--accent-cyan); text-shadow: 0 0 12px rgba(56,189,248,0.5); }
         .clock-date { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-top: 4px; }
         .calendar-sync-btn { background: transparent; border: none; color: var(--accent-cyan); font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 8px; padding: 0; }
-        .calendar-sync-btn:hover { text-decoration: underline; text-shadow: 0 0 8px rgba(56,189,248,0.6); }
+        .calendar-sync-btn:hover { text-decoration: underline; text-shadow: 0 0 8px rgba(56,189,248,0.7); }
 
-        /* Barra de Ferramentas */
         .tools-bar { display: flex; gap: 14px; margin-bottom: 30px; flex-wrap: wrap; }
         .tool-btn {
             background: var(--bg-card); border: 1px solid var(--border-glow); color: var(--text-main);
@@ -98,24 +90,23 @@
             backdrop-filter: blur(15px);
         }
         .tool-btn:hover {
-            background: rgba(56, 189, 248, 0.15); border-color: var(--border-hover); color: var(--accent-cyan);
-            transform: translateY(-3px); box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+            background: rgba(56, 189, 248, 0.18); border-color: var(--border-hover); color: var(--accent-cyan);
+            transform: translateY(-3px); box-shadow: 0 0 35px rgba(56, 189, 248, 0.5);
         }
 
         .aux-drawer {
             background: var(--bg-card); border: 1px solid var(--border-glow); padding: 28px;
-            border-radius: 24px; margin-bottom: 30px; display: none; box-shadow: 0 0 40px rgba(0,0,0,0.6);
+            border-radius: 24px; margin-bottom: 30px; display: none; box-shadow: 0 0 45px rgba(0,0,0,0.65);
             backdrop-filter: blur(25px); animation: fadeInDrawer 0.3s ease;
         }
-        @keyframes fadeInDrawer { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDrawer { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Cards Principais com Glassmorphism e Glow */
         .card {
             background: var(--bg-card); border: 1px solid var(--border-glow); padding: 40px;
             border-radius: 28px; margin-bottom: 30px; box-shadow: var(--shadow-card), var(--shadow-neon);
             position: relative; overflow: hidden; backdrop-filter: blur(20px);
         }
-        .card:hover { border-color: var(--border-hover); box-shadow: 0 0 45px rgba(56, 189, 248, 0.25), var(--shadow-card); }
+        .card:hover { border-color: var(--border-hover); box-shadow: 0 0 50px rgba(56, 189, 248, 0.3), var(--shadow-card); }
         .card::before { content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-cyan); }
         .card-emerald::before { background: var(--accent-emerald); box-shadow: 0 0 15px var(--accent-emerald); }
         .card-amber::before { background: var(--accent-amber); box-shadow: 0 0 15px var(--accent-amber); }
@@ -130,27 +121,27 @@
         label { display: block; font-weight: 700; font-size: 12px; color: var(--accent-cyan); margin-bottom: 8px; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
         input[type="text"], textarea {
             width: 100%; padding: 16px 20px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px;
-            border: 1px solid var(--border-glow); border-radius: 14px; background: rgba(15, 23, 42, 0.8); color: var(--text-main);
+            border: 1px solid var(--border-glow); border-radius: 14px; background: rgba(15, 23, 42, 0.85); color: var(--text-main);
         }
-        input[type="text"]:focus, textarea:focus { border-color: var(--accent-cyan); outline: none; box-shadow: 0 0 20px rgba(56,189,248,0.4); }
+        input[type="text"]:focus, textarea:focus { border-color: var(--accent-cyan); outline: none; box-shadow: 0 0 25px rgba(56,189,248,0.5); }
 
         button.action-btn {
-            background-color: var(--accent-cyan); border: none; color: #090d16; padding: 16px 28px;
+            background-color: var(--accent-cyan); border: none; color: #04070d; padding: 16px 28px;
             border-radius: 14px; cursor: pointer; font-weight: 800; font-size: 14px;
             display: inline-flex; align-items: center; gap: 10px; margin-top: 16px;
             box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
         }
-        button.action-btn:hover { background-color: #7dd3fc; box-shadow: 0 0 30px rgba(56, 189, 248, 0.7); transform: translateY(-2px); }
+        button.action-btn:hover { background-color: #7dd3fc; box-shadow: 0 0 35px rgba(56, 189, 248, 0.8); transform: translateY(-2px); }
         .btn-success { background-color: var(--accent-emerald) !important; color: #04070d !important; box-shadow: 0 0 20px rgba(5, 150, 105, 0.5) !important; }
-        .btn-success:hover { background-color: #6ee7b7 !important; box-shadow: 0 0 30px rgba(5, 150, 105, 0.8) !important; }
+        .btn-success:hover { background-color: #6ee7b7 !important; box-shadow: 0 0 35px rgba(5, 150, 105, 0.85) !important; }
 
         .response-box {
             background: rgba(9, 13, 22, 0.95); border: 1px solid var(--border-glow); color: var(--accent-cyan); padding: 24px;
             border-radius: 16px; margin-top: 24px; white-space: pre-wrap; font-family: 'JetBrains Mono', monospace;
-            font-size: 13px; border-left: 4px solid var(--accent-cyan); box-shadow: inset 0 0 20px rgba(56,189,248,0.1);
+            font-size: 13px; border-left: 4px solid var(--accent-cyan); box-shadow: inset 0 0 20px rgba(56,189,248,0.12);
         }
-        .content-display { background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glow); border-left: 5px solid var(--accent-cyan); padding: 24px; border-radius: 16px; margin-bottom: 24px; }
-        .timer-badge { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fb7185; padding: 10px 18px; border-radius: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 14px; margin-left: auto; box-shadow: 0 0 15px rgba(244,63,94,0.25); }
+        .content-display { background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-glow); border-left: 5px solid var(--accent-cyan); padding: 24px; border-radius: 16px; margin-bottom: 24px; }
+        .timer-badge { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fb7185; padding: 10px 18px; border-radius: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 14px; margin-left: auto; box-shadow: 0 0 15px rgba(244,63,94,0.3); }
 
         /* Cantinho da Clareza Refinado */
         .quote-display { text-align: center; padding: 20px; }
@@ -164,25 +155,33 @@
         .slider-group label { font-size: 12px; margin: 0; color: var(--accent-cyan); }
         input[type="range"] { accent-color: var(--accent-cyan); width: 100%; cursor: pointer; }
 
-        /* Pet Digital Flutuante com Glow */
-        .pet-companion {
-            position: fixed; bottom: 30px; right: 30px; z-index: 1000; cursor: pointer;
+        /* Widget de Entretenimento de Alta Performance (Flashcards UEL / Pomodoro) */
+        .uel-flashcard-widget {
+            position: fixed; bottom: 25px; right: 25px; z-index: 1000;
             background: linear-gradient(135deg, rgba(13, 20, 35, 0.95), rgba(30, 27, 75, 0.95));
-            border: 2px solid var(--accent-cyan); padding: 14px; border-radius: 28px;
-            box-shadow: 0 0 40px rgba(56, 189, 248, 0.4); backdrop-filter: blur(20px);
+            border: 2px solid var(--accent-emerald); padding: 20px; border-radius: 24px;
+            box-shadow: 0 0 35px rgba(52, 211, 153, 0.3); backdrop-filter: blur(20px);
+            width: 300px;
         }
-        .pet-companion:hover { transform: scale(1.06) translateY(-4px); box-shadow: 0 0 50px rgba(56, 189, 248, 0.7); }
-        .pet-canvas { display: block; border-radius: 18px; }
-        .pet-bubble { font-size: 12px; color: #f8fafc; font-weight: 700; text-align: center; max-width: 210px; margin-top: 8px; }
-        .pet-status { font-size: 10px; color: var(--accent-emerald); font-weight: 700; text-align: center; margin-top: 4px; text-shadow: 0 0 10px rgba(52,211,153,0.5); }
+        .flashcard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 12px; font-weight: 800; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 1px; }
+        .flashcard-question { font-size: 13px; font-weight: 700; color: #f8fafc; margin-bottom: 12px; min-height: 40px; }
+        .flashcard-answer { font-size: 12px; color: var(--accent-cyan); font-style: italic; margin-bottom: 12px; display: none; }
     </style>
 </head>
 <body>
 
-<div class="pet-companion" id="petCompanion">
-    <canvas class="pet-canvas" id="petCanvas" width="200" height="160"></canvas>
-    <div class="pet-bubble" id="petSpeech">"Olá! Sou o Rex! 🐕"</div>
-    <div class="pet-status" id="petStatus">✨ XP: 0 // Nível 1</div>
+<!-- Widget de Alta Performance Substituto do Pet (Flashcards & Foco UEL) -->
+<div class="uel-flashcard-widget" id="flashcardWidget">
+    <div class="flashcard-header">
+        <span>⚡ Flashcard UEL</span>
+        <button onclick="fecharFlashcardWidget()" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-weight:bold;">✕</button>
+    </div>
+    <div class="flashcard-question" id="fcQuestion">Carregando desafio tático...</div>
+    <div class="flashcard-answer" id="fcAnswer"></div>
+    <div style="display: flex; gap: 8px;">
+        <button class="action-btn" onclick="revelarRespostaFC()" style="padding: 8px 12px; font-size: 11px; margin:0; flex:1; background:var(--accent-emerald); color:#04070d;">Ver Resposta</button>
+        <button class="action-btn" onclick="proximoFlashcard()" style="padding: 8px 12px; font-size: 11px; margin:0; flex:1;">Próximo</button>
+    </div>
 </div>
 
 <div class="container">
@@ -201,6 +200,7 @@
         </div>
     </div>
 
+    <!-- Barra de Ferramentas com Ações Validadas -->
     <div class="tools-bar">
         <button class="tool-btn" onclick="toggleTool('notesDrawer')">📝 Bloco de Notas</button>
         <button class="tool-btn" onclick="toggleTool('calcDrawer')">🧮 Calculadora</button>
@@ -299,4 +299,42 @@
     <!-- Módulo 4 -->
     <div class="card card-rose">
         <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.9
+            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            <h3>04 // Módulo Discursivo</h3>
+        </div>
+        <label>Título:</label>
+        <input type="text" id="examTitle" value="Simulado Discursivo">
+        <label>Proposta:</label>
+        <textarea id="proposalContent" rows="2">Explique a fosforilação oxidativa.</textarea>
+        <label>Resposta:</label>
+        <textarea id="studentAnswer" rows="3">A fosforilação ocorre...</textarea>
+        <button class="action-btn" onclick="enviarDiscursiva()" style="background-color: var(--accent-rose); color: #fff;">Submeter Discursiva</button>
+        <div id="discResponse" class="response-box" style="display:none;"></div>
+    </div>
+
+    <!-- Módulo 5 // Telemetria Longitudinal (Corrigido e Analítico) -->
+    <div class="card card-amber">
+        <div class="card-header">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+            <h3>05 // Telemetria Longitudinal (Evolução & Projeção UEL)</h3>
+        </div>
+        <div style="background: rgba(9, 13, 22, 0.9); padding: 24px; border-radius: 20px; border: 1px solid var(--border-glow); position: relative; height: 340px; box-shadow: inset 0 0 25px rgba(56,189,248,0.1);">
+            <canvas id="longitudinalChart"></canvas>
+        </div>
+        <div id="telemetryStats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top: 18px;"></div>
+    </div>
+</div>
+
+<script>
+    // --- 1. Controle de Gavetas (*Tools*) Garantido ---
+    function toggleTool(drawerId) {
+        const drawer = document.getElementById(drawerId);
+        if (drawer) {
+            drawer.style.display = drawer.style.display === 'block' ? 'none' : 'block';
+        }
+    }
+
+    // --- 2. Relógio & Google Calendar Corrigidos ---
+    function atualizarRelogio() {
+        const agora = new Date();
+        const timeEl = document.getElementById('liveClock');
