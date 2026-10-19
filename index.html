@@ -6,6 +6,7 @@
     <title>Projeto Nexo — Sanctuary Master (Medicina UEL)</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         :root {
             --bg-base: #04070d;
@@ -41,6 +42,7 @@
         .container { max-width: 1200px; margin: 0 auto; }
         .top-utility-bar { display: grid; grid-template-columns: 1fr auto; gap: 24px; margin-bottom: 30px; align-items: center; }
 
+        /* Hero com Efeito Cometa em Movimento e Brilho Dinâmico */
         header.hero {
             background: linear-gradient(135deg, rgba(9, 13, 22, 0.95) 0%, rgba(15, 23, 42, 0.92) 50%, rgba(30, 27, 75, 0.88) 100%);
             color: white; padding: 40px; border-radius: 28px;
@@ -51,7 +53,23 @@
             backdrop-filter: blur(20px);
         }
         
-        /* Título Dinâmico com Brilho e Movimento Neon */
+        /* Efeito de Cometa (Linha de luz cruzando a borda) */
+        header.hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), #ffffff, transparent);
+            animation: cometMove 4s linear infinite;
+        }
+        @keyframes cometMove {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
         header.hero h1 {
             font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 800; margin: 0 0 8px 0;
             background: linear-gradient(90deg, #38bdf8, #34d399, #ffffff, #38bdf8);
@@ -60,9 +78,9 @@
             animation: neonGlowFlow 6s linear infinite;
         }
         @keyframes neonGlowFlow {
-            0% { background-position: 0% 50%; filter: drop-shadow(0 0 10px rgba(56,189,248,0.4)); }
-            50% { background-position: 100% 50%; filter: drop-shadow(0 0 22px rgba(52,211,153,0.7)); }
-            100% { background-position: 0% 50%; filter: drop-shadow(0 0 10px rgba(56,189,248,0.4)); }
+            0% { background-position: 0% 50%; filter: drop-shadow(0 0 12px rgba(56,189,248,0.5)); }
+            50% { background-position: 100% 50%; filter: drop-shadow(0 0 25px rgba(52,211,153,0.8)); }
+            100% { background-position: 0% 50%; filter: drop-shadow(0 0 12px rgba(56,189,248,0.5)); }
         }
         header.hero p { font-size: 14px; color: var(--text-muted); margin: 0; font-weight: 500; }
 
@@ -151,19 +169,16 @@
         .content-display { background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-glow); border-left: 5px solid var(--accent-cyan); padding: 24px; border-radius: 16px; margin-bottom: 24px; }
         .timer-badge { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fb7185; padding: 10px 18px; border-radius: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 14px; margin-left: auto; box-shadow: 0 0 15px rgba(244,63,94,0.3); }
 
-        /* Cantinho da Clareza */
-        .quote-display { text-align: center; padding: 20px; }
-        .quote-image { width: 100%; height: 260px; object-fit: cover; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border-glow); box-shadow: 0 0 30px rgba(0,0,0,0.6); }
-        .quote-text { font-size: 20px; font-style: italic; color: #f8fafc; font-weight: 600; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-        .quote-badge { display: inline-block; padding: 8px 18px; border-radius: 20px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; font-weight: 800; box-shadow: 0 0 15px rgba(56,189,248,0.3); }
+        /* Estilos da Calculadora Científica Real */
+        .sci-calc-container { background: #111827; border: 2px solid var(--border-glow); padding: 20px; border-radius: 20px; max-width: 380px; margin: 0 auto; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .sci-display { width: 100%; background: #030712; color: #34d399; font-family: 'JetBrains Mono', monospace; font-size: 26px; padding: 14px; text-align: right; border: 1px solid var(--border-glow); border-radius: 12px; margin-bottom: 15px; }
+        .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .sci-btn { background: #1f2937; color: #f8fafc; border: 1px solid rgba(255,255,255,0.1); padding: 12px 0; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+        .sci-btn:hover { background: #374151; color: var(--accent-cyan); }
+        .sci-btn.op { background: #0284c7; color: white; }
+        .sci-btn.eq { background: #059669; color: white; grid-column: span 2; }
 
-        /* Rádio Mixer */
-        .radio-mixer-box { background: rgba(9, 13, 22, 0.9); border: 1px solid var(--border-glow); padding: 24px; border-radius: 20px; box-shadow: inset 0 0 25px rgba(56,189,248,0.15); }
-        .slider-group { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
-        .slider-group label { font-size: 12px; margin: 0; color: var(--accent-cyan); }
-        input[type="range"] { accent-color: var(--accent-cyan); width: 100%; cursor: pointer; }
-
-        /* Widget de Entretenimento Digital Interativo (Mini-Game Foco UEL) */
+        /* Widget Arcade / Mini-Game UEL Flutuante */
         .arcade-widget {
             position: fixed; bottom: 25px; right: 25px; z-index: 1000;
             background: linear-gradient(135deg, rgba(13, 20, 35, 0.96), rgba(30, 27, 75, 0.96));
@@ -177,7 +192,7 @@
 </head>
 <body>
 
-<!-- Widget de Entretenimento Digital Interativo (Substituto do Pet) -->
+<!-- Widget Arcade (Substituto do Pet) -->
 <div class="arcade-widget" id="arcadeWidget">
     <div class="arcade-header">
         <span>🎮 Reflexo Tático UEL</span>
@@ -206,377 +221,45 @@
         </div>
     </div>
 
-    <!-- Barra de Ferramentas (Com Escopo Global Ativo) -->
+    <!-- Barra de Ferramentas -->
     <div class="tools-bar">
         <button class="tool-btn" onclick="window.toggleTool('notesDrawer')">📝 Bloco de Notas</button>
-        <button class="tool-btn" onclick="window.toggleTool('calcDrawer')">🧮 Calculadora</button>
-        <button class="tool-btn" onclick="window.toggleTool('radioDrawer')">📻 Rádio & Mixer Lo-Fi</button>
+        <button class="tool-btn" onclick="window.toggleTool('calcDrawer')">🧮 Calculadora Científica</button>
+        <button class="tool-btn" onclick="window.toggleTool('radioDrawer')">📻 Streaming Gospel Internacional</button>
         <button class="tool-btn" onclick="window.toggleTool('quoteDrawer')">✝️ Cantinho da Clareza</button>
     </div>
 
-    <!-- Notas -->
+    <!-- Notas (Com Funções Criar, Abrir, Renomear e Apagar) -->
     <div id="notesDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">📝 Dispositivo de Notas Avançado</strong>
-        <input type="text" id="noteTitle" placeholder="Título da nota" style="margin-top:0;">
-        <textarea id="noteContent" rows="4" placeholder="Escreva sua nota..." style="margin-top:12px;"></textarea>
-        <button class="action-btn" onclick="salvarNota()" style="margin-top:14px;">💾 Salvar Nota</button>
-        <div id="notesList" style="margin-top:18px;"></div>
+        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">📝 Gerenciador de Notas Acadêmicas</strong>
+        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+            <select id="notesSelect" onchange="carregarNotaSelecionada()" style="flex:1; padding:12px; background:rgba(15,23,42,0.85); color:#fff; border:1px solid var(--border-glow); border-radius:12px;">
+                <option value="">-- Nova Nota --</option>
+            </select>
+            <button class="action-btn" onclick="novaNotaForm()" style="margin:0; padding:10px 16px; background:var(--accent-emerald); color:#04070d;">Novo</button>
+        </div>
+        <input type="hidden" id="noteId">
+        <input type="text" id="noteTitle" placeholder="Título da nota / Matéria" style="margin-top:0;">
+        <textarea id="noteContent" rows="5" placeholder="Escreva suas anotações estratégicas..." style="margin-top:12px;"></textarea>
+        <div style="display: flex; gap: 10px; margin-top: 14px;">
+            <button class="action-btn btn-success" onclick="salvarNotaAtual()" style="margin:0; flex:1;">💾 Salvar / Atualizar</button>
+            <button class="action-btn" onclick="apagarNotaAtual()" style="margin:0; background:var(--accent-rose); color:#fff; flex:1;">🗑️ Apagar</button>
+        </div>
     </div>
 
-    <!-- Calculadora -->
+    <!-- Calculadora Científica Real com Efeitos e Sons -->
     <div id="calcDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">🧮 Calculadora Científica Master</strong>
-        <input type="text" id="calcInput" placeholder="Ex: sqrt(144) + 50" style="margin-top:0;">
-        <button class="action-btn" onclick="calcularResultado()" style="margin-top:14px;">Calcalcular</button>
-        <div id="calcResult" style="font-family:'JetBrains Mono'; font-size:16px; color:var(--accent-emerald); font-weight:700; margin-top:14px; text-shadow: 0 0 10px rgba(52,211,153,0.4);"></div>
-    </div>
+        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">🧮 Calculadora Científica Avançada</strong>
+        <div class="sci-calc-container">
+            <input type="text" id="sciDisplay" class="sci-display" value="0" readonly>
+            <div class="sci-grid">
+                <button class="sci-btn" onclick="sciInput('sin(')">sin</button>
+                <button class="sci-btn" onclick="sciInput('cos(')">cos</button>
+                <button class="sci-btn" onclick="sciInput('tan(')">tan</button>
+                <button class="sci-btn" onclick="sciInput('sqrt(')">√</button>
+                <button class="sci-btn" onclick="sciClear()">AC</button>
 
-    <!-- Rádio Streaming & Mixer -->
-    <div id="radioDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">📻 Rádio Streaming & Mixer Foco Total</strong>
-        <div class="radio-mixer-box">
-            <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between;">
-                <span id="radioStatus" style="font-size: 13px; font-weight: 700; color: var(--accent-emerald);">▶ Rádio Lo-Fi Cristã (Streaming Ativo)</span>
-                <button class="action-btn" onclick="alternarRadio()" style="padding: 10px 20px; margin:0;" id="btnRadioToggle">Pausar Rádio</button>
-            </div>
-            <audio id="streamAudio" src="https://stream.zeno.fm/f3wvbbqmdg8uv" preload="none"></audio>
-            <div class="slider-group">
-                <label>Volume Principal (<span id="volLabel">70</span>%)</label>
-                <input type="range" id="volSlider" min="0" max="100" value="70" oninput="ajustarVolume(this.value)">
-            </div>
-        </div>
-    </div>
-
-    <!-- Cantinho da Clareza -->
-    <div id="quoteDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">✝️ Cantinho da Clareza — Mensagens Dinâmicas</strong>
-        <div class="quote-display" id="quoteDisplay">A carregar mensagem inspiracional...</div>
-        <button class="action-btn" onclick="proximaFrase()" style="margin-top:18px;">🔄 Nova Mensagem</button>
-    </div>
-
-    <!-- Módulo 1 -->
-    <div class="card card-emerald">
-        <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-            <h3>01 // Bloco de Treino Diário (20 Questões UEL)</h3>
-        </div>
-        <p>Inicialize o ciclo tático diário de resolução ativa:</p>
-        <button class="action-btn btn-success" onclick="carregarBlocoDiario()">Carregar Bloco Diário</button>
-        <div id="blockResponse" class="response-box" style="display:none;"></div>
-    </div>
-
-    <!-- Módulo 2 -->
-    <div class="card card-amber">
-        <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-            <h3>02 // Protocolo de Active Recall & Recomposição</h3>
-        </div>
-        <label for="attemptId">ID da Tentativa:</label>
-        <input type="text" id="attemptId" value="1">
-        <button class="action-btn" onclick="carregarRecomposicao()" style="background-color: var(--accent-amber); color: #04070d;">Carregar Recomposição</button>
-        <div id="recompositionContentContainer" style="display:none; margin-top: 24px;">
-            <div class="content-display">
-                <div id="gapInfo"></div>
-                <div id="microRevisaoInfo"></div>
-                <div id="exercicioInfo"></div>
-            </div>
-            <label for="commandInput">Comando:</label>
-            <input type="text" id="commandInput" value="[NEXO_LIDO_E_COMPREENDIDO]">
-            <button class="action-btn btn-success" onclick="enviarAcknowledge()">Validar</button>
-        </div>
-        <div id="ackResponse" class="response-box" style="display:none;"></div>
-    </div>
-
-    <!-- Módulo 3 -->
-    <div class="card card-purple">
-        <div class="card-header" style="display:flex; align-items:center; width:100%;">
-            <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-            <h3>03 // Simulado Oficial (60 Questões)</h3>
-            <span id="timerBadge" class="timer-badge">05:00:00</span>
-        </div>
-        <button class="action-btn" onclick="carregarSimulado()" style="background-color: #8b5cf6; color: #fff;">Iniciar Simulado</button>
-        <div id="simulatedContainer" style="display:none; margin-top: 24px;">
-            <div id="questionBox" class="content-display"></div>
-            <button class="action-btn btn-success" onclick="submeterSimulado()">Submeter</button>
-        </div>
-        <div id="simResponse" class="response-box" style="display:none;"></div>
-    </div>
-
-    <!-- Módulo 4 -->
-    <div class="card card-rose">
-        <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-            <h3>04 // Módulo Discursivo</h3>
-        </div>
-        <label>Título:</label>
-        <input type="text" id="examTitle" value="Simulado Discursivo">
-        <label>Proposta:</label>
-        <textarea id="proposalContent" rows="2">Explique a fosforilação oxidativa.</textarea>
-        <label>Resposta:</label>
-        <textarea id="studentAnswer" rows="3">A fosforilação ocorre...</textarea>
-        <button class="action-btn" onclick="enviarDiscursiva()" style="background-color: var(--accent-rose); color: #fff;">Submeter Discursiva</button>
-        <div id="discResponse" class="response-box" style="display:none;"></div>
-    </div>
-
-    <!-- Módulo 5 // Telemetria Longitudinal (Totalmente Restaurado) -->
-    <div class="card card-amber">
-        <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-            <h3>05 // Telemetria Longitudinal (Evolução & Projeção UEL)</h3>
-        </div>
-        <div style="background: rgba(9, 13, 22, 0.9); padding: 24px; border-radius: 20px; border: 1px solid var(--border-glow); position: relative; height: 340px; box-shadow: inset 0 0 25px rgba(56,189,248,0.1);">
-            <canvas id="longitudinalChart"></canvas>
-        </div>
-        <div id="telemetryStats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top: 18px;"></div>
-    </div>
-</div>
-
-<script>
-    // --- 1. Controle de Gavetas com Escopo Global ---
-    window.toggleTool = function(drawerId) {
-        const drawer = document.getElementById(drawerId);
-        if (drawer) {
-            drawer.style.display = drawer.style.display === 'block' ? 'none' : 'block';
-        }
-    };
-
-    // --- 2. Relógio Ativo & Google Calendar ---
-    function atualizarRelogio() {
-        const agora = new Date();
-        const timeEl = document.getElementById('liveClock');
-        const dateEl = document.getElementById('liveDate');
-        if (timeEl) timeEl.innerText = agora.toLocaleTimeString('pt-BR');
-        if (dateEl) {
-            const opcoes = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
-            dateEl.innerText = agora.toLocaleDateString('pt-BR', opcoes);
-        }
-    }
-    setInterval(atualizarRelogio, 1000);
-    atualizarRelogio();
-
-    window.agendarNoGoogleCalendar = function() {
-        const titulo = encodeURIComponent("Simulado & Bloco de Estudo - Medicina UEL");
-        const detalhes = encodeURIComponent("Sessão oficial do Projeto Nexo Sanctuary Master.");
-        window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}`, '_blank');
-    };
-
-    // --- 3. Cantinho da Clareza ---
-    let quotesList = [];
-    let quoteIdx = 0;
-    async function carregarCantinhoClareza() {
-        try {
-            const res = await fetch('/api/v1/quotes');
-            const data = await res.json();
-            quotesList = data.quotes;
-            renderizarMensagemClareza();
-        } catch(e) { console.error("Erro ao carregar Cantinho da Clareza:", e); }
-    }
-    function renderizarMensagemClareza() {
-        if (!quotesList.length) return;
-        const q = quotesList[quoteIdx % quotesList.length];
-        const display = document.getElementById('quoteDisplay');
-        display.innerHTML = `
-            <img class="quote-image" src="${q.imagem}" alt="Mensagem Inspiracional">
-            <span class="quote-badge" style="background:${q.tipo === 'versiculo' ? 'rgba(56,189,248,0.2)' : 'rgba(251,191,36,0.2)'};color:${q.tipo === 'versiculo' ? '#38bdf8' : '#fbbf24'};border:1px solid ${q.tipo === 'versiculo' ? '#38bdf8' : '#fbbf24'};">${q.tipo === 'versiculo' ? '📖 Palavra de Fé' : '✨ Motivação'}</span>
-            <div class="quote-text">"${q.texto}"</div>
-        `;
-    }
-    window.proximaFrase = function() {
-        quoteIdx++;
-        renderizarMensagemClareza();
-    };
-
-    // --- 4. Rádio Streaming & Mixer ---
-    let radioPlaying = false;
-    window.alternarRadio = function() {
-        const audio = document.getElementById('streamAudio');
-        const status = document.getElementById('radioStatus');
-        const btn = document.getElementById('btnRadioToggle');
-        if (!radioPlaying) {
-            audio.play().then(() => {
-                radioPlaying = true;
-                status.innerText = "▶ Rádio Lo-Fi Cristã (Transmitindo Ao Vivo)";
-                btn.innerText = "Pausar Rádio";
-            }).catch(err => { status.innerText = "Erro ao reproduzir stream."; });
-        } else {
-            audio.pause();
-            radioPlaying = false;
-            status.innerText = "⏸ Rádio Pausada";
-            btn.innerText = "Ligar Rádio";
-        }
-    };
-    window.ajustarVolume = function(val) {
-        const audio = document.getElementById('streamAudio');
-        audio.volume = val / 100;
-        document.getElementById('volLabel').innerText = val;
-    };
-
-    // --- 5. Telemetria Longitudinal (Gráfico Blindado) ---
-    let telemetryChart = null;
-    async function carregarTelemetria() {
-        try {
-            const res = await fetch('/api/v1/telemetry');
-            const data = await res.json();
-            const labels = data.telemetry.map(t => t.label);
-            const scores = data.telemetry.map(t => t.score);
-            labels.push('Projeção UEL');
-            scores.push(data.stats.projection);
-
-            const canvasEl = document.getElementById('longitudinalChart');
-            if (canvasEl) {
-                if (telemetryChart) telemetryChart.destroy();
-                telemetryChart = new Chart(canvasEl.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels,
-                        datasets: [{
-                            label: 'Desempenho Real vs Projeção (Pts)',
-                            data: scores,
-                            borderColor: '#38bdf8',
-                            backgroundColor: 'rgba(56, 189, 248, 0.15)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.35,
-                            pointBackgroundColor: '#38bdf8',
-                            pointBorderColor: '#ffffff',
-                            pointRadius: 6
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } } },
-                        scales: {
-                            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' } },
-                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' }, suggestedMin: 40, suggestedMax: 100 }
-                        }
-                    }
-                });
-            }
-
-            const statsEl = document.getElementById('telemetryStats');
-            if (statsEl) {
-                statsEl.innerHTML = '';
-                const stats = [
-                    ['Média Geral', data.stats.mean],
-                    ['Máximo', data.stats.max],
-                    ['Corte UEL Est.', data.stats.corte_uel + ' pts'],
-                    ['Projeção Master', data.stats.projection + ' pts']
-                ];
-                stats.forEach(([label, val]) => {
-                    const div = document.createElement('div');
-                    div.style.cssText = 'background:rgba(15,23,42,0.85);border:1px solid var(--border-glow);padding:16px;border-radius:14px;text-align:center;box-shadow:0 0 15px rgba(56,189,248,0.15);';
-                    div.innerHTML = `<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;letter-spacing:1px;">${label}</div><div style="font-size:20px;font-weight:800;color:var(--accent-cyan);margin-top:6px;text-shadow:0 0 10px rgba(56,189,248,0.4);">${val}</div>`;
-                    statsEl.appendChild(div);
-                });
-            }
-        } catch (e) { console.error("Erro ao carregar telemetria:", e); }
-    }
-
-    // --- 6. Mini-Game Digital Interativo (Reflexo Tático UEL) ---
-    let gameAtivo = false;
-    let timeoutGame = null;
-    let tempoInicio = 0;
-    window.iniciarMiniGame = function() {
-        const screen = document.getElementById('arcadeScreen');
-        const btnAcao = document.getElementById('btnAcaoGame');
-        screen.innerText = "Aguarde o sinal... Foco total!";
-        screen.style.color = "#fbbf24";
-        btnAcao.disabled = true;
-        gameAtivo = false;
-        
-        const delay = Math.random() * 2000 + 1500;
-        timeoutGame = setTimeout(() => {
-            screen.innerText = "⚡ CLIQUE EM FOCO AGORA!";
-            screen.style.color = "#34d399";
-            tempoInicio = Date.now();
-            gameAtivo = true;
-            btnAcao.disabled = false;
-        }, delay);
-    };
-
-    window.pontuarMiniGame = function() {
-        const screen = document.getElementById('arcadeScreen');
-        const btnAcao = document.getElementById('btnAcaoGame');
-        if (!gameAtivo) {
-            screen.innerText = "❌ Muito cedo! Tente de novo.";
-            screen.style.color = "#f43f5e";
-            return;
-        }
-        const tempoReacao = Date.now() - tempoInicio;
-        screen.innerText = `✅ Incrível! ${tempoReacao}ms. Reflexo de aprovado na UEL!`;
-        screen.style.color = "#38bdf8";
-        gameAtivo = false;
-        btnAcao.disabled = true;
-    };
-
-    // --- Inicialização Automática Completa ---
-    document.addEventListener('DOMContentLoaded', () => {
-        carregarCantinhoClareza();
-        carregarTelemetria();
-    });
-
-    window.carregarBlocoDiario = async function() {
-        const box = document.getElementById('blockResponse');
-        box.style.display = 'block';
-        const res = await fetch('/api/v1/blocks/daily');
-        box.innerText = JSON.stringify(await res.json(), null, 2);
-    };
-    window.carregarRecomposicao = async function() {
-        const id = document.getElementById('attemptId').value;
-        document.getElementById('recompositionContentContainer').style.display = 'block';
-        const res = await fetch(`/api/v1/recompositions/${id}`);
-        const data = await res.json();
-        document.getElementById('gapInfo').innerText = data.learning_gap;
-        document.getElementById('microRevisaoInfo').innerText = data.micro_revisao;
-        document.getElementById('exercicioInfo').innerText = data.exercicio_validacao;
-    };
-    window.enviarAcknowledge = async function() {
-        const id = document.getElementById('attemptId').value;
-        const cmd = document.getElementById('commandInput').value;
-        const box = document.getElementById('ackResponse');
-        box.style.display = 'block';
-        const res = await fetch(`/api/v1/recompositions/${id}/acknowledge`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({command: cmd})
-        });
-        box.innerText = JSON.stringify(await res.json(), null, 2);
-    };
-    window.carregarSimulado = async function() {
-        document.getElementById('simulatedContainer').style.display = 'block';
-        const res = await fetch('/api/v1/simulated/full');
-        document.getElementById('questionBox').innerText = JSON.stringify(await res.json(), null, 2);
-    };
-    window.submeterSimulado = async function() {
-        const box = document.getElementById('simResponse');
-        box.style.display = 'block';
-        const res = await fetch('/api/v1/simulated/submit', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({answers: {1: 'A'}}) });
-        box.innerText = JSON.stringify(await res.json(), null, 2);
-    };
-    window.enviarDiscursiva = async function() {
-        const box = document.getElementById('discResponse');
-        box.style.display = 'block';
-        const res = await fetch('/api/v1/discursive/submit', {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ title: document.getElementById('examTitle').value, proposal_content: document.getElementById('proposalContent').value, student_answer: document.getElementById('studentAnswer').value })
-        });
-        box.innerText = JSON.stringify(await res.json(), null, 2);
-    };
-    window.calcularResultado = function() {
-        try {
-            const expr = document.getElementById('calcInput').value;
-            const res = Function('"use strict";return (' + expr.replace(/sqrt/g, 'Math.sqrt') + ')')();
-            document.getElementById('calcResult').innerText = "Resultado: " + res;
-        } catch(e) { document.getElementById('calcResult').innerText = "Erro na expressão."; }
-    };
-    window.salvarNota = async function() {
-        const title = document.getElementById('noteTitle').value;
-        const content = document.getElementById('noteContent').value;
-        if (!content) return;
-        await fetch('/api/v1/notes', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({title, content}) });
-        document.getElementById('noteTitle').value = '';
-        document.getElementById('noteContent').value = '';
-        alert('Nota salva com sucesso!');
-    };
-</script>
-</body>
-</html>
+                <button class="sci-btn" onclick="sciInput('7')">7</button>
+                <button class="sci-btn" onclick="sciInput('8')">8</button>
+                <button class="sci-btn" onclick="sciInput('9')">9</button>
+                <button class="sci-btn op" onclick="sciInput('/')">÷</
