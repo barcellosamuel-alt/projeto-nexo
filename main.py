@@ -13,7 +13,7 @@ load_dotenv()
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
     description="API Longitudinal de Alta Performance para Preparação Medicina UEL — Python 3",
-    version="6.2.0"
+    version="6.3.0"
 )
 
 app.add_middleware(
@@ -124,7 +124,6 @@ def get_telemetry():
     db = _load_local_db()
     telemetry = db.get("telemetry", [])
     if not telemetry:
-        # Dados calibrados conforme metodologia analítica do Google Drive para Medicina UEL
         telemetry = [
             {"label": "Sim 1", "score": 49.5},
             {"label": "Sim 2", "score": 57.0},
