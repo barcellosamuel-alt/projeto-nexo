@@ -13,7 +13,7 @@ load_dotenv()
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
     description="API Longitudinal de Alta Performance para Preparação Medicina UEL — Python 3",
-    version="6.7.0"
+    version="6.8.0"
 )
 
 app.add_middleware(
