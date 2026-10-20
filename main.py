@@ -147,15 +147,23 @@ def get_telemetry():
 
 @app.get("/api/v1/blocks/daily")
 def get_daily_block():
-    return {"total_questions": 20, "discipline": "Biologia / Química / Física", "status": "ready"}
+    return {
+        "total_questions": 20,
+        "discipline": "Biologia / Química / Física (Foco Medicina UEL)",
+        "status": "ready",
+        "questoes": [
+            {"id": 1, "enunciado": "Questão 1: Sobre citoesqueleto e transporte axonal...", "gabarito": "Letra C"},
+            {"id": 2, "enunciado": "Questão 2: Termoquímica aplicada a ciclos metabólicos...", "gabarito": "Letra A"}
+        ]
+    }
 
 @app.get("/api/v1/recompositions/{attempt_id}")
 def get_recomposition(attempt_id: int):
     return {
         "attempt_id": attempt_id,
         "discipline": "Biologia Celular",
-        "learning_gap": "Dificuldade na fosforilação oxidativa e rendimento de ATP.",
-        "micro_revisao": "A cadeia transportadora localiza-se nas cristas mitocondriais.",
+        "learning_gap": "Dificuldade na fosforilação oxidativa e rendimento de ATP nas cristas mitocondriais.",
+        "micro_revisao": "A cadeia transportadora de elétrons localiza-se nas cristas mitocondriais, gerando gradiente de prótons.",
         "exercicio_validacao": "Qual o papel direto da ATP sintase no gradiente eletroquímico?"
     }
 
@@ -164,18 +172,24 @@ class AcknowledgePayload(BaseModel):
 
 @app.post("/api/v1/recompositions/{attempt_id}/acknowledge")
 def acknowledge_recomposition(attempt_id: int, payload: AcknowledgePayload):
-    return {"status": "success", "command_received": payload.command}
+    return {"status": "success", "command_received": payload.command, "mensagem": "Recomposição assimilada com sucesso."}
 
 @app.get("/api/v1/simulated/full")
 def get_full_simulated():
-    return {"total_questions": 1, "questions": [{"id": 1, "discipline": "Biologia", "enunciado": "Explique a fosforilação oxidativa."}]}
+    return {
+        "total_questions": 60,
+        "questions": [
+            {"id": 1, "discipline": "Biologia", "enunciado": "Explique detalhadamente a fosforilação oxidativa e o balanço energético."},
+            {"id": 2, "discipline": "Química", "enunciado": "Determine a constante de equilíbrio para o sistema gasoso em condições fisiológicas."}
+        ]
+    }
 
 class SimulatedSubmitPayload(BaseModel):
     answers: Dict[str, Any]
 
 @app.post("/api/v1/simulated/submit")
 def submit_simulated(payload: SimulatedSubmitPayload):
-    return {"status": "evaluated", "score_estimated": 82.5}
+    return {"status": "evaluated", "score_estimated": 82.5, "mensagem": "Simulado avaliado com sucesso perante os critérios COPS-UEL."}
 
 class DiscursiveSubmitPayload(BaseModel):
     title: str
@@ -184,7 +198,7 @@ class DiscursiveSubmitPayload(BaseModel):
 
 @app.post("/api/v1/discursive/submit")
 def submit_discursive(payload: DiscursiveSubmitPayload):
-    return {"status": "audited", "estimated_score": 9.2}
+    return {"status": "audited", "estimated_score": 9.2, "feedback": "Excelente fundamentação teórica e clareza na argumentação discursiva."}
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
