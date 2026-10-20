@@ -514,7 +514,7 @@
         }
     });
 
-    // --- 6. Cantinho da Clareza ---
+    // --- 6. Cantinho da Clareza (Estratégia de Cache e Transmissão Sincronizada) ---
     const listaVersiculos = [
         { texto: "O Senhor é o meu pastor; nada me faltará.", referencia: "Salmos 23:1", imagem: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e" },
         { texto: "Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.", referencia: "Salmos 119:105", imagem: "https://images.unsplash.com/photo-1519681393784-d120267933ba" },
@@ -523,19 +523,25 @@
         { texto: "Ainda que eu caminhe pelo vale da sombra da morte, não temerei mal nenhum, pois tu estás comigo.", referencia: "Salmos 23:4", imagem: "https://images.unsplash.com/photo-1426604966848-d7adac902bff" }
     ];
 
+    // Pré-carregamento agressivo em memória (Array de Objetos Image em Cache)
+    const cacheImagens = [];
     listaVersiculos.forEach(item => {
         const img = new Image();
         img.src = item.imagem;
+        cacheImagens.push(img);
     });
 
     let indiceAtual = 0;
+    let slideIntervalo = null;
+
     function atualizarSlide() {
         const elementoBox = document.getElementById('biblia-slideshow');
         const elementoTexto = document.getElementById('slide-texto');
         const elementoRef = document.getElementById('slide-ref');
         if (!elementoBox || !elementoTexto || !elementoRef) return;
         
-        elementoBox.style.opacity = '0.2';
+        // Transição suave sincronizada (Fade-out rápido e troca instantânea via cache)
+        elementoBox.style.opacity = '0.15';
         setTimeout(() => {
             const atual = listaVersiculos[indiceAtual];
             elementoBox.style.backgroundImage = `url('${atual.imagem}')`;
@@ -543,11 +549,20 @@
             elementoRef.innerText = `- ${atual.referencia}`;
             elementoBox.style.opacity = '1';
             indiceAtual = (indiceAtual + 1) % listaVersiculos.length;
-        }, 350);
+        }, 250);
     }
-    window.proximoSlideManual = function() { atualizarSlide(); };
-    setInterval(atualizarSlide, 7500);
-    document.addEventListener("DOMContentLoaded", atualizarSlide);
+
+    window.proximoSlideManual = function() {
+        atualizarSlide();
+        // Reinicia o timer automático para evitar conflito imediato com o clique manual
+        if (slideIntervalo) clearInterval(slideIntervalo);
+        slideIntervalo = setInterval(atualizarSlide, 9000);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        atualizarSlide();
+        slideIntervalo = setInterval(atualizarSlide, 9000); // Intervalo calibrado para 9 segundos de transmissão perfeita
+    });
 
     // --- 7. Bolinha Rebatendo (Garantida e Visível) ---
     document.addEventListener("DOMContentLoaded", () => {
@@ -734,79 +749,4 @@
             document.getElementById('microRevisaoInfo').innerHTML = `<strong style="color:var(--accent-cyan);">Micro-Revisão:</strong> ${data.micro_revisao}`;
             document.getElementById('exercicioInfo').innerHTML = `<strong style="color:var(--accent-emerald);">Validação:</strong> ${data.exercicio_validacao}`;
             document.getElementById('recompositionContentContainer').style.display = 'block';
-        } catch(e) {
-            alert('Erro ao carregar recomposição.');
-        }
-    };
-
-    window.enviarAcknowledge = async function() {
-        const attemptId = document.getElementById('attemptId').value || 1;
-        const command = document.getElementById('commandInput').value;
-        const box = document.getElementById('ackResponse');
-        box.style.display = 'block';
-        try {
-            const res = await fetch(`/api/v1/recompositions/${attemptId}/acknowledge`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ command })
-            });
-            const data = await res.json();
-            box.innerText = JSON.stringify(data, null, 2);
-        } catch(e) {
-            box.innerText = 'Erro ao enviar confirmação.';
-        }
-    };
-
-    window.carregarSimulado = async function() {
-        const container = document.getElementById('simulatedContainer');
-        const qBox = document.getElementById('questionBox');
-        container.style.display = 'block';
-        qBox.innerText = 'A carregar simulado oficial...';
-        try {
-            const res = await fetch('/api/v1/simulated/full');
-            const data = await res.json();
-            qBox.innerText = JSON.stringify(data, null, 2);
-        } catch(e) {
-            qBox.innerText = 'Erro ao carregar simulado.';
-        }
-    };
-
-    window.submeterSimulado = async function() {
-        const box = document.getElementById('simResponse');
-        box.style.display = 'block';
-        box.innerText = 'A submeter simulado...';
-        try {
-            const res = await fetch('/api/v1/simulated/submit', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ answers: { 1: "C", 2: "A" } })
-            });
-            const data = await res.json();
-            box.innerText = JSON.stringify(data, null, 2);
-        } catch(e) {
-            box.innerText = 'Erro ao submeter simulado.';
-        }
-    };
-
-    window.enviarDiscursiva = async function() {
-        const title = document.getElementById('examTitle').value;
-        const proposal_content = document.getElementById('proposalContent').value;
-        const student_answer = document.getElementById('studentAnswer').value;
-        const box = document.getElementById('discResponse');
-        box.style.display = 'block';
-        box.innerText = 'A auditar resposta discursiva...';
-        try {
-            const res = await fetch('/api/v1/discursive/submit', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ title, proposal_content, student_answer })
-            });
-            const data = await res.json();
-            box.innerText = JSON.stringify(data, null, 2);
-        } catch(e) {
-            box.innerText = 'Erro ao submeter discursiva.';
-        }
-    };
-</script>
-</body>
-</html>
+        } catch(
