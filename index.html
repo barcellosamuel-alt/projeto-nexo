@@ -179,7 +179,7 @@
         /* Widget da Bolinha Rebatendo */
         .bouncing-ball-widget {
             position: fixed; bottom: 25px; right: 25px; z-index: 1000;
-            background: rgba(13, 20, 35, 0.9); border: 2px solid var(--accent-cyan);
+            background: rgba(13, 20, 35, 0.95); border: 2px solid var(--accent-cyan);
             border-radius: 20px; padding: 10px; box-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
             backdrop-filter: blur(20px);
         }
@@ -380,7 +380,7 @@
 </div>
 
 <script>
-    // --- 1. Gavetas com Escopo Global ---
+    // --- 1. Gavetas e Ferramentas Globais ---
     window.toggleTool = function(drawerId) {
         const drawer = document.getElementById(drawerId);
         if (drawer) {
@@ -414,7 +414,7 @@
         try {
             const res = await fetch('/api/v1/notes');
             const data = await res.json();
-            listaNotasGlobal = data.notes;
+            listaNotasGlobal = data.notes || [];
             const select = document.getElementById('notesSelect');
             if (select) {
                 select.innerHTML = '<option value="">-- Nova Nota --</option>';
@@ -425,7 +425,7 @@
                     select.appendChild(opt);
                 });
             }
-        } catch(e) { console.error(e); }
+        } catch(e) { console.error('Erro ao carregar notas:', e); }
     }
     window.carregarNotaSelecionada = function() {
         const id = document.getElementById('notesSelect').value;
@@ -469,6 +469,7 @@
         window.novaNotaForm();
         carregarNotas();
     };
+    carregarNotas();
 
     // --- 4. Calculadora Científica ---
     window.sciInput = function(val) {
@@ -511,7 +512,7 @@
         }
     });
 
-    // --- 6. Cantinho da Clareza ---
+    // --- 6. Cantinho da Clareza (Versículos) ---
     const listaVersiculos = [
         { texto: "O Senhor é o meu pastor; nada me faltará.", referencia: "Salmos 23:1", imagem: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e" },
         { texto: "Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.", referencia: "Salmos 119:105", imagem: "https://images.unsplash.com/photo-1519681393784-d120267933ba" },
@@ -538,8 +539,35 @@
     }
     window.proximoSlideManual = function() { atualizarSlide(); };
     setInterval(atualizarSlide, 8000);
+    atualizarSlide();
 
-    // --- 7. Telemetria Longitudinal ---
+    // --- 7. Bolinha Rebatendo (Quadro Interativo) ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const canvas = document.getElementById('ballCanvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let x = 100, y = 65, dx = 2.5, dy = 2.0, radius = 8;
+            function desenharBolinha() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#38bdf8';
+                ctx.shadowColor = '#38bdf8';
+                ctx.shadowBlur = 12;
+                ctx.fill();
+                ctx.closePath();
+
+                if (x + dx > canvas.width - radius || x + dx < radius) dx = -dx;
+                if (y + dy > canvas.height - radius || y + dy < radius) dy = -dy;
+                x += dx;
+                y += dy;
+                requestAnimationFrame(desenharBolinha);
+            }
+            desenharBolinha();
+        }
+    });
+
+    // --- 8. Telemetria Longitudinal & Estatísticas ---
     let telemetryChart = null;
     async function carregarTelemetria() {
         try {
@@ -576,4 +604,106 @@
                         plugins: { legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } } },
                         scales: {
                             x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' } },
-                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)'
+                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' } }
+                        }
+                    }
+                });
+            }
+
+            const statsContainer = document.getElementById('telemetryStats');
+            if (statsContainer && data.stats) {
+                statsContainer.innerHTML = `
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">SIMULADOS</span>
+                        <strong style="font-size:20px; color:var(--accent-cyan); font-family:'JetBrains Mono';">${data.stats.count}</strong>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">MÉDIA ATUAL</span>
+                        <strong style="font-size:20px; color:var(--accent-emerald); font-family:'JetBrains Mono';">${data.stats.mean}</strong>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">PROJEÇÃO UEL</span>
+                        <strong style="font-size:20px; color:#a855f7; font-family:'JetBrains Mono';">${data.stats.projection}</strong>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">CORTE HISTÓRICO</span>
+                        <strong style="font-size:20px; color:var(--accent-rose); font-family:'JetBrains Mono';">${data.stats.corte_uel}</strong>
+                    </div>
+                `;
+            }
+        } catch (e) {
+            console.error('Erro ao carregar telemetria:', e);
+        }
+    }
+    carregarTelemetria();
+
+    // --- 9. Ações dos Módulos Principais ---
+    window.carregarBlocoDiario = async function() {
+        const box = document.getElementById('blockResponse');
+        box.style.display = 'block';
+        box.innerText = 'Carregando bloco diário...';
+        const res = await fetch('/api/v1/blocks/daily');
+        const data = await res.json();
+        box.innerText = JSON.stringify(data, null, 2);
+    };
+
+    window.carregarRecomposicao = async function() {
+        const attemptId = document.getElementById('attemptId').value;
+        const res = await fetch(`/api/v1/recompositions/${attemptId}`);
+        const data = await res.json();
+        document.getElementById('gapInfo').innerHTML = `<strong style="color:var(--accent-amber);">Lacuna:</strong> ${data.learning_gap}`;
+        document.getElementById('microRevisaoInfo').innerHTML = `<strong style="color:var(--accent-cyan);">Micro-Revisão:</strong> ${data.micro_revisao}`;
+        document.getElementById('exercicioInfo').innerHTML = `<strong style="color:var(--accent-emerald);">Validação:</strong> ${data.exercicio_validacao}`;
+        document.getElementById('recompositionContentContainer').style.display = 'block';
+    };
+
+    window.enviarAcknowledge = async function() {
+        const attemptId = document.getElementById('attemptId').value;
+        const command = document.getElementById('commandInput').value;
+        const res = await fetch(`/api/v1/recompositions/${attemptId}/acknowledge`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ command })
+        });
+        const data = await res.json();
+        const ackBox = document.getElementById('ackResponse');
+        ackBox.style.display = 'block';
+        ackBox.innerText = JSON.stringify(data, null, 2);
+    };
+
+    window.carregarSimulado = async function() {
+        const res = await fetch('/api/v1/simulated/full');
+        const data = await res.json();
+        document.getElementById('questionBox').innerText = JSON.stringify(data.questions[0], null, 2);
+        document.getElementById('simulatedContainer').style.display = 'block';
+    };
+
+    window.submeterSimulado = async function() {
+        const res = await fetch('/api/v1/simulated/submit', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ answers: { 1: "A" } })
+        });
+        const data = await res.json();
+        const simResp = document.getElementById('simResponse');
+        simResp.style.display = 'block';
+        simResp.innerText = JSON.stringify(data, null, 2);
+    };
+
+    window.enviarDiscursiva = async function() {
+        const title = document.getElementById('examTitle').value;
+        const proposal_content = document.getElementById('proposalContent').value;
+        const student_answer = document.getElementById('studentAnswer').value;
+        const res = await fetch('/api/v1/discursive/submit', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ title, proposal_content, student_answer })
+        });
+        const data = await res.json();
+        const discResp = document.getElementById('discResponse');
+        discResp.style.display = 'block';
+        discResp.innerText = JSON.stringify(data, null, 2);
+    };
+</script>
+</body>
+</html>
