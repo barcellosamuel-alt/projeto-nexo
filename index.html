@@ -286,7 +286,7 @@
     <!-- Cantinho da Clareza -->
     <div id="quoteDrawer" class="aux-drawer">
         <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">✝️ Cantinho da Clareza — Palavra do Dia</strong>
-        <div id="biblia-slideshow" style="position: relative; width: 100%; height: 420px; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; transition: background-image 1.2s ease-in-out; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid var(--border-glow);">
+        <div id="biblia-slideshow" style="position: relative; width: 100%; height: 420px; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; transition: background-image 0.8s ease-in-out; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid var(--border-glow);">
             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.55);"></div>
             <div style="position: relative; z-index: 2; padding: 30px; max-width: 85%;">
                 <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 2px; background: rgba(255,255,255,0.25); padding: 6px 14px; border-radius: 6px; display: inline-block; margin-bottom: 15px; font-weight: 700;">Palavra do Dia</span>
@@ -366,4 +366,84 @@
     <!-- Módulo 5 // Telemetria Longitudinal -->
     <div class="card card-amber">
         <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+            <h3>05 // Telemetria Longitudinal (Evolução & Projeção UEL)</h3>
+        </div>
+        <div style="background: rgba(9, 13, 22, 0.9); padding: 24px; border-radius: 20px; border: 1px solid var(--border-glow); position: relative; height: 340px; box-shadow: inset 0 0 25px rgba(56,189,248,0.1);">
+            <canvas id="longitudinalChart"></canvas>
+        </div>
+        <div id="telemetryStats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top: 18px;"></div>
+    </div>
+</div>
+
+<script>
+    // --- 1. Gavetas e Ferramentas Globais ---
+    window.toggleTool = function(drawerId) {
+        const drawer = document.getElementById(drawerId);
+        if (drawer) {
+            drawer.style.display = (drawer.style.display === 'block') ? 'none' : 'block';
+        }
+    };
+
+    // --- 2. Relógio Ativo & Google Calendar ---
+    function atualizarRelogio() {
+        const agora = new Date();
+        const timeEl = document.getElementById('liveClock');
+        const dateEl = document.getElementById('liveDate');
+        if (timeEl) timeEl.innerText = agora.toLocaleTimeString('pt-BR');
+        if (dateEl) {
+            const opcoes = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+            dateEl.innerText = agora.toLocaleDateString('pt-BR', opcoes);
+        }
+    }
+    setInterval(atualizarRelogio, 1000);
+    atualizarRelogio();
+
+    window.agendarNoGoogleCalendar = function() {
+        const titulo = encodeURIComponent("Simulado & Bloco de Estudo - Medicina UEL");
+        const detalhes = encodeURIComponent("Sessão oficial do Projeto Nexo Sanctuary Master.");
+        window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}`, '_blank');
+    };
+
+    // --- 3. Bloco de Notas ---
+    let listaNotasGlobal = [];
+    async function carregarNotas() {
+        try {
+            const res = await fetch('/api/v1/notes');
+            const data = await res.json();
+            listaNotasGlobal = data.notes || [];
+            const select = document.getElementById('notesSelect');
+            if (select) {
+                select.innerHTML = '<option value="">-- Nova Nota --</option>';
+                listaNotasGlobal.forEach(n => {
+                    const opt = document.createElement('option');
+                    opt.value = n.id;
+                    opt.innerText = n.title || `Nota #${n.id}`;
+                    select.appendChild(opt);
+                });
+            }
+        } catch(e) { console.error('Erro ao carregar notas:', e); }
+    }
+    window.carregarNotaSelecionada = function() {
+        const select = document.getElementById('notesSelect');
+        if (!select) return;
+        const id = select.value;
+        if (!id) { window.novaNotaForm(); return; }
+        const nota = listaNotasGlobal.find(n => n.id == id);
+        if (nota) {
+            document.getElementById('noteId').value = nota.id;
+            document.getElementById('noteTitle').value = nota.title;
+            document.getElementById('noteContent').value = nota.content;
+        }
+    };
+    window.novaNotaForm = function() {
+        const idEl = document.getElementById('noteId');
+        const titleEl = document.getElementById('noteTitle');
+        const contentEl = document.getElementById('noteContent');
+        const select = document.getElementById('notesSelect');
+        if (idEl) idEl.value = '';
+        if (titleEl) titleEl.value = '';
+        if (contentEl) contentEl.value = '';
+        if (select) select.value = '';
+    };
+    window.salvarNotaAtual = async function() {
