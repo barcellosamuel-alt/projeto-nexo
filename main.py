@@ -1,7 +1,7 @@
 import os
 import json
 import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,7 +13,7 @@ load_dotenv()
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
     description="API Longitudinal de Alta Performance para Preparação Medicina UEL — Python 3",
-    version="5.2.0"
+    version="6.0.0"
 )
 
 app.add_middleware(
