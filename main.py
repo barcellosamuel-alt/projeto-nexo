@@ -13,7 +13,7 @@ load_dotenv()
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
     description="API Longitudinal de Alta Performance para Preparação Medicina UEL — Python 3",
-    version="6.0.0"
+    version="6.1.0"
 )
 
 app.add_middleware(
@@ -97,7 +97,7 @@ def save_note(payload: NotePayload):
                 return {"status": "updated", "note": n}
     
     new_note = {
-        "id": len(notes) + 1,
+        "id": len(notes) + 1 if not notes else max(n["id"] for n in notes) + 1,
         "title": payload.title,
         "content": payload.content,
         "category": payload.category,
