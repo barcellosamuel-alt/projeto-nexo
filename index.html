@@ -377,6 +377,7 @@
 </div>
 
 <script>
+(function() {
     // --- 1. Gavetas e Ferramentas Globais ---
     window.toggleTool = function(drawerId) {
         const drawer = document.getElementById(drawerId);
@@ -447,3 +448,405 @@
         if (select) select.value = '';
     };
     window.salvarNotaAtual = async function() {
+        const id = document.getElementById('noteId').value;
+        const title = document.getElementById('noteTitle').value;
+        const content = document.getElementById('noteContent').value;
+        if (!content) { alert('Escreva algum conteúdo na nota.'); return; }
+        
+        const payload = { title, content };
+        if (id) payload.id = parseInt(id);
+
+        try {
+            await fetch('/api/v1/notes', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            alert('Nota salva com sucesso!');
+            carregarNotas();
+        } catch(e) {
+            alert('Erro ao salvar nota.');
+        }
+    };
+    window.apagarNotaAtual = async function() {
+        const id = document.getElementById('noteId').value;
+        if (!id) { alert('Nenhuma nota selecionada para apagar.'); return; }
+        try {
+            await fetch(`/api/v1/notes/${id}`, { method: 'DELETE' });
+            alert('Nota apagada.');
+            window.novaNotaForm();
+            carregarNotas();
+        } catch(e) {
+            alert('Erro ao apagar nota.');
+        }
+    };
+    carregarNotas();
+
+    // --- 4. Calculadora Científica ---
+    window.sciInput = function(val) {
+        const disp = document.getElementById('sciDisplay');
+        if (disp) {
+            if (disp.value === '0' || disp.value === 'Erro') disp.value = '';
+            disp.value += val;
+        }
+    };
+    window.sciClear = function() {
+        const disp = document.getElementById('sciDisplay');
+        if (disp) disp.value = '0';
+    };
+    window.sciCalculate = function() {
+        const disp = document.getElementById('sciDisplay');
+        if (!disp) return;
+        try {
+            let expr = disp.value
+                .replace(/sin\(/g, 'Math.sin(')
+                .replace(/cos\(/g, 'Math.cos(')
+                .replace(/tan\(/g, 'Math.tan(')
+                .replace(/sqrt\(/g, 'Math.sqrt(')
+                .replace(/pi/g, 'Math.PI');
+            disp.value = Function('"use strict";return (' + expr + ')')();
+        } catch(e) {
+            disp.value = 'Erro';
+        }
+    };
+
+    // --- 5. Rádio Streaming Gospel Internacional & Inicializações no DOM ---
+    document.addEventListener("DOMContentLoaded", () => {
+        // Rádio HLS
+        const audio = document.getElementById('radio-gospel');
+        const streamUrl = 'https://stream.vagalume.fm/hls/1470245767122628/aac.m3u8';
+        if (audio) {
+            if (window.Hls && Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(audio);
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    console.warn('HLS warning:', data);
+                });
+            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                audio.src = streamUrl;
+            }
+        }
+
+        // Cantinho da Clareza (Cache Otimizado & Transmissão Sincronizada)
+        const listaVersiculos = [
+            { texto: "O Senhor é o meu pastor; nada me faltará.", referencia: "Salmos 23:1", imagem: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e" },
+            { texto: "Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.", referencia: "Salmos 119:105", imagem: "https://images.unsplash.com/photo-1519681393784-d120267933ba" },
+            { texto: "Tudo posso naquele que me fortalece.", referencia: "Filipenses 4:13", imagem: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05" },
+            { texto: "Confie no Senhor de todo o seu coração e não se apoie em sua própria inteligência.", referencia: "Provérbios 3:5", imagem: "https://images.unsplash.com/photo-1506744038136-46273834b3fb" },
+            { texto: "Ainda que eu caminhe pelo vale da sombra da morte, não temerei mal nenhum, pois tu estás comigo.", referencia: "Salmos 23:4", imagem: "https://images.unsplash.com/photo-1426604966848-d7adac902bff" }
+        ];
+
+        const cacheImagens = [];
+        listaVersiculos.forEach(item => {
+            const img = new Image();
+            img.src = item.imagem;
+            cacheImagens.push(img);
+        });
+
+        let indiceAtual = 0;
+        let slideIntervalo = null;
+
+        function atualizarSlide() {
+            const elementoBox = document.getElementById('biblia-slideshow');
+            const elementoTexto = document.getElementById('slide-texto');
+            const elementoRef = document.getElementById('slide-ref');
+            if (!elementoBox || !elementoTexto || !elementoRef) return;
+            
+            elementoBox.style.opacity = '0.15';
+            setTimeout(() => {
+                const atual = listaVersiculos[indiceAtual];
+                elementoBox.style.backgroundImage = `url('${atual.imagem}')`;
+                elementoTexto.innerText = `"${atual.texto}"`;
+                elementoRef.innerText = `- ${atual.referencia}`;
+                elementoBox.style.opacity = '1';
+                indiceAtual = (indiceAtual + 1) % listaVersiculos.length;
+            }, 200);
+        }
+
+        window.proximoSlideManual = function() {
+            atualizarSlide();
+            if (slideIntervalo) clearInterval(slideIntervalo);
+            slideIntervalo = setInterval(atualizarSlide, 8000);
+        };
+
+        atualizarSlide();
+        slideIntervalo = setInterval(atualizarSlide, 8000);
+
+        // Bolinha Rebatendo (Garantida e Visível)
+        const canvas = document.getElementById('ballCanvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let x = 100, y = 65, dx = 2.5, dy = 2.0, radius = 9;
+            let mouseX = 100, mouseY = 65;
+            let audioCtx = null;
+
+            function initAudio() {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            function playBeep(freq = 440) {
+                try {
+                    initAudio();
+                    if (audioCtx && audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    if (!audioCtx) return;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.1);
+                } catch(e) {}
+            }
+
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            canvas.addEventListener('click', () => {
+                initAudio();
+            });
+
+            function desenharBolinha() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const distX = mouseX - x;
+                const distY = mouseY - y;
+                const dist = Math.sqrt(distX * distX + distY * distY);
+                if (dist < 60 && dist > 5) {
+                    dx += (distX / dist) * 0.06;
+                    dy += (distY / dist) * 0.06;
+                }
+
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#38bdf8';
+                ctx.shadowColor = '#38bdf8';
+                ctx.shadowBlur = 18;
+                ctx.fill();
+                ctx.closePath();
+
+                if (x + dx > canvas.width - radius) {
+                    dx = -dx;
+                    x = canvas.width - radius;
+                    playBeep(520);
+                } else if (x + dx < radius) {
+                    dx = -dx;
+                    x = radius;
+                    playBeep(420);
+                }
+
+                if (y + dy > canvas.height - radius) {
+                    dy = -dy;
+                    y = canvas.height - radius;
+                    playBeep(600);
+                } else if (y + dy < radius) {
+                    dy = -dy;
+                    y = radius;
+                    playBeep(480);
+                }
+
+                x += dx;
+                y += dy;
+                requestAnimationFrame(desenharBolinha);
+            }
+            desenharBolinha();
+        }
+
+        // Telemetria Longitudinal (Quadro 05)
+        carregarTelemetria();
+    });
+
+    // --- 8. Telemetria Longitudinal & Ações Principais (01 a 04) ---
+    let telemetryChart = null;
+    async function carregarTelemetria() {
+        try {
+            const res = await fetch('/api/v1/telemetry');
+            const data = await res.json();
+            const labels = data.telemetry.map(t => t.label);
+            const scores = data.telemetry.map(t => t.score);
+            labels.push('Projeção UEL');
+            scores.push(data.stats.projection);
+
+            const canvasEl = document.getElementById('longitudinalChart');
+            if (canvasEl) {
+                if (telemetryChart) telemetryChart.destroy();
+                telemetryChart = new Chart(canvasEl.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Desempenho Real vs Projeção UEL (Pts)',
+                            data: scores,
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.35,
+                            pointBackgroundColor: '#38bdf8',
+                            pointBorderColor: '#ffffff',
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } } },
+                        scales: {
+                            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' } },
+                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' } }
+                        }
+                    }
+                });
+            }
+
+            const statsContainer = document.getElementById('telemetryStats');
+            if (statsContainer && data.stats) {
+                statsContainer.innerHTML = `
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">SIMULADOS</span>
+                        <strong style="font-size:20px; color:var(--accent-cyan); font-family:'JetBrains Mono';">${data.stats.count}</strong>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">MÉDIA ATUAL</span>
+                        <strong style="font-size:20px; color:var(--accent-emerald); font-family:'JetBrains Mono';">${data.stats.mean}</strong>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">PROJEÇÃO UEL</span>
+                        <strong style="font-size:20px; color:#a855f7; font-family:'JetBrains Mono';">${data.stats.projection}</strong>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">CORTE HISTÓRICO</span>
+                        <strong style="font-size:20px; color:var(--accent-rose); font-family:'JetBrains Mono';">${data.stats.corte_uel}</strong>
+                    </div>
+                `;
+            }
+        } catch (e) {
+            console.error('Erro ao carregar telemetria:', e);
+        }
+    }
+
+    window.carregarBlocoDiario = async function() {
+        const box = document.getElementById('blockResponse');
+        if (!box) return;
+        box.style.display = 'block';
+        box.innerText = 'A carregar bloco diário...';
+        try {
+            const res = await fetch('/api/v1/blocks/daily');
+            const data = await res.json();
+            box.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            box.innerText = 'Erro ao carregar bloco diário.';
+        }
+    };
+
+    window.carregarRecomposicao = async function() {
+        const inputId = document.getElementById('attemptId');
+        const attemptId = inputId ? (inputId.value || 1) : 1;
+        try {
+            const res = await fetch(`/api/v1/recompositions/${attemptId}`);
+            const data = await res.json();
+            const gap = document.getElementById('gapInfo');
+            const micro = document.getElementById('microRevisaoInfo');
+            const ex = document.getElementById('exercicioInfo');
+            const container = document.getElementById('recompositionContentContainer');
+
+            if (gap) gap.innerHTML = `<strong style="color:var(--accent-amber);">Lacuna:</strong> ${data.learning_gap}`;
+            if (micro) micro.innerHTML = `<strong style="color:var(--accent-cyan);">Micro-Revisão:</strong> ${data.micro_revisao}`;
+            if (ex) ex.innerHTML = `<strong style="color:var(--accent-emerald);">Validação:</strong> ${data.exercicio_validacao}`;
+            if (container) container.style.display = 'block';
+        } catch(e) {
+            alert('Erro ao carregar recomposição.');
+        }
+    };
+
+    window.enviarAcknowledge = async function() {
+        const inputId = document.getElementById('attemptId');
+        const inputCmd = document.getElementById('commandInput');
+        const attemptId = inputId ? (inputId.value || 1) : 1;
+        const command = inputCmd ? inputCmd.value : '[NEXO_LIDO_E_COMPREENDIDO]';
+        const box = document.getElementById('ackResponse');
+        if (!box) return;
+        box.style.display = 'block';
+        try {
+            const res = await fetch(`/api/v1/recompositions/${attemptId}/acknowledge`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ command })
+            });
+            const data = await res.json();
+            box.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            box.innerText = 'Erro ao enviar confirmação.';
+        }
+    };
+
+    window.carregarSimulado = async function() {
+        const container = document.getElementById('simulatedContainer');
+        const qBox = document.getElementById('questionBox');
+        if (container) container.style.display = 'block';
+        if (qBox) qBox.innerText = 'A carregar simulado oficial...';
+        try {
+            const res = await fetch('/api/v1/simulated/full');
+            const data = await res.json();
+            if (qBox) qBox.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            if (qBox) qBox.innerText = 'Erro ao carregar simulado.';
+        }
+    };
+
+    window.submeterSimulado = async function() {
+        const box = document.getElementById('simResponse');
+        if (!box) return;
+        box.style.display = 'block';
+        box.innerText = 'A submeter simulado...';
+        try {
+            const res = await fetch('/api/v1/simulated/submit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ answers: { 1: "C", 2: "A" } })
+            });
+            const data = await res.json();
+            box.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            box.innerText = 'Erro ao submeter simulado.';
+        }
+    };
+
+    window.enviarDiscursiva = async function() {
+        const titleEl = document.getElementById('examTitle');
+        const propEl = document.getElementById('proposalContent');
+        const ansEl = document.getElementById('studentAnswer');
+        const title = titleEl ? titleEl.value : 'Simulado Discursivo';
+        const proposal_content = propEl ? propEl.value : '';
+        const student_answer = ansEl ? ansEl.value : '';
+        const box = document.getElementById('discResponse');
+        if (!box) return;
+        box.style.display = 'block';
+        box.innerText = 'A auditar resposta discursiva...';
+        try {
+            const res = await fetch('/api/v1/discursive/submit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ title, proposal_content, student_answer })
+            });
+            const data = await res.json();
+            box.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            box.innerText = 'Erro ao submeter discursiva.';
+        }
+    };
+})();
+</script>
+</body>
+</html>
