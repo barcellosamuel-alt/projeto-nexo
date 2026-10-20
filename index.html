@@ -176,7 +176,7 @@
         .sci-btn.op { background: #0284c7; color: white; }
         .sci-btn.eq { background: #059669; color: white; grid-column: span 2; }
 
-        /* Widget Flutuante da Bolinha Rebatendo (Sem Texto) */
+        /* Widget da Bolinha Rebatendo */
         .bouncing-ball-widget {
             position: fixed; bottom: 25px; right: 25px; z-index: 1000;
             background: rgba(13, 20, 35, 0.9); border: 2px solid var(--accent-cyan);
@@ -188,7 +188,7 @@
 </head>
 <body>
 
-<!-- Widget Interativo da Bolinha Rebatendo (Sem Texto) -->
+<!-- Widget Interativo da Bolinha Rebatendo -->
 <div class="bouncing-ball-widget" id="ballWidget">
     <canvas id="ballCanvas" width="200" height="130"></canvas>
 </div>
@@ -205,33 +205,33 @@
         <div class="clock-widget">
             <div class="clock-time" id="liveClock">00:00:00</div>
             <div class="clock-date" id="liveDate">A carregar data...</div>
-            <button class="calendar-sync-btn" onclick="agendarNoGoogleCalendar()">📅 Agendar no Google Calendar</button>
+            <button class="calendar-sync-btn" onclick="window.agendarNoGoogleCalendar()">📅 Agendar no Google Calendar</button>
         </div>
     </div>
 
     <!-- Barra de Ferramentas -->
     <div class="tools-bar">
-        <button class="tool-btn" onclick="toggleTool('notesDrawer')">📝 Bloco de Notas</button>
-        <button class="tool-btn" onclick="toggleTool('calcDrawer')">🧮 Calculadora Científica</button>
-        <button class="tool-btn" onclick="toggleTool('radioDrawer')">📻 Streaming Gospel Internacional</button>
-        <button class="tool-btn" onclick="toggleTool('quoteDrawer')">✝️ Cantinho da Clareza</button>
+        <button class="tool-btn" onclick="window.toggleTool('notesDrawer')">📝 Bloco de Notas</button>
+        <button class="tool-btn" onclick="window.toggleTool('calcDrawer')">🧮 Calculadora Científica</button>
+        <button class="tool-btn" onclick="window.toggleTool('radioDrawer')">📻 Streaming Gospel Internacional</button>
+        <button class="tool-btn" onclick="window.toggleTool('quoteDrawer')">✝️ Cantinho da Clareza</button>
     </div>
 
     <!-- Notas -->
     <div id="notesDrawer" class="aux-drawer">
         <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">📝 Gerenciador de Notas Acadêmicas</strong>
         <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-            <select id="notesSelect" onchange="carregarNotaSelecionada()">
+            <select id="notesSelect" onchange="window.carregarNotaSelecionada()">
                 <option value="">-- Nova Nota --</option>
             </select>
-            <button class="action-btn" onclick="novaNotaForm()" style="margin:0; padding:10px 16px; background:var(--accent-emerald); color:#04070d;">Novo</button>
+            <button class="action-btn" onclick="window.novaNotaForm()" style="margin:0; padding:10px 16px; background:var(--accent-emerald); color:#04070d;">Novo</button>
         </div>
         <input type="hidden" id="noteId">
         <input type="text" id="noteTitle" placeholder="Título da nota / Matéria" style="margin-top:0;">
         <textarea id="noteContent" rows="5" placeholder="Escreva suas anotações estratégicas..." style="margin-top:12px;"></textarea>
         <div style="display: flex; gap: 10px; margin-top: 14px;">
-            <button class="action-btn btn-success" onclick="salvarNotaAtual()" style="margin:0; flex:1;">💾 Salvar / Atualizar</button>
-            <button class="action-btn" onclick="apagarNotaAtual()" style="margin:0; background:var(--accent-rose); color:#fff; flex:1;">🗑️ Apagar</button>
+            <button class="action-btn btn-success" onclick="window.salvarNotaAtual()" style="margin:0; flex:1;">💾 Salvar / Atualizar</button>
+            <button class="action-btn" onclick="window.apagarNotaAtual()" style="margin:0; background:var(--accent-rose); color:#fff; flex:1;">🗑️ Apagar</button>
         </div>
     </div>
 
@@ -241,34 +241,34 @@
         <div class="sci-calc-container">
             <input type="text" id="sciDisplay" class="sci-display" value="0" readonly>
             <div class="sci-grid">
-                <button class="sci-btn" onclick="sciInput('sin(')">sin</button>
-                <button class="sci-btn" onclick="sciInput('cos(')">cos</button>
-                <button class="sci-btn" onclick="sciInput('tan(')">tan</button>
-                <button class="sci-btn" onclick="sciInput('sqrt(')">√</button>
-                <button class="sci-btn" onclick="sciClear()">AC</button>
+                <button class="sci-btn" onclick="window.sciInput('sin(')">sin</button>
+                <button class="sci-btn" onclick="window.sciInput('cos(')">cos</button>
+                <button class="sci-btn" onclick="window.sciInput('tan(')">tan</button>
+                <button class="sci-btn" onclick="window.sciInput('sqrt(')">√</button>
+                <button class="sci-btn" onclick="window.sciClear()">AC</button>
 
-                <button class="sci-btn" onclick="sciInput('7')">7</button>
-                <button class="sci-btn" onclick="sciInput('8')">8</button>
-                <button class="sci-btn" onclick="sciInput('9')">9</button>
-                <button class="sci-btn op" onclick="sciInput('/')">÷</button>
-                <button class="sci-btn" onclick="sciInput('(')">(</button>
+                <button class="sci-btn" onclick="window.sciInput('7')">7</button>
+                <button class="sci-btn" onclick="window.sciInput('8')">8</button>
+                <button class="sci-btn" onclick="window.sciInput('9')">9</button>
+                <button class="sci-btn op" onclick="window.sciInput('/')">÷</button>
+                <button class="sci-btn" onclick="window.sciInput('(')">(</button>
 
-                <button class="sci-btn" onclick="sciInput('4')">4</button>
-                <button class="sci-btn" onclick="sciInput('5')">5</button>
-                <button class="sci-btn" onclick="sciInput('6')">6</button>
-                <button class="sci-btn op" onclick="sciInput('*')">×</button>
-                <button class="sci-btn" onclick="sciInput(')')">)</button>
+                <button class="sci-btn" onclick="window.sciInput('4')">4</button>
+                <button class="sci-btn" onclick="window.sciInput('5')">5</button>
+                <button class="sci-btn" onclick="window.sciInput('6')">6</button>
+                <button class="sci-btn op" onclick="window.sciInput('*')">×</button>
+                <button class="sci-btn" onclick="window.sciInput(')')">)</button>
 
-                <button class="sci-btn" onclick="sciInput('1')">1</button>
-                <button class="sci-btn" onclick="sciInput('2')">2</button>
-                <button class="sci-btn" onclick="sciInput('3')">3</button>
-                <button class="sci-btn op" onclick="sciInput('-')">-</button>
-                <button class="sci-btn" onclick="sciInput('pi')">π</button>
+                <button class="sci-btn" onclick="window.sciInput('1')">1</button>
+                <button class="sci-btn" onclick="window.sciInput('2')">2</button>
+                <button class="sci-btn" onclick="window.sciInput('3')">3</button>
+                <button class="sci-btn op" onclick="window.sciInput('-')">-</button>
+                <button class="sci-btn" onclick="window.sciInput('pi')">π</button>
 
-                <button class="sci-btn" onclick="sciInput('0')">0</button>
-                <button class="sci-btn" onclick="sciInput('.')">.</button>
-                <button class="sci-btn op" onclick="sciInput('+')">+</button>
-                <button class="sci-btn eq" onclick="sciCalculate()">=</button>
+                <button class="sci-btn" onclick="window.sciInput('0')">0</button>
+                <button class="sci-btn" onclick="window.sciInput('.')">.</button>
+                <button class="sci-btn op" onclick="window.sciInput('+')">+</button>
+                <button class="sci-btn eq" onclick="window.sciCalculate()">=</button>
             </div>
         </div>
     </div>
@@ -298,7 +298,7 @@
             </div>
         </div>
         <div style="text-align: center; margin-top: 15px;">
-            <button class="action-btn" onclick="proximoSlideManual()">🔄 Próxima Mensagem</button>
+            <button class="action-btn" onclick="window.proximoSlideManual()">🔄 Próxima Mensagem</button>
         </div>
     </div>
 
@@ -309,7 +309,7 @@
             <h3>01 // Bloco de Treino Diário (20 Questões UEL)</h3>
         </div>
         <p>Inicialize o ciclo tático diário de resolução ativa:</p>
-        <button class="action-btn btn-success" onclick="carregarBlocoDiario()">Carregar Bloco Diário</button>
+        <button class="action-btn btn-success" onclick="window.carregarBlocoDiario()">Carregar Bloco Diário</button>
         <div id="blockResponse" class="response-box" style="display:none;"></div>
     </div>
 
@@ -321,7 +321,7 @@
         </div>
         <label for="attemptId">ID da Tentativa:</label>
         <input type="text" id="attemptId" value="1">
-        <button class="action-btn" onclick="carregarRecomposicao()" style="background-color: var(--accent-amber); color: #04070d;">Carregar Recomposição</button>
+        <button class="action-btn" onclick="window.carregarRecomposicao()" style="background-color: var(--accent-amber); color: #04070d;">Carregar Recomposição</button>
         <div id="recompositionContentContainer" style="display:none; margin-top: 24px;">
             <div class="content-display">
                 <div id="gapInfo"></div>
@@ -330,7 +330,7 @@
             </div>
             <label for="commandInput">Comando:</label>
             <input type="text" id="commandInput" value="[NEXO_LIDO_E_COMPREENDIDO]">
-            <button class="action-btn btn-success" onclick="enviarAcknowledge()">Validar</button>
+            <button class="action-btn btn-success" onclick="window.enviarAcknowledge()">Validar</button>
         </div>
         <div id="ackResponse" class="response-box" style="display:none;"></div>
     </div>
@@ -342,10 +342,10 @@
             <h3>03 // Simulado Oficial (60 Questões)</h3>
             <span id="timerBadge" class="timer-badge">05:00:00</span>
         </div>
-        <button class="action-btn" onclick="carregarSimulado()" style="background-color: #8b5cf6; color: #fff;">Iniciar Simulado</button>
+        <button class="action-btn" onclick="window.carregarSimulado()" style="background-color: #8b5cf6; color: #fff;">Iniciar Simulado</button>
         <div id="simulatedContainer" style="display:none; margin-top: 24px;">
             <div id="questionBox" class="content-display"></div>
-            <button class="action-btn btn-success" onclick="submeterSimulado()">Submeter</button>
+            <button class="action-btn btn-success" onclick="window.submeterSimulado()">Submeter</button>
         </div>
         <div id="simResponse" class="response-box" style="display:none;"></div>
     </div>
@@ -362,7 +362,7 @@
         <textarea id="proposalContent" rows="2">Explique a fosforilação oxidativa.</textarea>
         <label>Resposta:</label>
         <textarea id="studentAnswer" rows="3">A fosforilação ocorre...</textarea>
-        <button class="action-btn" onclick="enviarDiscursiva()" style="background-color: var(--accent-rose); color: #fff;">Submeter Discursiva</button>
+        <button class="action-btn" onclick="window.enviarDiscursiva()" style="background-color: var(--accent-rose); color: #fff;">Submeter Discursiva</button>
         <div id="discResponse" class="response-box" style="display:none;"></div>
     </div>
 
@@ -380,13 +380,13 @@
 </div>
 
 <script>
-    // --- 1. Gavetas com Escopo Global Robusto ---
-    function toggleTool(drawerId) {
+    // --- 1. Gavetas com Escopo Global ---
+    window.toggleTool = function(drawerId) {
         const drawer = document.getElementById(drawerId);
         if (drawer) {
             drawer.style.display = (drawer.style.display === 'block') ? 'none' : 'block';
         }
-    }
+    };
 
     // --- 2. Relógio Ativo & Google Calendar ---
     function atualizarRelogio() {
@@ -402,11 +402,11 @@
     setInterval(atualizarRelogio, 1000);
     atualizarRelogio();
 
-    function agendarNoGoogleCalendar() {
+    window.agendarNoGoogleCalendar = function() {
         const titulo = encodeURIComponent("Simulado & Bloco de Estudo - Medicina UEL");
         const detalhes = encodeURIComponent("Sessão oficial do Projeto Nexo Sanctuary Master.");
         window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}`, '_blank');
-    }
+    };
 
     // --- 3. Bloco de Notas ---
     let listaNotasGlobal = [];
@@ -416,32 +416,35 @@
             const data = await res.json();
             listaNotasGlobal = data.notes;
             const select = document.getElementById('notesSelect');
-            select.innerHTML = '<option value="">-- Nova Nota --</option>';
-            listaNotasGlobal.forEach(n => {
-                const opt = document.createElement('option');
-                opt.value = n.id;
-                opt.innerText = n.title || `Nota #${n.id}`;
-                select.appendChild(opt);
-            });
+            if (select) {
+                select.innerHTML = '<option value="">-- Nova Nota --</option>';
+                listaNotasGlobal.forEach(n => {
+                    const opt = document.createElement('option');
+                    opt.value = n.id;
+                    opt.innerText = n.title || `Nota #${n.id}`;
+                    select.appendChild(opt);
+                });
+            }
         } catch(e) { console.error(e); }
     }
-    function carregarNotaSelecionada() {
+    window.carregarNotaSelecionada = function() {
         const id = document.getElementById('notesSelect').value;
-        if (!id) { novaNotaForm(); return; }
+        if (!id) { window.novaNotaForm(); return; }
         const nota = listaNotasGlobal.find(n => n.id == id);
         if (nota) {
             document.getElementById('noteId').value = nota.id;
             document.getElementById('noteTitle').value = nota.title;
             document.getElementById('noteContent').value = nota.content;
         }
-    }
-    function novaNotaForm() {
+    };
+    window.novaNotaForm = function() {
         document.getElementById('noteId').value = '';
         document.getElementById('noteTitle').value = '';
         document.getElementById('noteContent').value = '';
-        document.getElementById('notesSelect').value = '';
-    }
-    async function salvarNotaAtual() {
+        const select = document.getElementById('notesSelect');
+        if (select) select.value = '';
+    };
+    window.salvarNotaAtual = async function() {
         const id = document.getElementById('noteId').value;
         const title = document.getElementById('noteTitle').value;
         const content = document.getElementById('noteContent').value;
@@ -457,27 +460,31 @@
         });
         alert('Nota salva com sucesso!');
         carregarNotas();
-    }
-    async function apagarNotaAtual() {
+    };
+    window.apagarNotaAtual = async function() {
         const id = document.getElementById('noteId').value;
         if (!id) { alert('Nenhuma nota selecionada para apagar.'); return; }
         await fetch(`/api/v1/notes/${id}`, { method: 'DELETE' });
         alert('Nota apagada.');
-        novaNotaForm();
+        window.novaNotaForm();
         carregarNotas();
-    }
+    };
 
     // --- 4. Calculadora Científica ---
-    function sciInput(val) {
+    window.sciInput = function(val) {
         const disp = document.getElementById('sciDisplay');
-        if (disp.value === '0' || disp.value === 'Erro') disp.value = '';
-        disp.value += val;
-    }
-    function sciClear() {
-        document.getElementById('sciDisplay').value = '0';
-    }
-    function sciCalculate() {
+        if (disp) {
+            if (disp.value === '0' || disp.value === 'Erro') disp.value = '';
+            disp.value += val;
+        }
+    };
+    window.sciClear = function() {
         const disp = document.getElementById('sciDisplay');
+        if (disp) disp.value = '0';
+    };
+    window.sciCalculate = function() {
+        const disp = document.getElementById('sciDisplay');
+        if (!disp) return;
         try {
             let expr = disp.value
                 .replace(/sin\(/g, 'Math.sin(')
@@ -489,13 +496,13 @@
         } catch(e) {
             disp.value = 'Erro';
         }
-    }
+    };
 
     // --- 5. Rádio Streaming Gospel Internacional ---
     document.addEventListener("DOMContentLoaded", () => {
         const audio = document.getElementById('radio-gospel');
         const streamUrl = 'https://stream.vagalume.fm/hls/1470245767122628/aac.m3u8';
-        if (window.Hls && Hls.isSupported()) {
+        if (audio && window.Hls && Hls.isSupported()) {
             var hls = new Hls();
             hls.loadSource(streamUrl);
             hls.attachMedia(audio);
@@ -517,7 +524,7 @@
         const elementoBox = document.getElementById('biblia-slideshow');
         const elementoTexto = document.getElementById('slide-texto');
         const elementoRef = document.getElementById('slide-ref');
-        if (!elementoBox) return;
+        if (!elementoBox || !elementoTexto || !elementoRef) return;
         
         elementoBox.style.opacity = '0.4';
         setTimeout(() => {
@@ -529,7 +536,7 @@
             indiceAtual = (indiceAtual + 1) % listaVersiculos.length;
         }, 300);
     }
-    function proximoSlideManual() { atualizarSlide(); }
+    window.proximoSlideManual = function() { atualizarSlide(); };
     setInterval(atualizarSlide, 8000);
 
     // --- 7. Telemetria Longitudinal ---
@@ -569,62 +576,4 @@
                         plugins: { legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } } },
                         scales: {
                             x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' } },
-                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' }, suggestedMin: 40, suggestedMax: 100 }
-                        }
-                    }
-                });
-            }
-
-            const statsEl = document.getElementById('telemetryStats');
-            if (statsEl) {
-                statsEl.innerHTML = '';
-                const stats = [
-                    ['Média Geral', data.stats.mean],
-                    ['Máximo', data.stats.max],
-                    ['Corte UEL Est.', data.stats.corte_uel + ' pts'],
-                    ['Projeção Master', data.stats.projection + ' pts']
-                ];
-                stats.forEach(([label, val]) => {
-                    const div = document.createElement('div');
-                    div.style.cssText = 'background:rgba(15,23,42,0.85);border:1px solid var(--border-glow);padding:16px;border-radius:14px;text-align:center;box-shadow:0 0 15px rgba(56,189,248,0.15);';
-                    div.innerHTML = `<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;letter-spacing:1px;">${label}</div><div style="font-size:20px;font-weight:800;color:var(--accent-cyan);margin-top:6px;text-shadow:0 0 10px rgba(56,189,248,0.4);">${val}</div>`;
-                    statsEl.appendChild(div);
-                });
-            }
-        } catch (e) { console.error("Erro ao carregar telemetria:", e); }
-    }
-
-    // --- 8. Bolinha Rebatendo nas Paredes (Sem Texto) ---
-    const ballCanvas = document.getElementById('ballCanvas');
-    const ballCtx = ballCanvas.getContext('2d');
-    let bx = 100, by = 65, bdx = 3, bdy = 2.2, br = 8;
-    function animarBolinha() {
-        ballCtx.clearRect(0, 0, ballCanvas.width, ballCanvas.height);
-        ballCtx.beginPath();
-        ballCtx.arc(bx, by, br, 0, Math.PI * 2);
-        ballCtx.fillStyle = '#38bdf8';
-        ballCtx.shadowColor = '#38bdf8';
-        ballCtx.shadowBlur = 12;
-        ballCtx.fill();
-        ballCtx.closePath();
-        ballCtx.shadowBlur = 0;
-
-        bx += bdx;
-        by += bdy;
-
-        if (bx + br > ballCanvas.width || bx - br < 0) bdx = -bdx;
-        if (by + br > ballCanvas.height || by - br < 0) bdy = -bdy;
-    }
-    setInterval(animarBolinha, 25);
-
-    // --- Inicialização Automática ---
-    document.addEventListener('DOMContentLoaded', () => {
-        carregarNotas();
-        carregarTelemetria();
-        atualizarSlide();
-    });
-
-    async function carregarBlocoDiario() {
-        const box = document.getElementById('blockResponse');
-        box.style.display = 'block';
-        const res = await fetch('/api/v1/blocks/daily');
+                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)'
