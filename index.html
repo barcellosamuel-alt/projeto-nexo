@@ -55,10 +55,7 @@
         header.hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 3px;
+            top: 0; left: -100%; width: 100%; height: 3px;
             background: linear-gradient(90deg, transparent, var(--accent-cyan), #ffffff, transparent);
             animation: cometMove 4s linear infinite;
         }
@@ -205,33 +202,33 @@
         <div class="clock-widget">
             <div class="clock-time" id="liveClock">00:00:00</div>
             <div class="clock-date" id="liveDate">A carregar data...</div>
-            <button class="calendar-sync-btn" id="btnGoogleCalendar" type="button">📅 Agendar no Google Calendar</button>
+            <button class="calendar-sync-btn" onclick="window.agendarNoGoogleCalendar()">📅 Agendar no Google Calendar</button>
         </div>
     </div>
 
     <!-- Barra de Ferramentas -->
     <div class="tools-bar">
-        <button class="tool-btn" id="btnToolNotes" type="button">📝 Bloco de Notas</button>
-        <button class="tool-btn" id="btnToolCalc" type="button">🧮 Calculadora Científica</button>
-        <button class="tool-btn" id="btnToolRadio" type="button">📻 Streaming Gospel Internacional</button>
-        <button class="tool-btn" id="btnToolQuote" type="button">✝️ Cantinho da Clareza</button>
+        <button class="tool-btn" onclick="window.toggleTool('notesDrawer')">📝 Bloco de Notas</button>
+        <button class="tool-btn" onclick="window.toggleTool('calcDrawer')">🧮 Calculadora Científica</button>
+        <button class="tool-btn" onclick="window.toggleTool('radioDrawer')">📻 Streaming Gospel Internacional</button>
+        <button class="tool-btn" onclick="window.toggleTool('quoteDrawer')">✝️ Cantinho da Clareza</button>
     </div>
 
     <!-- Notas -->
     <div id="notesDrawer" class="aux-drawer">
         <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 16px;">📝 Gerenciador de Notas Acadêmicas</strong>
         <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-            <select id="notesSelect">
+            <select id="notesSelect" onchange="window.carregarNotaSelecionada()">
                 <option value="">-- Nova Nota --</option>
             </select>
-            <button class="action-btn" id="btnNewNote" type="button" style="margin:0; padding:10px 16px; background:var(--accent-emerald); color:#04070d;">Novo</button>
+            <button class="action-btn" onclick="window.novaNotaForm()" style="margin:0; padding:10px 16px; background:var(--accent-emerald); color:#04070d;">Novo</button>
         </div>
         <input type="hidden" id="noteId">
         <input type="text" id="noteTitle" placeholder="Título da nota / Matéria" style="margin-top:0;">
         <textarea id="noteContent" rows="5" placeholder="Escreva suas anotações estratégicas..." style="margin-top:12px;"></textarea>
         <div style="display: flex; gap: 10px; margin-top: 14px;">
-            <button class="action-btn btn-success" id="btnSaveNote" type="button" style="margin:0; flex:1;">💾 Salvar / Atualizar</button>
-            <button class="action-btn" id="btnDeleteNote" type="button" style="margin:0; background:var(--accent-rose); color:#fff; flex:1;">🗑️ Apagar</button>
+            <button class="action-btn btn-success" onclick="window.salvarNotaAtual()" style="margin:0; flex:1;">💾 Salvar / Atualizar</button>
+            <button class="action-btn" onclick="window.apagarNotaAtual()" style="margin:0; background:var(--accent-rose); color:#fff; flex:1;">🗑️ Apagar</button>
         </div>
     </div>
 
@@ -241,34 +238,34 @@
         <div class="sci-calc-container">
             <input type="text" id="sciDisplay" class="sci-display" value="0" readonly>
             <div class="sci-grid">
-                <button class="sci-btn" type="button" onclick="window.sciInput('sin(')">sin</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('cos(')">cos</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('tan(')">tan</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('sqrt(')">√</button>
-                <button class="sci-btn" type="button" onclick="window.sciClear()">AC</button>
+                <button class="sci-btn" onclick="window.sciInput('sin(')">sin</button>
+                <button class="sci-btn" onclick="window.sciInput('cos(')">cos</button>
+                <button class="sci-btn" onclick="window.sciInput('tan(')">tan</button>
+                <button class="sci-btn" onclick="window.sciInput('sqrt(')">√</button>
+                <button class="sci-btn" onclick="window.sciClear()">AC</button>
 
-                <button class="sci-btn" type="button" onclick="window.sciInput('7')">7</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('8')">8</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('9')">9</button>
-                <button class="sci-btn op" type="button" onclick="window.sciInput('/')">÷</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('(')">(</button>
+                <button class="sci-btn" onclick="window.sciInput('7')">7</button>
+                <button class="sci-btn" onclick="window.sciInput('8')">8</button>
+                <button class="sci-btn" onclick="window.sciInput('9')">9</button>
+                <button class="sci-btn op" onclick="window.sciInput('/')">÷</button>
+                <button class="sci-btn" onclick="window.sciInput('(')">(</button>
 
-                <button class="sci-btn" type="button" onclick="window.sciInput('4')">4</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('5')">5</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('6')">6</button>
-                <button class="sci-btn op" type="button" onclick="window.sciInput('*')">×</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput(')')">)</button>
+                <button class="sci-btn" onclick="window.sciInput('4')">4</button>
+                <button class="sci-btn" onclick="window.sciInput('5')">5</button>
+                <button class="sci-btn" onclick="window.sciInput('6')">6</button>
+                <button class="sci-btn op" onclick="window.sciInput('*')">×</button>
+                <button class="sci-btn" onclick="window.sciInput(')')">)</button>
 
-                <button class="sci-btn" type="button" onclick="window.sciInput('1')">1</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('2')">2</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('3')">3</button>
-                <button class="sci-btn op" type="button" onclick="window.sciInput('-')">-</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('pi')">π</button>
+                <button class="sci-btn" onclick="window.sciInput('1')">1</button>
+                <button class="sci-btn" onclick="window.sciInput('2')">2</button>
+                <button class="sci-btn" onclick="window.sciInput('3')">3</button>
+                <button class="sci-btn op" onclick="window.sciInput('-')">-</button>
+                <button class="sci-btn" onclick="window.sciInput('pi')">π</button>
 
-                <button class="sci-btn" type="button" onclick="window.sciInput('0')">0</button>
-                <button class="sci-btn" type="button" onclick="window.sciInput('.')">.</button>
-                <button class="sci-btn op" type="button" onclick="window.sciInput('+')">+</button>
-                <button class="sci-btn eq" type="button" onclick="window.sciCalculate()">=</button>
+                <button class="sci-btn" onclick="window.sciInput('0')">0</button>
+                <button class="sci-btn" onclick="window.sciInput('.')">.</button>
+                <button class="sci-btn op" onclick="window.sciInput('+')">+</button>
+                <button class="sci-btn eq" onclick="window.sciCalculate()">=</button>
             </div>
         </div>
     </div>
@@ -298,7 +295,7 @@
             </div>
         </div>
         <div style="text-align: center; margin-top: 15px;">
-            <button class="action-btn" id="btnNextQuote" type="button">🔄 Próxima Mensagem</button>
+            <button class="action-btn" onclick="window.proximoSlideManual()">🔄 Próxima Mensagem</button>
         </div>
     </div>
 
@@ -309,7 +306,7 @@
             <h3>01 // Bloco de Treino Diário (20 Questões UEL)</h3>
         </div>
         <p>Inicialize o ciclo tático diário de resolução ativa:</p>
-        <button class="action-btn btn-success" id="btnLoadDailyBlock" type="button">Carregar Bloco Diário</button>
+        <button class="action-btn btn-success" onclick="window.carregarBlocoDiario()">Carregar Bloco Diário</button>
         <div id="blockResponse" class="response-box" style="display:none;"></div>
     </div>
 
@@ -321,7 +318,7 @@
         </div>
         <label for="attemptId">ID da Tentativa:</label>
         <input type="text" id="attemptId" value="1">
-        <button class="action-btn" id="btnLoadRecomp" type="button" style="background-color: var(--accent-amber); color: #04070d;">Carregar Recomposição</button>
+        <button class="action-btn" onclick="window.carregarRecomposicao()" style="background-color: var(--accent-amber); color: #04070d;">Carregar Recomposição</button>
         <div id="recompositionContentContainer" style="display:none; margin-top: 24px;">
             <div class="content-display">
                 <div id="gapInfo"></div>
@@ -330,7 +327,7 @@
             </div>
             <label for="commandInput">Comando:</label>
             <input type="text" id="commandInput" value="[NEXO_LIDO_E_COMPREENDIDO]">
-            <button class="action-btn btn-success" id="btnValidateRecomp" type="button">Validar</button>
+            <button class="action-btn btn-success" onclick="window.enviarAcknowledge()">Validar</button>
         </div>
         <div id="ackResponse" class="response-box" style="display:none;"></div>
     </div>
@@ -342,10 +339,10 @@
             <h3>03 // Simulado Oficial (60 Questões)</h3>
             <span id="timerBadge" class="timer-badge">05:00:00</span>
         </div>
-        <button class="action-btn" id="btnStartSim" type="button" style="background-color: #8b5cf6; color: #fff;">Iniciar Simulado</button>
+        <button class="action-btn" onclick="window.carregarSimulado()" style="background-color: #8b5cf6; color: #fff;">Iniciar Simulado</button>
         <div id="simulatedContainer" style="display:none; margin-top: 24px;">
             <div id="questionBox" class="content-display"></div>
-            <button class="action-btn btn-success" id="btnSubmitSim" type="button">Submeter</button>
+            <button class="action-btn btn-success" onclick="window.submeterSimulado()">Submeter</button>
         </div>
         <div id="simResponse" class="response-box" style="display:none;"></div>
     </div>
@@ -359,10 +356,10 @@
         <label>Título:</label>
         <input type="text" id="examTitle" value="Simulado Discursivo">
         <label>Proposta:</label>
-        <textarea id="proposalContent" rows="2">Explique a fosforilação oxidativa.</textarea>
+        <textarea id="proposalContent" rows="2">Explique detalhadamente a fosforilação oxidativa.</textarea>
         <label>Resposta:</label>
-        <textarea id="studentAnswer" rows="3">A fosforilação ocorre...</textarea>
-        <button class="action-btn" id="btnSubmitDisc" type="button" style="background-color: var(--accent-rose); color: #fff;">Submeter Discursiva</button>
+        <textarea id="studentAnswer" rows="3">A fosforilação oxidativa ocorre nas cristas mitocondriais...</textarea>
+        <button class="action-btn" onclick="window.enviarDiscursiva()" style="background-color: var(--accent-rose); color: #fff;">Submeter Discursiva</button>
         <div id="discResponse" class="response-box" style="display:none;"></div>
     </div>
 
@@ -380,84 +377,436 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // --- 1. Gavetas e Ferramentas Globais ---
-        window.toggleTool = function(drawerId) {
-            const drawer = document.getElementById(drawerId);
-            if (drawer) {
-                drawer.style.display = (drawer.style.display === 'block') ? 'none' : 'block';
+    // --- 1. Gavetas e Ferramentas Globais ---
+    window.toggleTool = function(drawerId) {
+        const drawer = document.getElementById(drawerId);
+        if (drawer) {
+            drawer.style.display = (drawer.style.display === 'block') ? 'none' : 'block';
+        }
+    };
+
+    // --- 2. Relógio Ativo & Google Calendar ---
+    function atualizarRelogio() {
+        const agora = new Date();
+        const timeEl = document.getElementById('liveClock');
+        const dateEl = document.getElementById('liveDate');
+        if (timeEl) timeEl.innerText = agora.toLocaleTimeString('pt-BR');
+        if (dateEl) {
+            const opcoes = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+            dateEl.innerText = agora.toLocaleDateString('pt-BR', opcoes);
+        }
+    }
+    setInterval(atualizarRelogio, 1000);
+    atualizarRelogio();
+
+    window.agendarNoGoogleCalendar = function() {
+        const titulo = encodeURIComponent("Simulado & Bloco de Estudo - Medicina UEL");
+        const detalhes = encodeURIComponent("Sessão oficial do Projeto Nexo Sanctuary Master.");
+        window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}`, '_blank');
+    };
+
+    // --- 3. Bloco de Notas ---
+    let listaNotasGlobal = [];
+    async function carregarNotas() {
+        try {
+            const res = await fetch('/api/v1/notes');
+            const data = await res.json();
+            listaNotasGlobal = data.notes || [];
+            const select = document.getElementById('notesSelect');
+            if (select) {
+                select.innerHTML = '<option value="">-- Nova Nota --</option>';
+                listaNotasGlobal.forEach(n => {
+                    const opt = document.createElement('option');
+                    opt.value = n.id;
+                    opt.innerText = n.title || `Nota #${n.id}`;
+                    select.appendChild(opt);
+                });
             }
-        };
+        } catch(e) { console.error('Erro ao carregar notas:', e); }
+    }
+    window.carregarNotaSelecionada = function() {
+        const id = document.getElementById('notesSelect').value;
+        if (!id) { window.novaNotaForm(); return; }
+        const nota = listaNotasGlobal.find(n => n.id == id);
+        if (nota) {
+            document.getElementById('noteId').value = nota.id;
+            document.getElementById('noteTitle').value = nota.title;
+            document.getElementById('noteContent').value = nota.content;
+        }
+    };
+    window.novaNotaForm = function() {
+        document.getElementById('noteId').value = '';
+        document.getElementById('noteTitle').value = '';
+        document.getElementById('noteContent').value = '';
+        const select = document.getElementById('notesSelect');
+        if (select) select.value = '';
+    };
+    window.salvarNotaAtual = async function() {
+        const id = document.getElementById('noteId').value;
+        const title = document.getElementById('noteTitle').value;
+        const content = document.getElementById('noteContent').value;
+        if (!content) { alert('Escreva algum conteúdo na nota.'); return; }
+        
+        const payload = { title, content };
+        if (id) payload.id = parseInt(id);
 
-        const btnNotes = document.getElementById('btnToolNotes');
-        const btnCalc = document.getElementById('btnToolCalc');
-        const btnRadio = document.getElementById('btnToolRadio');
-        const btnQuote = document.getElementById('btnToolQuote');
+        await fetch('/api/v1/notes', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        alert('Nota salva com sucesso!');
+        carregarNotas();
+    };
+    window.apagarNotaAtual = async function() {
+        const id = document.getElementById('noteId').value;
+        if (!id) { alert('Nenhuma nota selecionada para apagar.'); return; }
+        await fetch(`/api/v1/notes/${id}`, { method: 'DELETE' });
+        alert('Nota apagada.');
+        window.novaNotaForm();
+        carregarNotas();
+    };
+    carregarNotas();
 
-        if (btnNotes) btnNotes.addEventListener('click', () => window.toggleTool('notesDrawer'));
-        if (btnCalc) btnCalc.addEventListener('click', () => window.toggleTool('calcDrawer'));
-        if (btnRadio) btnRadio.addEventListener('click', () => window.toggleTool('radioDrawer'));
-        if (btnQuote) btnQuote.addEventListener('click', () => window.toggleTool('quoteDrawer'));
+    // --- 4. Calculadora Científica ---
+    window.sciInput = function(val) {
+        const disp = document.getElementById('sciDisplay');
+        if (disp) {
+            if (disp.value === '0' || disp.value === 'Erro') disp.value = '';
+            disp.value += val;
+        }
+    };
+    window.sciClear = function() {
+        const disp = document.getElementById('sciDisplay');
+        if (disp) disp.value = '0';
+    };
+    window.sciCalculate = function() {
+        const disp = document.getElementById('sciDisplay');
+        if (!disp) return;
+        try {
+            let expr = disp.value
+                .replace(/sin\(/g, 'Math.sin(')
+                .replace(/cos\(/g, 'Math.cos(')
+                .replace(/tan\(/g, 'Math.tan(')
+                .replace(/sqrt\(/g, 'Math.sqrt(')
+                .replace(/pi/g, 'Math.PI');
+            disp.value = Function('"use strict";return (' + expr + ')')();
+        } catch(e) {
+            disp.value = 'Erro';
+        }
+    };
 
-        // --- 2. Relógio Ativo & Google Calendar ---
-        function atualizarRelogio() {
-            const agora = new Date();
-            const timeEl = document.getElementById('liveClock');
-            const dateEl = document.getElementById('liveDate');
-            if (timeEl) timeEl.innerText = agora.toLocaleTimeString('pt-BR');
-            if (dateEl) {
-                const opcoes = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
-                dateEl.innerText = agora.toLocaleDateString('pt-BR', opcoes);
+    // --- 5. Rádio Streaming Gospel Internacional ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const audio = document.getElementById('radio-gospel');
+        const streamUrl = 'https://stream.vagalume.fm/hls/1470245767122628/aac.m3u8';
+        if (audio) {
+            if (window.Hls && Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(audio);
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    console.warn('HLS warning:', data);
+                });
+            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                audio.src = streamUrl;
             }
         }
-        setInterval(atualizarRelogio, 1000);
-        atualizarRelogio();
+    });
 
-        const btnCalendar = document.getElementById('btnGoogleCalendar');
-        if (btnCalendar) {
-            btnCalendar.addEventListener('click', () => {
-                const titulo = encodeURIComponent("Simulado & Bloco de Estudo - Medicina UEL");
-                const detalhes = encodeURIComponent("Sessão oficial do Projeto Nexo Sanctuary Master.");
-                window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}`, '_blank');
-            });
-        }
+    // --- 6. Cantinho da Clareza ---
+    const listaVersiculos = [
+        { texto: "O Senhor é o meu pastor; nada me faltará.", referencia: "Salmos 23:1", imagem: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e" },
+        { texto: "Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.", referencia: "Salmos 119:105", imagem: "https://images.unsplash.com/photo-1519681393784-d120267933ba" },
+        { texto: "Tudo posso naquele que me fortalece.", referencia: "Filipenses 4:13", imagem: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05" },
+        { texto: "Confie no Senhor de todo o seu coração e não se apoie em sua própria inteligência.", referencia: "Provérbios 3:5", imagem: "https://images.unsplash.com/photo-1506744038136-46273834b3fb" },
+        { texto: "Ainda que eu caminhe pelo vale da sombra da morte, não temerei mal nenhum, pois tu estás comigo.", referencia: "Salmos 23:4", imagem: "https://images.unsplash.com/photo-1426604966848-d7adac902bff" }
+    ];
 
-        // --- 3. Bloco de Notas ---
-        let listaNotasGlobal = [];
-        async function carregarNotas() {
-            try {
-                const res = await fetch('/api/v1/notes');
-                const data = await res.json();
-                listaNotasGlobal = data.notes || [];
-                const select = document.getElementById('notesSelect');
-                if (select) {
-                    select.innerHTML = '<option value="">-- Nova Nota --</option>';
-                    listaNotasGlobal.forEach(n => {
-                        const opt = document.createElement('option');
-                        opt.value = n.id;
-                        opt.innerText = n.title || `Nota #${n.id}`;
-                        select.appendChild(opt);
-                    });
+    listaVersiculos.forEach(item => {
+        const img = new Image();
+        img.src = item.imagem;
+    });
+
+    let indiceAtual = 0;
+    function atualizarSlide() {
+        const elementoBox = document.getElementById('biblia-slideshow');
+        const elementoTexto = document.getElementById('slide-texto');
+        const elementoRef = document.getElementById('slide-ref');
+        if (!elementoBox || !elementoTexto || !elementoRef) return;
+        
+        elementoBox.style.opacity = '0.2';
+        setTimeout(() => {
+            const atual = listaVersiculos[indiceAtual];
+            elementoBox.style.backgroundImage = `url('${atual.imagem}')`;
+            elementoTexto.innerText = `"${atual.texto}"`;
+            elementoRef.innerText = `- ${atual.referencia}`;
+            elementoBox.style.opacity = '1';
+            indiceAtual = (indiceAtual + 1) % listaVersiculos.length;
+        }, 350);
+    }
+    window.proximoSlideManual = function() { atualizarSlide(); };
+    setInterval(atualizarSlide, 7500);
+    document.addEventListener("DOMContentLoaded", atualizarSlide);
+
+    // --- 7. Bolinha Rebatendo (Garantida e Visível) ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const canvas = document.getElementById('ballCanvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let x = 100, y = 65, dx = 2.5, dy = 2.0, radius = 9;
+            let mouseX = 100, mouseY = 65;
+            let audioCtx = null;
+
+            function initAudio() {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 }
-            } catch(e) { console.error('Erro ao carregar notas:', e); }
-        }
+            }
 
-        const notesSelect = document.getElementById('notesSelect');
-        if (notesSelect) {
-            notesSelect.addEventListener('change', () => {
-                const id = notesSelect.value;
-                if (!id) { window.novaNotaForm(); return; }
-                const nota = listaNotasGlobal.find(n => n.id == id);
-                if (nota) {
-                    document.getElementById('noteId').value = nota.id;
-                    document.getElementById('noteTitle').value = nota.title;
-                    document.getElementById('noteContent').value = nota.content;
-                }
+            function playBeep(freq = 440) {
+                try {
+                    initAudio();
+                    if (audioCtx && audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    if (!audioCtx) return;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.1);
+                } catch(e) {}
+            }
+
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
             });
-        }
 
-        window.novaNotaForm = function() {
-            document.getElementById('noteId').value = '';
-            document.getElementById('noteTitle').value = '';
-            document.getElementById('noteContent').value = '';
-            const select = document.getElementById('
+            canvas.addEventListener('click', () => {
+                initAudio();
+            });
+
+            function desenharBolinha() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const distX = mouseX - x;
+                const distY = mouseY - y;
+                const dist = Math.sqrt(distX * distX + distY * distY);
+                if (dist < 60 && dist > 5) {
+                    dx += (distX / dist) * 0.06;
+                    dy += (distY / dist) * 0.06;
+                }
+
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#38bdf8';
+                ctx.shadowColor = '#38bdf8';
+                ctx.shadowBlur = 18;
+                ctx.fill();
+                ctx.closePath();
+
+                if (x + dx > canvas.width - radius) {
+                    dx = -dx;
+                    x = canvas.width - radius;
+                    playBeep(520);
+                } else if (x + dx < radius) {
+                    dx = -dx;
+                    x = radius;
+                    playBeep(420);
+                }
+
+                if (y + dy > canvas.height - radius) {
+                    dy = -dy;
+                    y = canvas.height - radius;
+                    playBeep(600);
+                } else if (y + dy < radius) {
+                    dy = -dy;
+                    y = radius;
+                    playBeep(480);
+                }
+
+                x += dx;
+                y += dy;
+                requestAnimationFrame(desenharBolinha);
+            }
+            desenharBolinha();
+        }
+    });
+
+    // --- 8. Telemetria Longitudinal (Quadro 05) ---
+    let telemetryChart = null;
+    async function carregarTelemetria() {
+        try {
+            const res = await fetch('/api/v1/telemetry');
+            const data = await res.json();
+            const labels = data.telemetry.map(t => t.label);
+            const scores = data.telemetry.map(t => t.score);
+            labels.push('Projeção UEL');
+            scores.push(data.stats.projection);
+
+            const canvasEl = document.getElementById('longitudinalChart');
+            if (canvasEl) {
+                if (telemetryChart) telemetryChart.destroy();
+                telemetryChart = new Chart(canvasEl.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Desempenho Real vs Projeção UEL (Pts)',
+                            data: scores,
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.35,
+                            pointBackgroundColor: '#38bdf8',
+                            pointBorderColor: '#ffffff',
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } } },
+                        scales: {
+                            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' } },
+                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(56, 189, 248, 0.08)' } }
+                        }
+                    }
+                });
+            }
+
+            const statsContainer = document.getElementById('telemetryStats');
+            if (statsContainer && data.stats) {
+                statsContainer.innerHTML = `
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">SIMULADOS</span>
+                        <strong style="font-size:20px; color:var(--accent-cyan); font-family:'JetBrains Mono';">${data.stats.count}</strong>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">MÉDIA ATUAL</span>
+                        <strong style="font-size:20px; color:var(--accent-emerald); font-family:'JetBrains Mono';">${data.stats.mean}</strong>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">PROJEÇÃO UEL</span>
+                        <strong style="font-size:20px; color:#a855f7; font-family:'JetBrains Mono';">${data.stats.projection}</strong>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-glow); padding:16px; border-radius:14px; text-align:center;">
+                        <span style="font-size:11px; color:var(--text-muted); display:block; font-weight:700;">CORTE HISTÓRICO</span>
+                        <strong style="font-size:20px; color:var(--accent-rose); font-family:'JetBrains Mono';">${data.stats.corte_uel}</strong>
+                    </div>
+                `;
+            }
+        } catch (e) {
+            console.error('Erro ao carregar telemetria:', e);
+        }
+    }
+    carregarTelemetria();
+
+    // --- 9. Ações dos Quadros Principais (01 a 04) ---
+    window.carregarBlocoDiario = async function() {
+        const box = document.getElementById('blockResponse');
+        box.style.display = 'block';
+        box.innerText = 'A carregar bloco diário...';
+        try {
+            const res = await fetch('/api/v1/blocks/daily');
+            const data = await res.json();
+            box.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            box.innerText = 'Erro ao carregar bloco diário.';
+        }
+    };
+
+    window.carregarRecomposicao = async function() {
+        const attemptId = document.getElementById('attemptId').value || 1;
+        try {
+            const res = await fetch(`/api/v1/recompositions/${attemptId}`);
+            const data = await res.json();
+            document.getElementById('gapInfo').innerHTML = `<strong style="color:var(--accent-amber);">Lacuna:</strong> ${data.learning_gap}`;
+            document.getElementById('microRevisaoInfo').innerHTML = `<strong style="color:var(--accent-cyan);">Micro-Revisão:</strong> ${data.micro_revisao}`;
+            document.getElementById('exercicioInfo').innerHTML = `<strong style="color:var(--accent-emerald);">Validação:</strong> ${data.exercicio_validacao}`;
+            document.getElementById('recompositionContentContainer').style.display = 'block';
+        } catch(e) {
+            alert('Erro ao carregar recomposição.');
+        }
+    };
+
+    window.enviarAcknowledge = async function() {
+        const attemptId = document.getElementById('attemptId').value || 1;
+        const command = document.getElementById('commandInput').value;
+        const box = document.getElementById('ackResponse');
+        box.style.display = 'block';
+        try {
+            const res = await fetch(`/api/v1/recompositions/${attemptId}/acknowledge`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ command })
+            });
+            const data = await res.json();
+            box.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            box.innerText = 'Erro ao enviar confirmação.';
+        }
+    };
+
+    window.carregarSimulado = async function() {
+        const container = document.getElementById('simulatedContainer');
+        const qBox = document.getElementById('questionBox');
+        container.style.display = 'block';
+        qBox.innerText = 'A carregar simulado oficial...';
+        try {
+            const res = await fetch('/api/v1/simulated/full');
+            const data = await res.json();
+            qBox.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            qBox.innerText = 'Erro ao carregar simulado.';
+        }
+    };
+
+    window.submeterSimulado = async function() {
+        const box = document.getElementById('simResponse');
+        box.style.display = 'block';
+        box.innerText = 'A submeter simulado...';
+        try {
+            const res = await fetch('/api/v1/simulated/submit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ answers: { 1: "C", 2: "A" } })
+            });
+            const data = await res.json();
+            box.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            box.innerText = 'Erro ao submeter simulado.';
+        }
+    };
+
+    window.enviarDiscursiva = async function() {
+        const title = document.getElementById('examTitle').value;
+        const proposal_content = document.getElementById('proposalContent').value;
+        const student_answer = document.getElementById('studentAnswer').value;
+        const box = document.getElementById('discResponse');
+        box.style.display = 'block';
+        box.innerText = 'A auditar resposta discursiva...';
+        try {
+            const res = await fetch('/api/v1/discursive/submit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ title, proposal_content, student_answer })
+            });
+            const data = await res.json();
+            box.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+            box.innerText = 'Erro ao submeter discursiva.';
+        }
+    };
+</script>
+</body>
+</html>
