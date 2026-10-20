@@ -12,8 +12,8 @@ load_dotenv()
 
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
-    description="API Longitudinal de Alta Performance para Preparação Medicina UEL — Python 3",
-    version="6.8.0"
+    description="API Longitudinal de Alta Performance para Preparação Acadêmica Avançada",
+    version="8.1.0"
 )
 
 app.add_middleware(
@@ -33,7 +33,7 @@ def _load_local_db() -> Dict[str, Any]:
                 return json.load(f)
         except Exception:
             pass
-    return {"notes": [], "telemetry": []}
+    return {"notes": [], "errors": [], "telemetry": []}
 
 def _save_local_db(data: Dict[str, Any]) -> None:
     with open(LOCAL_DB, "w", encoding="utf-8") as f:
@@ -97,7 +97,7 @@ def save_note(payload: NotePayload):
                 return {"status": "updated", "note": n}
     
     new_note = {
-        "id": len(notes) + 1 if not notes else max(n["id"] for n in notes) + 1,
+        "id": len(notes) + 1,
         "title": payload.title,
         "content": payload.content,
         "category": payload.category,
@@ -113,11 +113,35 @@ def delete_note(note_id: int):
     db = _load_local_db()
     notes = db.get("notes", [])
     filtered = [n for n in notes if n["id"] != note_id]
-    if len(filtered) == len(notes):
-        raise HTTPException(status_code=404, detail="Nota não encontrada.")
     db["notes"] = filtered
     _save_local_db(db)
     return {"status": "deleted", "id": note_id}
+
+class ErrorPayload(BaseModel):
+    disciplina: str
+    topico: str
+    motivo: str
+
+@app.get("/api/v1/errors")
+def list_errors():
+    db = _load_local_db()
+    return {"errors": db.get("errors", [])}
+
+@app.post("/api/v1/errors")
+def add_error(payload: ErrorPayload):
+    db = _load_local_db()
+    errors = db.get("errors", [])
+    item = {
+        "id": len(errors) + 1,
+        "disciplina": payload.disciplina,
+        "topico": payload.topico,
+        "motivo": payload.motivo,
+        "date": datetime.datetime.utcnow().isoformat()[:10]
+    }
+    errors.append(item)
+    db["errors"] = errors
+    _save_local_db(db)
+    return {"status": "added", "error": item}
 
 @app.get("/api/v1/telemetry")
 def get_telemetry():
@@ -125,11 +149,11 @@ def get_telemetry():
     telemetry = db.get("telemetry", [])
     if not telemetry:
         telemetry = [
-            {"label": "Sim 1", "score": 49.5},
-            {"label": "Sim 2", "score": 57.0},
-            {"label": "Sim 3", "score": 63.5},
-            {"label": "Sim 4", "score": 70.0},
-            {"label": "Sim 5 (Atual)", "score": 76.5}
+            {"label": "Sim 1", "score": 48.0},
+            {"label": "Sim 2", "score": 55.5},
+            {"label": "Sim 3", "score": 62.0},
+            {"label": "Sim 4", "score": 68.5},
+            {"label": "Sim 5 (Atual)", "score": 74.0}
         ]
         db["telemetry"] = telemetry
         _save_local_db(db)
@@ -140,30 +164,22 @@ def get_telemetry():
         "mean": round(sum(scores) / len(scores), 2) if scores else 0,
         "min": min(scores) if scores else 0,
         "max": max(scores) if scores else 0,
-        "projection": 86.0,
-        "corte_uel": 78.0
+        "projection": 84.5,
+        "corte_alvo": 78.0
     }
     return {"telemetry": telemetry, "stats": stats}
 
 @app.get("/api/v1/blocks/daily")
 def get_daily_block():
-    return {
-        "total_questions": 20,
-        "discipline": "Biologia / Química / Física (Foco Medicina UEL)",
-        "status": "ready",
-        "questoes": [
-            {"id": 1, "enunciado": "Questão 1: Sobre citoesqueleto e transporte axonal...", "gabarito": "Letra C"},
-            {"id": 2, "enunciado": "Questão 2: Termoquímica aplicada a ciclos metabólicos...", "gabarito": "Letra A"}
-        ]
-    }
+    return {"total_questions": 20, "discipline": "Biologia / Química / Física", "status": "ready"}
 
 @app.get("/api/v1/recompositions/{attempt_id}")
 def get_recomposition(attempt_id: int):
     return {
         "attempt_id": attempt_id,
         "discipline": "Biologia Celular",
-        "learning_gap": "Dificuldade na fosforilação oxidativa e rendimento de ATP nas cristas mitocondriais.",
-        "micro_revisao": "A cadeia transportadora de elétrons localiza-se nas cristas mitocondriais, gerando gradiente de prótons.",
+        "learning_gap": "Dificuldade na fosforilação oxidativa e rendimento de ATP.",
+        "micro_revisao": "A cadeia transportadora localiza-se nas cristas mitocondriais.",
         "exercicio_validacao": "Qual o papel direto da ATP sintase no gradiente eletroquímico?"
     }
 
@@ -172,24 +188,18 @@ class AcknowledgePayload(BaseModel):
 
 @app.post("/api/v1/recompositions/{attempt_id}/acknowledge")
 def acknowledge_recomposition(attempt_id: int, payload: AcknowledgePayload):
-    return {"status": "success", "command_received": payload.command, "mensagem": "Recomposição assimilada com sucesso."}
+    return {"status": "success", "command_received": payload.command}
 
 @app.get("/api/v1/simulated/full")
 def get_full_simulated():
-    return {
-        "total_questions": 60,
-        "questions": [
-            {"id": 1, "discipline": "Biologia", "enunciado": "Explique detalhadamente a fosforilação oxidativa e o balanço energético."},
-            {"id": 2, "discipline": "Química", "enunciado": "Determine a constante de equilíbrio para o sistema gasoso em condições fisiológicas."}
-        ]
-    }
+    return {"total_questions": 1, "questions": [{"id": 1, "discipline": "Biologia", "enunciado": "Explique a fosforilação oxidativa."}]}
 
 class SimulatedSubmitPayload(BaseModel):
     answers: Dict[str, Any]
 
 @app.post("/api/v1/simulated/submit")
 def submit_simulated(payload: SimulatedSubmitPayload):
-    return {"status": "evaluated", "score_estimated": 82.5, "mensagem": "Simulado avaliado com sucesso perante os critérios COPS-UEL."}
+    return {"status": "evaluated", "score_estimated": 81.5}
 
 class DiscursiveSubmitPayload(BaseModel):
     title: str
@@ -198,7 +208,7 @@ class DiscursiveSubmitPayload(BaseModel):
 
 @app.post("/api/v1/discursive/submit")
 def submit_discursive(payload: DiscursiveSubmitPayload):
-    return {"status": "audited", "estimated_score": 9.2, "feedback": "Excelente fundamentação teórica e clareza na argumentação discursiva."}
+    return {"status": "audited", "estimated_score": 9.0}
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
