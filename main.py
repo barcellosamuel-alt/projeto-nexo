@@ -17,7 +17,7 @@ load_dotenv()
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
     description="API Longitudinal de Alta Performance para Preparação Acadêmica Avançada",
-    version="11.0.0"
+    version="12.0.0"
 )
 
 app.add_middleware(
@@ -108,30 +108,19 @@ class AIChatPayload(BaseModel):
 @app.post("/api/v1/ai/chat")
 def chat_with_gemini(payload: AIChatPayload):
     if not gemini_client:
-        raise HTTPException(status_code=500, detail="Gemini client não inicializado. Verifique a chave GEMINI_API_KEY no Render.")
+        raise HTTPException(status_code=500, detail="Gemini client não inicializado.")
     try:
         response = gemini_client.models.generate_content(
             model='gemini-2.5-flash',
             contents=payload.prompt,
             config=types.GenerateContentConfig(
-                system_instruction="Você é o tutor pedagógico inteligente do Projeto Nexo, especializado em auxiliar estudantes de alta performance em questões complexas de exatas e biológicas.",
+                system_instruction="Você é o tutor pedagógico inteligente do Projeto Nexo.",
                 temperature=0.3,
             ),
         )
         return {"status": "success", "response": response.text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-CONTEUDOS_CLAREZA = [
-    {"texto": "O Senhor é o meu pastor; nada me faltará.", "referencia": "Salmos 23:1", "imagem": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"},
-    {"texto": "Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.", "referencia": "Salmos 119:105", "imagem": "https://images.unsplash.com/photo-1519681393784-d120267933ba"},
-    {"texto": "Tudo posso naquele que me fortalece.", "referencia": "Filipenses 4:13", "imagem": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05"},
-    {"texto": "Confie no Senhor de todo o seu coração e não se apoie em sua própria inteligência.", "referencia": "Provérbios 3:5", "imagem": "https://images.unsplash.com/photo-1506744038136-46273834b3fb"},
-    {"texto": "Ainda que eu caminhe pelo vale da sombra da morte, não temerei mal nenhum, pois tu estás comigo.", "referencia": "Salmos 23:4", "imagem": "https://images.unsplash.com/photo-1426604966848-d7adac902bff"}
-]
-
-@app.get("/api/v1/quotes")
-def get_quotes(): return {"quotes": CONTEUDOS_CLAREZA}
 
 @app.get("/api/v1/notes")
 def list_notes():
@@ -212,9 +201,9 @@ def get_recomposition(attempt_id: int):
     return {
         "attempt_id": attempt_id,
         "discipline": "Biologia Celular",
-        "learning_gap": "Dificuldade na fosforilação oxidativa e rendimento de ATP.",
+        "learning_gap": "Dificuldade na fosforilação oxidativa.",
         "micro_revisao": "A cadeia transportadora localiza-se nas cristas mitocondriais.",
-        "exercicio_validacao": "Qual o papel direto da ATP sintase no gradiente eletroquímico?"
+        "exercicio_validacao": "Qual o papel direto da ATP sintase?"
     }
 
 class AcknowledgePayload(BaseModel):
