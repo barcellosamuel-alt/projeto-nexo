@@ -7,13 +7,17 @@ from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+from google import genai
+from google.genai import types
 
 load_dotenv()
 
 app = FastAPI(
     title="Projeto Nexo Sanctuary Master API",
     description="API Longitudinal de Alta Performance para Preparação Acadêmica Avançada",
-    version="8.1.0"
+    version="11.0.0"
 )
 
 app.add_middleware(
@@ -25,6 +29,13 @@ app.add_middleware(
 )
 
 LOCAL_DB = "nexo_db.json"
+GOOGLE_SHEET_ID = os.getenv("GOOGLE_SHEET_ID", "SUA_ID_DA_PLANILHA_AQUI")
+GSPREAD_CREDS_FILE = "credentials.json"
+
+try:
+    gemini_client = genai.Client()
+except Exception:
+    gemini_client = None
 
 def _load_local_db() -> Dict[str, Any]:
     if os.path.exists(LOCAL_DB):
@@ -33,54 +44,105 @@ def _load_local_db() -> Dict[str, Any]:
                 return json.load(f)
         except Exception:
             pass
-    return {"notes": [], "errors": [], "telemetry": []}
+    return {"notes": [], "errors": [], "telemetry": [], "settings": {"theme": "night"}}
 
 def _save_local_db(data: Dict[str, Any]) -> None:
     with open(LOCAL_DB, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-CONTEUDOS_CLAREZA = [
-    {
-        "texto": "O Senhor é o meu pastor; nada me faltará.",
-        "referencia": "Salmos 23:1",
-        "imagem": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
-    },
-    {
-        "texto": "Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.",
-        "referencia": "Salmos 119:105",
-        "imagem": "https://images.unsplash.com/photo-1519681393784-d120267933ba"
-    },
-    {
-        "texto": "Tudo posso naquele que me fortalece.",
-        "referencia": "Filipenses 4:13",
-        "imagem": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05"
-    },
-    {
-        "texto": "Confie no Senhor de todo o seu coração e não se apoie em sua própria inteligência.",
-        "referencia": "Provérbios 3:5",
-        "imagem": "https://images.unsplash.com/photo-1506744038136-46273834b3fb"
-    },
-    {
-        "texto": "Ainda que eu caminhe pelo vale da sombra da morte, não temerei mal nenhum, pois tu estás comigo.",
-        "referencia": "Salmos 23:4",
-        "imagem": "https://images.unsplash.com/photo-1426604966848-d7adac902bff"
+def get_google_sheet_data():
+    try:
+        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+        if not os.path.exists(GSPREAD_CREDS_FILE):
+            return None
+        creds = ServiceAccountCredentials.from_json_keyfile_name(GSPREAD_CREDS_FILE, scope)
+        client = gspread.authorize(creds)
+        sheet = client.open_by_key(GOOGLE_SHEET_ID).worksheet('Telemetria')
+        return sheet.get_all_records()
+    except Exception:
+        return None
+
+@app.get("/api/v1/settings/theme")
+def get_theme():
+    db = _load_local_db()
+    return db.get("settings", {}).get("theme", "night")
+
+class ThemePayload(BaseModel):
+    theme: str
+
+@app.post("/api/v1/settings/theme")
+def set_theme(payload: ThemePayload):
+    db = _load_local_db()
+    if "settings" not in db: db["settings"] = {}
+    db["settings"]["theme"] = payload.theme
+    _save_local_db(db)
+    return {"status": "success", "theme": payload.theme}
+
+@app.get("/api/v1/telemetry/advanced")
+def get_advanced_telemetry():
+    sheet_data = get_google_sheet_data()
+    if not sheet_data:
+        sheet_data = [
+            {"Label": "Sim 1", "Score": 48.0, "Consolidacao": 55.0},
+            {"Label": "Sim 2", "Score": 55.5, "Consolidacao": 65.0},
+            {"Label": "Sim 3", "Score": 62.0, "Consolidacao": 72.0},
+            {"Label": "Sim 4", "Score": 68.5, "Consolidacao": 78.0},
+            {"Label": "Sim 5", "Score": 74.0, "Consolidacao": 82.0}
+        ]
+    labels = [t["Label"] for t in sheet_data]
+    scores = [float(t["Score"]) for t in sheet_data]
+    consolidacao_taxa = [float(t["Consolidacao"]) for t in sheet_data]
+    stats = {
+        "count": len(scores),
+        "mean_score": round(sum(scores) / len(scores), 2) if scores else 0,
+        "mean_consolidation": round(sum(consolidacao_taxa) / len(consolidacao_taxa), 2) if consolidacao_taxa else 0,
+        "projection_score": 84.5,
+        "corte_historico": 78.0,
+        "meta_consolidation": 90.0
     }
+    return {"labels": labels, "scores": scores, "consolidation_taxa": consolidacao_taxa, "stats": stats}
+
+class AIChatPayload(BaseModel):
+    prompt: str
+
+@app.post("/api/v1/ai/chat")
+def chat_with_gemini(payload: AIChatPayload):
+    if not gemini_client:
+        raise HTTPException(status_code=500, detail="Gemini client não inicializado. Verifique a chave GEMINI_API_KEY no Render.")
+    try:
+        response = gemini_client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=payload.prompt,
+            config=types.GenerateContentConfig(
+                system_instruction="Você é o tutor pedagógico inteligente do Projeto Nexo, especializado em auxiliar estudantes de alta performance em questões complexas de exatas e biológicas.",
+                temperature=0.3,
+            ),
+        )
+        return {"status": "success", "response": response.text}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+CONTEUDOS_CLAREZA = [
+    {"texto": "O Senhor é o meu pastor; nada me faltará.", "referencia": "Salmos 23:1", "imagem": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"},
+    {"texto": "Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.", "referencia": "Salmos 119:105", "imagem": "https://images.unsplash.com/photo-1519681393784-d120267933ba"},
+    {"texto": "Tudo posso naquele que me fortalece.", "referencia": "Filipenses 4:13", "imagem": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05"},
+    {"texto": "Confie no Senhor de todo o seu coração e não se apoie em sua própria inteligência.", "referencia": "Provérbios 3:5", "imagem": "https://images.unsplash.com/photo-1506744038136-46273834b3fb"},
+    {"texto": "Ainda que eu caminhe pelo vale da sombra da morte, não temerei mal nenhum, pois tu estás comigo.", "referencia": "Salmos 23:4", "imagem": "https://images.unsplash.com/photo-1426604966848-d7adac902bff"}
 ]
 
 @app.get("/api/v1/quotes")
-def get_quotes():
-    return {"quotes": CONTEUDOS_CLAREZA}
+def get_quotes(): return {"quotes": CONTEUDOS_CLAREZA}
+
+@app.get("/api/v1/notes")
+def list_notes():
+    db = _load_local_db()
+    return {"notes": db.get("notes", [])}
 
 class NotePayload(BaseModel):
     id: Optional[int] = None
     title: str = ""
     content: str
     category: str = "geral"
-
-@app.get("/api/v1/notes")
-def list_notes():
-    db = _load_local_db()
-    return {"notes": db.get("notes", [])}
 
 @app.post("/api/v1/notes")
 def save_note(payload: NotePayload):
@@ -95,7 +157,6 @@ def save_note(payload: NotePayload):
                 n["updated_at"] = datetime.datetime.utcnow().isoformat() + "Z"
                 _save_local_db(db)
                 return {"status": "updated", "note": n}
-    
     new_note = {
         "id": len(notes) + 1,
         "title": payload.title,
@@ -143,35 +204,8 @@ def add_error(payload: ErrorPayload):
     _save_local_db(db)
     return {"status": "added", "error": item}
 
-@app.get("/api/v1/telemetry")
-def get_telemetry():
-    db = _load_local_db()
-    telemetry = db.get("telemetry", [])
-    if not telemetry:
-        telemetry = [
-            {"label": "Sim 1", "score": 48.0},
-            {"label": "Sim 2", "score": 55.5},
-            {"label": "Sim 3", "score": 62.0},
-            {"label": "Sim 4", "score": 68.5},
-            {"label": "Sim 5 (Atual)", "score": 74.0}
-        ]
-        db["telemetry"] = telemetry
-        _save_local_db(db)
-    
-    scores = [t["score"] for t in telemetry]
-    stats = {
-        "count": len(scores),
-        "mean": round(sum(scores) / len(scores), 2) if scores else 0,
-        "min": min(scores) if scores else 0,
-        "max": max(scores) if scores else 0,
-        "projection": 84.5,
-        "corte_alvo": 78.0
-    }
-    return {"telemetry": telemetry, "stats": stats}
-
 @app.get("/api/v1/blocks/daily")
-def get_daily_block():
-    return {"total_questions": 20, "discipline": "Biologia / Química / Física", "status": "ready"}
+def get_daily_block(): return {"total_questions": 20, "discipline": "Biologia / Química / Física", "status": "ready"}
 
 @app.get("/api/v1/recompositions/{attempt_id}")
 def get_recomposition(attempt_id: int):
@@ -187,8 +221,7 @@ class AcknowledgePayload(BaseModel):
     command: str
 
 @app.post("/api/v1/recompositions/{attempt_id}/acknowledge")
-def acknowledge_recomposition(attempt_id: int, payload: AcknowledgePayload):
-    return {"status": "success", "command_received": payload.command}
+def acknowledge_recomposition(attempt_id: int, payload: AcknowledgePayload): return {"status": "success", "command_received": payload.command}
 
 @app.get("/api/v1/simulated/full")
 def get_full_simulated():
@@ -198,8 +231,7 @@ class SimulatedSubmitPayload(BaseModel):
     answers: Dict[str, Any]
 
 @app.post("/api/v1/simulated/submit")
-def submit_simulated(payload: SimulatedSubmitPayload):
-    return {"status": "evaluated", "score_estimated": 81.5}
+def submit_simulated(payload: SimulatedSubmitPayload): return {"status": "evaluated", "score_estimated": 81.5}
 
 class DiscursiveSubmitPayload(BaseModel):
     title: str
@@ -207,8 +239,7 @@ class DiscursiveSubmitPayload(BaseModel):
     student_answer: str
 
 @app.post("/api/v1/discursive/submit")
-def submit_discursive(payload: DiscursiveSubmitPayload):
-    return {"status": "audited", "estimated_score": 9.0}
+def submit_discursive(payload: DiscursiveSubmitPayload): return {"status": "audited", "estimated_score": 9.0}
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
