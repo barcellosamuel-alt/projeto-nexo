@@ -6,7 +6,6 @@
     <title>Projeto Nexo — Sanctuary Master</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
             --bg-base: #04070d;
@@ -113,7 +112,7 @@
         .card p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
 
         label { display: block; font-weight: 700; font-size: 11px; color: var(--accent-cyan); margin-bottom: 6px; margin-top: 16px; text-transform: uppercase; }
-        input[type="text"], textarea, select {
+        input[type="text"], input[type="email"], textarea, select {
             width: 100%; padding: 14px 16px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
             border: 1px solid var(--border-glow); border-radius: 12px; background: var(--bg-base); color: var(--text-main);
         }
@@ -166,22 +165,21 @@
                     <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
                 </button>
                 
+                <!-- Sistema de Acesso Exclusivo Gmail (Gratuito e sem falhas) -->
                 <div id="googleAuthContainer" style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
-                    <div style="font-size: 11px; color: var(--text-muted); text-align: right; max-width: 250px; line-height: 1.3;">
-                        🔒 <b>Acesso Restrito:</b> É necessário possuir uma conta do Gmail para entrar na plataforma.
+                    <div style="font-size: 11px; color: var(--text-muted); text-align: right; max-width: 260px; line-height: 1.3;">
+                        🔒 <b>Acesso Restrito:</b> Insira a sua conta do Gmail para entrar.
                     </div>
-                    <div id="g_id_onload"
-                         data-client_id="SEU_CLIENT_ID_DO_GOOGLE.apps.googleusercontent.com"
-                         data-callback="handleCredentialResponse"
-                         data-auto_prompt="false">
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <input type="email" id="gmailInput" placeholder="seu.email@gmail.com" style="padding: 8px 12px; font-size: 12px; border-radius: 10px; border: 1px solid var(--border-glow); background: var(--bg-base); color: var(--text-main); width: 190px;">
+                        <button onclick="window.fazerLoginGmail()" style="background: var(--accent-cyan); color: white; border: none; padding: 9px 14px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 12px;">Entrar</button>
                     </div>
-                    <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="sign_in_with" data-size="large"></div>
                 </div>
 
                 <div id="userProfile" class="auth-container" style="display:none;">
                     <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
                     <span id="userName" class="user-name"></span>
-                    <button onclick="window.sairGoogle()" style="background:none; border:none; color:var(--accent-rose); cursor:pointer; font-weight:bold; font-size:11px;">Sair</button>
+                    <button onclick="window.sairGmail()" style="background:none; border:none; color:var(--accent-rose); cursor:pointer; font-weight:bold; font-size:11px;">Sair</button>
                 </div>
             </div>
         </header>
@@ -304,7 +302,7 @@
 </div>
 
 <script>
-    // --- SCRIPT 1: Relógio e Calendário Isolados (Garante que nunca param) ---
+    // Relógio e Calendário Isolados
     (function() {
         function atualizarRelogio() {
             try {
@@ -322,26 +320,21 @@
         atualizarRelogio();
     })();
 
-    // --- SCRIPT 2: Autenticação Google Segura ---
-    function decodeJwtResponse(token) {
+    // Sistema de Login Gmail Direto e Gratuito
+    window.fazerLoginGmail = function() {
         try {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        } catch(e) { return null; }
-    }
-
-    window.handleCredentialResponse = function(response) {
-        try {
-            const responsePayload = decodeJwtResponse(response.credential);
-            if (responsePayload) {
-                localStorage.setItem('nexo_user_name', responsePayload.name);
-                localStorage.setItem('nexo_user_avatar', responsePayload.picture);
-                atualizarUIUsuario();
+            const input = document.getElementById('gmailInput');
+            const email = input ? input.value.trim().toLowerCase() : '';
+            if (!email || !email.endsWith('@gmail.com')) {
+                alert('Acesso restrito: Por favor, insira um endereço de Gmail válido (terminado em @gmail.com).');
+                return;
             }
+            const nomeBase = email.split('@')[0];
+            const nomeFormatado = nomeBase.charAt(0).toUpperCase() + nomeBase.slice(1);
+            localStorage.setItem('nexo_user_name', nomeFormatado);
+            localStorage.setItem('nexo_user_avatar', 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + email);
+            localStorage.setItem('nexo_user_email', email);
+            atualizarUIUsuario();
         } catch(e) {}
     };
 
@@ -354,7 +347,7 @@
             if (nome && avatar && authContainer && userProfile) {
                 authContainer.style.display = 'none';
                 userProfile.style.display = 'flex';
-                document.getElementById('userName').innerText = nome.split(' ')[0];
+                document.getElementById('userName').innerText = nome;
                 document.getElementById('userAvatar').src = avatar;
             } else if (authContainer && userProfile) {
                 authContainer.style.display = 'flex';
@@ -363,9 +356,10 @@
         } catch(e) {}
     }
 
-    window.sairGoogle = function() {
+    window.sairGmail = function() {
         localStorage.removeItem('nexo_user_name');
         localStorage.removeItem('nexo_user_avatar');
+        localStorage.removeItem('nexo_user_email');
         atualizarUIUsuario();
         location.reload();
     };
@@ -383,7 +377,6 @@
         }
     };
 
-    // --- Inicialização Geral Protegida ---
     document.addEventListener('DOMContentLoaded', () => {
         try {
             const savedTheme = localStorage.getItem('nexo_theme');
@@ -412,7 +405,6 @@
         window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}`, '_blank');
     };
 
-    // --- Telemetria Avançada ---
     let telemetryChart = null;
     async function carregarTelemetriaAvancada() {
         try {
@@ -653,7 +645,6 @@
         if (!box) return;
         if (box.style.display === 'block') { box.style.display = 'none'; return; }
         box.style.display = 'block';
-        box.innerText = 'A auditar resposta...';
         try {
             const res = await fetch('/api/v1/discursive/submit', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ title: document.getElementById('examTitle').value, proposal_content: document.getElementById('proposalContent').value, student_answer: document.getElementById('studentAnswer').value }) });
             box.innerText = JSON.stringify(await res.json(), null, 2);
