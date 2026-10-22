@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto Nexo — Sanctuary Master (Alta Performance)</title>
+    <title>Projeto Nexo — Sanctuary Master</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
             --bg-base: #04070d;
@@ -18,11 +19,24 @@
             --accent-rose: #f43f5e;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --shadow-neon: 0 0 30px rgba(56, 189, 248, 0.15);
             --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.75);
         }
 
-        * { box-sizing: border-box; }
+        body.light-mode {
+            --bg-base: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --border-glow: rgba(148, 163, 184, 0.3);
+            --border-hover: rgba(2, 132, 199, 0.8);
+            --accent-cyan: #0284c7;
+            --accent-emerald: #059669;
+            --accent-amber: #d97706;
+            --accent-rose: #e11d48;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        * { box-sizing: border-box; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
         
         body {
             font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -30,9 +44,6 @@
             color: var(--text-main);
             margin: 0; padding: 20px 10px;
             line-height: 1.7;
-            background-image: 
-                radial-gradient(circle at 15% 10%, rgba(2, 132, 199, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 85% 90%, rgba(5, 150, 105, 0.12) 0%, transparent 45%);
             background-attachment: fixed;
             overflow-x: hidden;
         }
@@ -41,124 +52,93 @@
         .top-utility-bar { display: grid; grid-template-columns: 1fr auto; gap: 20px; margin-bottom: 25px; align-items: center; }
 
         header.hero {
-            background: linear-gradient(135deg, rgba(9, 13, 22, 0.95) 0%, rgba(15, 23, 42, 0.92) 50%, rgba(30, 27, 75, 0.88) 100%);
-            color: white; padding: 30px; border-radius: 24px;
-            box-shadow: 0 0 45px rgba(56, 189, 248, 0.2), var(--shadow-card);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(15, 23, 42, 0.92) 100%);
+            color: var(--text-main); padding: 30px; border-radius: 24px;
+            box-shadow: var(--shadow-card);
             display: flex; justify-content: space-between; align-items: center;
             position: relative; overflow: hidden;
-            border: 2px solid rgba(56, 189, 248, 0.4);
+            border: 1px solid var(--border-glow);
             backdrop-filter: blur(20px);
         }
         
-        header.hero::before {
-            content: '';
-            position: absolute; top: 0; left: -100%; width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, var(--accent-cyan), #ffffff, transparent);
-            animation: cometMove 4s linear infinite;
-        }
-        @keyframes cometMove { 0% { left: -100%; } 50% { left: 100%; } 100% { left: 100%; } }
-
         header.hero h1 {
             font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 800; margin: 0 0 8px 0;
-            background: linear-gradient(90deg, #38bdf8, #34d399, #ffffff, #38bdf8);
-            background-size: 300% auto;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald), var(--text-main));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: neonGlowFlow 6s linear infinite;
-        }
-        @keyframes neonGlowFlow {
-            0% { background-position: 0% 50%; filter: drop-shadow(0 0 10px rgba(56,189,248,0.4)); }
-            50% { background-position: 100% 50%; filter: drop-shadow(0 0 20px rgba(52,211,153,0.7)); }
-            100% { background-position: 0% 50%; filter: drop-shadow(0 0 10px rgba(56,189,248,0.4)); }
         }
         header.hero p { font-size: 13px; color: var(--text-muted); margin: 0; font-weight: 500; }
 
-        .hero-badge-tech {
-            background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.4);
-            padding: 10px 16px; border-radius: 14px; font-weight: 700; font-size: 11px; color: var(--accent-cyan);
-            display: flex; align-items: center; gap: 8px; backdrop-filter: blur(15px);
-        }
-        .tech-pulse { width: 8px; height: 8px; background: var(--accent-emerald); border-radius: 50%; box-shadow: 0 0 10px var(--accent-emerald); animation: pulseLive 2s infinite; }
-        @keyframes pulseLive { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.4); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
+        .auth-container { display: flex; align-items: center; gap: 12px; background: var(--bg-base); padding: 10px 16px; border-radius: 16px; border: 1px solid var(--border-glow); }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .user-name { font-size: 12px; font-weight: 700; color: var(--text-main); }
 
-        .clock-widget {
-            background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glow);
-            padding: 18px 24px; border-radius: 20px; display: flex; flex-direction: column; align-items: flex-end;
-            justify-content: center; box-shadow: var(--shadow-neon), var(--shadow-card); min-width: 200px;
+        .theme-toggle-btn {
+            background: var(--bg-card); border: 1px solid var(--border-glow);
+            color: var(--text-main); padding: 12px; border-radius: 16px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--shadow-card);
         }
-        .clock-time { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: var(--accent-cyan); text-shadow: 0 0 10px rgba(56,189,248,0.4); }
-        .clock-date { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-top: 4px; }
-        .calendar-sync-btn { background: transparent; border: none; color: var(--accent-cyan); font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 6px; padding: 0; }
-        .calendar-sync-btn:hover { text-decoration: underline; }
+        .theme-toggle-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
         .tools-bar { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tool-btn {
             background: var(--bg-card); border: 1px solid var(--border-glow); color: var(--text-main);
             padding: 12px 18px; border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 12px;
-            display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--shadow-neon);
-            backdrop-filter: blur(15px); transition: all 0.25s ease; flex: 1; min-width: 140px; justify-content: center;
+            display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--shadow-card);
+            flex: 1; min-width: 140px; justify-content: center;
         }
-        .tool-btn:hover { background: rgba(56, 189, 248, 0.15); border-color: var(--border-hover); color: var(--accent-cyan); transform: translateY(-2px); }
+        .tool-btn:hover { background: var(--accent-cyan); color: white; transform: translateY(-2px); }
 
         .aux-drawer {
             background: var(--bg-card); border: 1px solid var(--border-glow); padding: 22px;
-            border-radius: 20px; margin-bottom: 25px; display: none; box-shadow: 0 0 40px rgba(0,0,0,0.6);
-            backdrop-filter: blur(25px); animation: fadeInDrawer 0.3s ease;
+            border-radius: 20px; margin-bottom: 25px; display: none; box-shadow: var(--shadow-card);
         }
-        @keyframes fadeInDrawer { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         .card {
             background: var(--bg-card); border: 1px solid var(--border-glow); padding: 25px;
-            border-radius: 24px; margin-bottom: 25px; box-shadow: var(--shadow-card), var(--shadow-neon);
-            position: relative; overflow: hidden; backdrop-filter: blur(20px);
+            border-radius: 24px; margin-bottom: 25px; box-shadow: var(--shadow-card);
+            position: relative; overflow: hidden;
         }
-        .card:hover { border-color: var(--border-hover); }
-        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan); }
-        .card-emerald::before { background: var(--accent-emerald); box-shadow: 0 0 10px var(--accent-emerald); }
-        .card-amber::before { background: var(--accent-amber); box-shadow: 0 0 10px var(--accent-amber); }
-        .card-purple::before { background: #8b5cf6; box-shadow: 0 0 10px #8b5cf6; }
-        .card-rose::before { background: var(--accent-rose); box-shadow: 0 0 10px var(--accent-rose); }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-cyan); }
+        .card-emerald::before { background: var(--accent-emerald); }
+        .card-amber::before { background: var(--accent-amber); }
+        .card-purple::before { background: #8b5cf6; }
+        .card-rose::before { background: var(--accent-rose); }
 
         .card-header { display: flex; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-        .card-header svg { width: 26px; height: 26px; fill: var(--accent-cyan); margin-right: 12px; flex-shrink: 0; }
-        .card h3 { margin: 0; color: var(--text-main); font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+        .card-header svg { width: 26px; height: 26px; fill: var(--accent-cyan); margin-right: 12px; }
+        .card h3 { margin: 0; color: var(--text-main); font-size: 18px; font-weight: 800; }
         .card p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
 
-        label { display: block; font-weight: 700; font-size: 11px; color: var(--accent-cyan); margin-bottom: 6px; margin-top: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        label { display: block; font-weight: 700; font-size: 11px; color: var(--accent-cyan); margin-bottom: 6px; margin-top: 16px; text-transform: uppercase; }
         input[type="text"], textarea, select {
             width: 100%; padding: 14px 16px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
-            border: 1px solid var(--border-glow); border-radius: 12px; background: rgba(15, 23, 42, 0.85); color: var(--text-main);
+            border: 1px solid var(--border-glow); border-radius: 12px; background: var(--bg-base); color: var(--text-main);
         }
-        input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--accent-cyan); outline: none; box-shadow: 0 0 15px rgba(56,189,248,0.4); }
 
         button.action-btn {
-            background-color: var(--accent-cyan); border: none; color: #04070d; padding: 14px 24px;
+            background-color: var(--accent-cyan); border: none; color: white; padding: 14px 24px;
             border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 13px;
-            display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.35); transition: all 0.25s ease; width: 100%; justify-content: center;
+            display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; width: 100%; justify-content: center;
         }
         @media(min-width: 768px) { button.action-btn { width: auto; } }
-        button.action-btn:hover { background-color: #7dd3fc; transform: translateY(-2px); }
         .btn-success { background-color: var(--accent-emerald) !important; color: #04070d !important; }
-        .btn-success:hover { background-color: #6ee7b7 !important; }
 
         .response-box {
-            background: rgba(9, 13, 22, 0.95); border: 1px solid var(--border-glow); color: var(--accent-cyan); padding: 20px;
+            background: var(--bg-base); border: 1px solid var(--border-glow); color: var(--accent-cyan); padding: 20px;
             border-radius: 14px; margin-top: 20px; white-space: pre-wrap; font-family: 'JetBrains Mono', monospace; font-size: 12px;
-            overflow-x: auto;
         }
-        .content-display { background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-glow); border-left: 4px solid var(--accent-cyan); padding: 20px; border-radius: 14px; margin-bottom: 20px; }
-        .timer-badge { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fb7185; padding: 8px 14px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; margin-left: auto; }
+        .content-display { background: var(--bg-base); border: 1px solid var(--border-glow); border-left: 4px solid var(--accent-cyan); padding: 20px; border-radius: 14px; margin-bottom: 20px; }
+        .timer-badge { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: var(--accent-rose); padding: 8px 14px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; margin-left: auto; }
 
-        /* Calculadora Científica Otimizada para Celular */
-        .sci-calc-container { background: #111827; border: 2px solid var(--border-glow); padding: 16px; border-radius: 18px; max-width: 100%; margin: 0 auto; box-shadow: 0 0 25px rgba(0,0,0,0.8); }
-        .sci-display { width: 100%; background: #030712; color: #34d399; font-family: 'JetBrains Mono', monospace; font-size: 22px; padding: 12px; text-align: right; border: 1px solid var(--border-glow); border-radius: 10px; margin-bottom: 12px; }
+        .sci-calc-container { background: var(--bg-base); border: 2px solid var(--border-glow); padding: 16px; border-radius: 18px; max-width: 100%; margin: 0 auto; }
+        .sci-display { width: 100%; background: var(--bg-base); color: var(--accent-emerald); font-family: 'JetBrains Mono', monospace; font-size: 22px; padding: 12px; text-align: right; border: 1px solid var(--border-glow); border-radius: 10px; margin-bottom: 12px; }
         .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-        .sci-btn { background: #1f2937; color: #f8fafc; border: 1px solid rgba(255,255,255,0.1); padding: 10px 0; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; }
-        .sci-btn:hover { background: #374151; color: var(--accent-cyan); }
-        .sci-btn.op { background: #0284c7; color: white; }
-        .sci-btn.eq { background: #059669; color: white; grid-column: span 2; }
+        .sci-btn { background: var(--bg-base); color: var(--text-main); border: 1px solid var(--border-glow); padding: 10px 0; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; }
+        .sci-btn:hover { background: var(--accent-cyan); color: white; }
+        .sci-btn.op { background: var(--accent-cyan); color: white; }
+        .sci-btn.eq { background: var(--accent-emerald); color: white; grid-column: span 2; }
 
-        /* Media Queries para Celular (Responsividade Máxima) */
         @media (max-width: 768px) {
             body { padding: 10px 5px; }
             .top-utility-bar { grid-template-columns: 1fr; gap: 15px; }
@@ -170,7 +150,7 @@
         }
     </style>
 </head>
-<body>
+<body class="night-mode">
 
 <div class="container">
     <div class="top-utility-bar">
@@ -179,16 +159,38 @@
                 <h1>PROJETO NEXO</h1>
                 <p>Plataforma Longitudinal de Alta Performance Acadêmica</p>
             </div>
-            <div class="hero-badge-tech"><div class="tech-pulse"></div>CORE ATIVO</div>
+            <div style="display:flex; align-items:center; gap:15px; flex-wrap: wrap;">
+                <button class="theme-toggle-btn" onclick="window.toggleTheme()" title="Alternar Modo Dia/Noite">
+                    <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+                </button>
+                
+                <!-- Login do Google com Orientação Obrigatória -->
+                <div id="googleAuthContainer" style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                    <div style="font-size: 11px; color: var(--text-muted); text-align: right; max-width: 250px; line-height: 1.3;">
+                        🔒 <b>Acesso Restrito:</b> É necessário possuir uma conta do Gmail para entrar na plataforma.
+                    </div>
+                    <div id="g_id_onload"
+                         data-client_id="SEU_CLIENT_ID_DO_GOOGLE.apps.googleusercontent.com"
+                         data-callback="handleCredentialResponse"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="sign_in_with" data-size="large"></div>
+                </div>
+
+                <div id="userProfile" class="auth-container" style="display:none;">
+                    <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
+                    <span id="userName" class="user-name"></span>
+                    <button onclick="window.sairGoogle()" style="background:none; border:none; color:var(--accent-rose); cursor:pointer; font-weight:bold; font-size:11px;">Sair</button>
+                </div>
+            </div>
         </header>
-        <div class="clock-widget">
-            <div class="clock-time" id="liveClock">00:00:00</div>
-            <div class="clock-date" id="liveDate">A carregar data...</div>
-            <button class="calendar-sync-btn" onclick="window.agendarNoGoogleCalendar()">📅 Agendar no Google Calendar</button>
+        <div class="clock-widget" style="background:var(--bg-card); border:1px solid var(--border-glow); padding:18px 24px; border-radius:20px; display:flex; flex-direction:column; align-items:flex-end;">
+            <div class="clock-time" id="liveClock" style="font-family:'JetBrains Mono'; font-size:22px; font-weight:700; color:var(--accent-cyan);">00:00:00</div>
+            <div class="clock-date" id="liveDate" style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">A carregar...</div>
+            <button class="calendar-sync-btn" onclick="window.agendarNoGoogleCalendar()" style="background:none; border:none; color:var(--accent-cyan); font-size:11px; font-weight:700; cursor:pointer; margin-top:6px;">📅 Google Calendar</button>
         </div>
     </div>
 
-    <!-- Barra de Ferramentas -->
     <div class="tools-bar">
         <button class="tool-btn" onclick="window.toggleTool('notesDrawer')">📝 Notas</button>
         <button class="tool-btn" onclick="window.toggleTool('errorDrawer')">⚠️ Erros</button>
@@ -196,119 +198,74 @@
         <button class="tool-btn" onclick="window.toggleTool('quoteDrawer')">✝️ Clareza</button>
     </div>
 
-    <!-- Notas -->
     <div id="notesDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 15px;">📝 Gerenciador de Notas Acadêmicas</strong>
+        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 15px;">📝 Notas Acadêmicas</strong>
         <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-            <select id="notesSelect" onchange="window.carregarNotaSelecionada()" style="flex:1; min-width: 180px;">
-                <option value="">-- Nova Nota --</option>
-            </select>
-            <button class="action-btn" onclick="window.novaNotaForm()" style="margin:0; padding:10px 16px; background:var(--accent-emerald); color:#04070d; width: auto;">Novo</button>
+            <select id="notesSelect" onchange="window.carregarNotaSelecionada()" style="flex:1;"><option value="">-- Nova Nota --</option></select>
+            <button class="action-btn" onclick="window.novaNotaForm()" style="margin:0; padding:10px 16px; background:var(--accent-emerald); color:#04070d; width:auto;">Novo</button>
         </div>
         <input type="hidden" id="noteId">
-        <input type="text" id="noteTitle" placeholder="Título da nota / Matéria" style="margin-top:0;">
-        <textarea id="noteContent" rows="4" placeholder="Escreva suas anotações estratégicas..." style="margin-top:12px;"></textarea>
-        <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+        <input type="text" id="noteTitle" placeholder="Título" style="margin-top:0;">
+        <textarea id="noteContent" rows="4" placeholder="Conteúdo..." style="margin-top:12px;"></textarea>
+        <div style="display: flex; gap: 10px; margin-top: 14px;">
             <button class="action-btn btn-success" onclick="window.salvarNotaAtual()" style="margin:0; flex:1;">💾 Salvar</button>
             <button class="action-btn" onclick="window.apagarNotaAtual()" style="margin:0; background:var(--accent-rose); color:#fff; flex:1;">🗑️ Apagar</button>
         </div>
     </div>
 
-    <!-- Caderno de Erros -->
     <div id="errorDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 15px;">⚠️ Caderno de Erros Ativo</strong>
-        <label>Disciplina:</label>
-        <input type="text" id="errDisciplina" placeholder="Ex: Biologia / Química">
-        <label>Tópico com Dificuldade:</label>
-        <input type="text" id="errTopico" placeholder="Ex: Genética / Estequiometria">
-        <label>Natureza do Erro:</label>
-        <select id="errMotivo">
-            <option value="Falha de Conteúdo">Falha de Conteúdo (Faltou Teoria)</option>
-            <option value="Falha de Interpretação">Falha de Interpretação de Texto</option>
-            <option value="Erro de Cálculo/Atenção">Erro de Cálculo / Desatenção</option>
-        </select>
-        <button class="action-btn btn-success" onclick="window.salvarErroUEL()" style="margin-top:14px; width: 100%;">Registrar Erro</button>
-        <div id="errorsListContainer" class="response-box" style="margin-top: 15px; max-height: 150px; overflow-y: auto;">Carregando histórico...</div>
+        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 15px;">⚠️ Caderno de Erros</strong>
+        <label>Disciplina:</label><input type="text" id="errDisciplina" placeholder="Ex: Biologia">
+        <label>Tópico:</label><input type="text" id="errTopico" placeholder="Ex: Genética">
+        <label>Natureza:</label>
+        <select id="errMotivo"><option value="Falha de Conteúdo">Falha de Conteúdo</option><option value="Falha de Interpretação">Interpretação</option><option value="Desatenção">Desatenção</option></select>
+        <button class="action-btn btn-success" onclick="window.salvarErroUEL()" style="margin-top:14px; width:100%;">Registrar</button>
+        <div id="errorsListContainer" class="response-box" style="margin-top: 15px; max-height: 150px; overflow-y: auto;">Carregando...</div>
     </div>
 
-    <!-- Calculadora -->
     <div id="calcDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 15px;">🧮 Calculadora Científica</strong>
+        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 15px;">🧮 Calculadora</strong>
         <div class="sci-calc-container">
             <input type="text" id="sciDisplay" class="sci-display" value="0" readonly>
             <div class="sci-grid">
-                <button class="sci-btn" onclick="window.sciInput('sin(')">sin</button>
-                <button class="sci-btn" onclick="window.sciInput('cos(')">cos</button>
-                <button class="sci-btn" onclick="window.sciInput('tan(')">tan</button>
-                <button class="sci-btn" onclick="window.sciInput('sqrt(')">√</button>
-                <button class="sci-btn" onclick="window.sciClear()">AC</button>
-                <button class="sci-btn" onclick="window.sciInput('7')">7</button>
-                <button class="sci-btn" onclick="window.sciInput('8')">8</button>
-                <button class="sci-btn" onclick="window.sciInput('9')">9</button>
-                <button class="sci-btn op" onclick="window.sciInput('/')">÷</button>
-                <button class="sci-btn" onclick="window.sciInput('(')">(</button>
-                <button class="sci-btn" onclick="window.sciInput('4')">4</button>
-                <button class="sci-btn" onclick="window.sciInput('5')">5</button>
-                <button class="sci-btn" onclick="window.sciInput('6')">6</button>
-                <button class="sci-btn op" onclick="window.sciInput('*')">×</button>
-                <button class="sci-btn" onclick="window.sciInput(')')">)</button>
-                <button class="sci-btn" onclick="window.sciInput('1')">1</button>
-                <button class="sci-btn" onclick="window.sciInput('2')">2</button>
-                <button class="sci-btn" onclick="window.sciInput('3')">3</button>
-                <button class="sci-btn op" onclick="window.sciInput('-')">-</button>
-                <button class="sci-btn" onclick="window.sciInput('pi')">π</button>
-                <button class="sci-btn" onclick="window.sciInput('0')">0</button>
-                <button class="sci-btn" onclick="window.sciInput('.')">.</button>
-                <button class="sci-btn op" onclick="window.sciInput('+')">+</button>
-                <button class="sci-btn eq" onclick="window.sciCalculate()">=</button>
+                <button class="sci-btn" onclick="window.sciInput('sin(')">sin</button><button class="sci-btn" onclick="window.sciInput('cos(')">cos</button><button class="sci-btn" onclick="window.sciInput('tan(')">tan</button><button class="sci-btn" onclick="window.sciInput('sqrt(')">√</button><button class="sci-btn" onclick="window.sciClear()">AC</button>
+                <button class="sci-btn" onclick="window.sciInput('7')">7</button><button class="sci-btn" onclick="window.sciInput('8')">8</button><button class="sci-btn" onclick="window.sciInput('9')">9</button><button class="sci-btn op" onclick="window.sciInput('/')">÷</button><button class="sci-btn" onclick="window.sciInput('(')">(</button>
+                <button class="sci-btn" onclick="window.sciInput('4')">4</button><button class="sci-btn" onclick="window.sciInput('5')">5</button><button class="sci-btn" onclick="window.sciInput('6')">6</button><button class="sci-btn op" onclick="window.sciInput('*')">×</button><button class="sci-btn" onclick="window.sciInput(')')">)</button>
+                <button class="sci-btn" onclick="window.sciInput('1')">1</button><button class="sci-btn" onclick="window.sciInput('2')">2</button><button class="sci-btn" onclick="window.sciInput('3')">3</button><button class="sci-btn op" onclick="window.sciInput('-')">-</button><button class="sci-btn" onclick="window.sciInput('pi')">π</button>
+                <button class="sci-btn" onclick="window.sciInput('0')">0</button><button class="sci-btn" onclick="window.sciInput('.')">.</button><button class="sci-btn op" onclick="window.sciInput('+')">+</button><button class="sci-btn eq" onclick="window.sciCalculate()">=</button>
             </div>
         </div>
     </div>
 
-    <!-- Cantinho da Clareza -->
     <div id="quoteDrawer" class="aux-drawer">
-        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 15px;">✝️ Cantinho da Clareza — Palavra do Dia</strong>
-        <div id="biblia-slideshow" style="position: relative; width: 100%; height: 350px; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; transition: background-image 1s ease-in-out; border-radius: 16px; overflow: hidden; border: 1px solid var(--border-glow);">
+        <strong style="color: var(--accent-cyan); display:block; margin-bottom: 12px; font-size: 15px;">✝️ Cantinho da Clareza</strong>
+        <div id="biblia-slideshow" style="position: relative; width: 100%; height: 350px; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; border-radius: 16px; overflow: hidden;">
             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.55);"></div>
             <div style="position: relative; z-index: 2; padding: 20px; max-width: 90%;">
-                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; background: rgba(255,255,255,0.25); padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 12px; font-weight: 700;">Palavra do Dia</span>
-                <h2 id="slide-texto" style="margin: 0 0 12px 0; font-size: 20px; font-weight: 500; line-height: 1.4;">Carregando...</h2>
-                <p id="slide-ref" style="margin: 0; font-style: italic; font-size: 16px; color: #f1f1f1; font-weight: 600;"></p>
+                <span style="font-size: 11px; text-transform: uppercase; background: rgba(255,255,255,0.25); padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 12px; font-weight: 700;">Palavra do Dia</span>
+                <h2 id="slide-texto" style="margin: 0 0 12px 0; font-size: 20px; font-weight: 500;">Carregando...</h2>
+                <p id="slide-ref" style="margin: 0; font-style: italic; font-size: 16px; color: #f1f1f1;"></p>
             </div>
         </div>
-        <div style="text-align: center; margin-top: 15px;">
-            <button class="action-btn" onclick="window.proximoSlideManual()" style="width: 100%;">🔄 Próxima Mensagem</button>
-        </div>
+        <button class="action-btn" onclick="window.proximoSlideManual()" style="width: 100%; margin-top: 15px;">🔄 Próxima</button>
     </div>
 
     <!-- Módulo 1 -->
     <div class="card card-emerald">
-        <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-            <h3>01 // Bloco de Treino Diário (20 Questões)</h3>
-        </div>
+        <div class="card-header"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><h3>01 // Bloco de Treino Diário (20 Questões)</h3></div>
         <p>Inicialize o ciclo tático diário de resolução ativa:</p>
-        <button class="action-btn btn-success" onclick="window.carregarBlocoDiario()">Carregar Bloco Diário</button>
+        <button class="action-btn btn-success" onclick="window.carregarBlocoDiario()">Carregar Bloco</button>
         <div id="blockResponse" class="response-box" style="display:none;"></div>
     </div>
 
     <!-- Módulo 2 -->
     <div class="card card-amber">
-        <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-            <h3>02 // Protocolo de Active Recall & Recomposição</h3>
-        </div>
-        <label for="attemptId">ID da Tentativa:</label>
-        <input type="text" id="attemptId" value="1">
-        <button class="action-btn" onclick="window.carregarRecomposicao()" style="background-color: var(--accent-amber); color: #04070d;">Carregar Recomposição</button>
+        <div class="card-header"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><h3>02 // Protocolo de Active Recall & Recomposição</h3></div>
+        <label>ID da Tentativa:</label><input type="text" id="attemptId" value="1">
+        <button class="action-btn" onclick="window.carregarRecomposicao()" style="background-color: var(--accent-amber); color: #04070d;">Carregar</button>
         <div id="recompositionContentContainer" style="display:none; margin-top: 24px;">
-            <div class="content-display">
-                <div id="gapInfo"></div>
-                <div id="microRevisaoInfo"></div>
-                <div id="exercicioInfo"></div>
-            </div>
-            <label for="commandInput">Comando:</label>
-            <input type="text" id="commandInput" value="[NEXO_LIDO_E_COMPREENDIDO]">
+            <div class="content-display"><div id="gapInfo"></div><div id="microRevisaoInfo"></div><div id="exercicioInfo"></div></div>
+            <label>Comando:</label><input type="text" id="commandInput" value="[NEXO_LIDO_E_COMPREENDIDO]">
             <button class="action-btn btn-success" onclick="window.enviarAcknowledge()">Validar</button>
         </div>
         <div id="ackResponse" class="response-box" style="display:none;"></div>
@@ -316,11 +273,7 @@
 
     <!-- Módulo 3 -->
     <div class="card card-purple">
-        <div class="card-header" style="display:flex; align-items:center; width:100%;">
-            <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-            <h3>03 // Simulado Oficial (60 Questões)</h3>
-            <span id="timerBadge" class="timer-badge">05:00:00</span>
-        </div>
+        <div class="card-header" style="display:flex; align-items:center; width:100%;"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><h3>03 // Simulado Oficial (60 Questões)</h3><span id="timerBadge" class="timer-badge">05:00:00</span></div>
         <button class="action-btn" onclick="window.carregarSimulado()" style="background-color: #8b5cf6; color: #fff;">Iniciar Simulado</button>
         <div id="simulatedContainer" style="display:none; margin-top: 24px;">
             <div id="questionBox" class="content-display"></div>
@@ -331,27 +284,18 @@
 
     <!-- Módulo 4 -->
     <div class="card card-rose">
-        <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-            <h3>04 // Módulo Discursivo</h3>
-        </div>
-        <label>Título:</label>
-        <input type="text" id="examTitle" value="Simulado Discursivo">
-        <label>Proposta:</label>
-        <textarea id="proposalContent" rows="2">Explique a fosforilação oxidativa.</textarea>
-        <label>Resposta:</label>
-        <textarea id="studentAnswer" rows="3">A fosforilação ocorre...</textarea>
-        <button class="action-btn" onclick="window.enviarDiscursiva()" style="background-color: var(--accent-rose); color: #fff;">Submeter Discursiva</button>
+        <div class="card-header"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><h3>04 // Módulo Discursivo</h3></div>
+        <label>Título:</label><input type="text" id="examTitle" value="Simulado Discursivo">
+        <label>Proposta:</label><textarea id="proposalContent" rows="2">Explique a fosforilação oxidativa.</textarea>
+        <label>Resposta:</label><textarea id="studentAnswer" rows="3">A fosforilação ocorre...</textarea>
+        <button class="action-btn" onclick="window.enviarDiscursiva()" style="background-color: var(--accent-rose); color: #fff;">Submeter</button>
         <div id="discResponse" class="response-box" style="display:none;"></div>
     </div>
 
     <!-- Módulo 5 -->
     <div class="card card-amber">
-        <div class="card-header">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-            <h3>05 // Telemetria Longitudinal</h3>
-        </div>
-        <div style="background: rgba(9, 13, 22, 0.9); padding: 15px; border-radius: 16px; border: 1px solid var(--border-glow); position: relative; height: 280px;">
+        <div class="card-header"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg><h3>05 // Telemetria Avançada (Desempenho & Taxa de Consolidação)</h3></div>
+        <div style="background: var(--bg-base); padding: 15px; border-radius: 16px; border: 1px solid var(--border-glow); position: relative; height: 300px;">
             <canvas id="longitudinalChart"></canvas>
         </div>
         <div id="telemetryStats" style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top: 15px;"></div>
@@ -359,6 +303,69 @@
 </div>
 
 <script>
+    function decodeJwtResponse(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    }
+
+    window.handleCredentialResponse = function(response) {
+        const responsePayload = decodeJwtResponse(response.credential);
+        localStorage.setItem('nexo_user_name', responsePayload.name);
+        localStorage.setItem('nexo_user_avatar', responsePayload.picture);
+        atualizarUIUsuario();
+    };
+
+    function atualizarUIUsuario() {
+        const nome = localStorage.getItem('nexo_user_name');
+        const avatar = localStorage.getItem('nexo_user_avatar');
+        if (nome && avatar) {
+            document.getElementById('googleAuthContainer').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('userName').innerText = nome.split(' ')[0];
+            document.getElementById('userAvatar').src = avatar;
+        } else {
+            document.getElementById('googleAuthContainer').style.display = 'flex';
+            document.getElementById('userProfile').style.display = 'none';
+        }
+    }
+
+    window.sairGoogle = function() {
+        localStorage.removeItem('nexo_user_name');
+        localStorage.removeItem('nexo_user_avatar');
+        atualizarUIUsuario();
+        location.reload();
+    };
+
+    window.toggleTheme = function() {
+        const body = document.body;
+        if (body.classList.contains('night-mode')) {
+            body.classList.remove('night-mode');
+            body.classList.add('light-mode');
+            localStorage.setItem('nexo_theme', 'light');
+        } else {
+            body.classList.remove('light-mode');
+            body.classList.add('night-mode');
+            localStorage.setItem('nexo_theme', 'night');
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('nexo_theme');
+        if (savedTheme === 'light') {
+            document.body.classList.remove('night-mode');
+            document.body.classList.add('light-mode');
+        }
+        atualizarUIUsuario();
+        carregarNotas();
+        carregarErros();
+        carregarTelemetriaAvancada();
+        atualizarSlide();
+    });
+
     window.toggleTool = function(drawerId) {
         const drawer = document.getElementById(drawerId);
         if (drawer) {
@@ -380,10 +387,77 @@
     atualizarRelogio();
 
     window.agendarNoGoogleCalendar = function() {
-        const titulo = encodeURIComponent("Sessão de Estudo Estratégico - Projeto Nexo");
-        const detalhes = encodeURIComponent("Sessão oficial do Projeto Nexo Sanctuary Master.");
-        window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&details=${detalhes}`, '_blank');
+        const titulo = encodeURIComponent("Sessão de Estudo - Projeto Nexo");
+        window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}`, '_blank');
     };
+
+    let telemetryChart = null;
+    async function carregarTelemetriaAvancada() {
+        try {
+            const res = await fetch('/api/v1/telemetry/advanced');
+            const data = await res.json();
+            
+            const labels = data.labels;
+            const scores = data.scores;
+            const consolidacao = data.consolidation_taxa;
+
+            const canvasEl = document.getElementById('longitudinalChart');
+            if (canvasEl) {
+                if (telemetryChart) telemetryChart.destroy();
+                telemetryChart = new Chart(canvasEl.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Pontuação Real',
+                                data: scores,
+                                borderColor: '#38bdf8',
+                                backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                                borderWidth: 3,
+                                tension: 0.3,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Taxa de Consolidação (%)',
+                                data: consolidacao,
+                                borderColor: '#34d399',
+                                backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                tension: 0.3,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 10 } } } },
+                        scales: {
+                            x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(100,100,100,0.1)' } },
+                            y: { type: 'linear', display: true, position: 'left', min: 0, max: 100, ticks: { color: '#38bdf8' } },
+                            y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { color: '#34d399' }, grid: { drawOnChartArea: false } }
+                        }
+                    }
+                });
+            }
+
+            const statsEl = document.getElementById('telemetryStats');
+            if (statsEl) {
+                statsEl.innerHTML = `
+                    <div style="background:var(--bg-base); border:1px solid var(--border-glow); padding:10px; border-radius:10px; text-align:center;">
+                        <div style="font-size:9px; color:var(--text-muted);">MÉDIA PONTUAÇÃO</div>
+                        <div style="font-size:14px; font-weight:800; color:var(--accent-cyan);">${data.stats.mean_score} pts</div>
+                    </div>
+                    <div style="background:var(--bg-base); border:1px solid var(--border-glow); padding:10px; border-radius:10px; text-align:center;">
+                        <div style="font-size:9px; color:var(--text-muted);">CONSOLIDAÇÃO MÉDIA</div>
+                        <div style="font-size:14px; font-weight:800; color:var(--accent-emerald);">${data.stats.mean_consolidation}%</div>
+                    </div>
+                `;
+            }
+        } catch(e) { console.error(e); }
+    }
 
     let listaNotasGlobal = [];
     async function carregarNotas() {
@@ -396,8 +470,7 @@
                 select.innerHTML = '<option value="">-- Nova Nota --</option>';
                 listaNotasGlobal.forEach(n => {
                     const opt = document.createElement('option');
-                    opt.value = n.id;
-                    opt.innerText = n.title || `Nota #${n.id}`;
+                    opt.value = n.id; opt.innerText = n.title || `Nota #${n.id}`;
                     select.appendChild(opt);
                 });
             }
@@ -417,27 +490,23 @@
         document.getElementById('noteId').value = '';
         document.getElementById('noteTitle').value = '';
         document.getElementById('noteContent').value = '';
-        const select = document.getElementById('notesSelect');
-        if (select) select.value = '';
+        document.getElementById('notesSelect').value = '';
     };
     window.salvarNotaAtual = async function() {
         const id = document.getElementById('noteId').value;
         const title = document.getElementById('noteTitle').value;
         const content = document.getElementById('noteContent').value;
-        if (!content) { alert('Escreva algum conteúdo na nota.'); return; }
+        if (!content) return alert('Escreva algum conteúdo.');
         const payload = { title, content };
         if (id) payload.id = parseInt(id);
         await fetch('/api/v1/notes', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-        alert('Nota salva com sucesso!');
-        carregarNotas();
+        alert('Salvo!'); carregarNotas();
     };
     window.apagarNotaAtual = async function() {
         const id = document.getElementById('noteId').value;
-        if (!id) { alert('Nenhuma nota selecionada.'); return; }
+        if (!id) return alert('Selecione uma nota.');
         await fetch(`/api/v1/notes/${id}`, { method: 'DELETE' });
-        alert('Nota apagada.');
-        window.novaNotaForm();
-        carregarNotas();
+        alert('Apagada.'); window.novaNotaForm(); carregarNotas();
     };
 
     async function carregarErros() {
@@ -446,7 +515,7 @@
             const data = await res.json();
             const container = document.getElementById('errorsListContainer');
             if (container) {
-                if (!data.errors.length) { container.innerHTML = "Nenhum erro registrado ainda."; return; }
+                if (!data.errors.length) { container.innerHTML = "Nenhum erro registrado."; return; }
                 container.innerHTML = data.errors.map(e => `[${e.date}] <b>${e.disciplina}</b> (${e.topico}) - <i>${e.motivo}</i>`).join('<br>');
             }
         } catch(e) { console.error(e); }
@@ -455,33 +524,20 @@
         const disciplina = document.getElementById('errDisciplina').value;
         const topico = document.getElementById('errTopico').value;
         const motivo = document.getElementById('errMotivo').value;
-        if (!disciplina || !topico) { alert('Preencha todos os campos.'); return; }
+        if (!disciplina || !topico) return alert('Preencha os campos.');
         await fetch('/api/v1/errors', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({disciplina, topico, motivo}) });
-        alert('Erro registrado!');
-        carregarErros();
+        alert('Registrado!'); carregarErros();
     };
 
     window.sciInput = function(val) {
         const disp = document.getElementById('sciDisplay');
-        if (disp) {
-            if (disp.value === '0' || disp.value === 'Erro') disp.value = '';
-            disp.value += val;
-        }
+        if (disp) { if (disp.value === '0' || disp.value === 'Erro') disp.value = ''; disp.value += val; }
     };
-    window.sciClear = function() {
-        const disp = document.getElementById('sciDisplay');
-        if (disp) disp.value = '0';
-    };
+    window.sciClear = function() { document.getElementById('sciDisplay').value = '0'; };
     window.sciCalculate = function() {
         const disp = document.getElementById('sciDisplay');
-        if (!disp) return;
         try {
-            let expr = disp.value
-                .replace(/sin\(/g, 'Math.sin(')
-                .replace(/cos\(/g, 'Math.cos(')
-                .replace(/tan\(/g, 'Math.tan(')
-                .replace(/sqrt\(/g, 'Math.sqrt(')
-                .replace(/pi/g, 'Math.PI');
+            let expr = disp.value.replace(/sin\(/g, 'Math.sin(').replace(/cos\(/g, 'Math.cos(').replace(/tan\(/g, 'Math.tan(').replace(/sqrt\(/g, 'Math.sqrt(').replace(/pi/g, 'Math.PI');
             disp.value = Function('"use strict";return (' + expr + ')')();
         } catch(e) { disp.value = 'Erro'; }
     };
@@ -489,9 +545,7 @@
     const listaVersiculos = [
         { texto: "O Senhor é o meu pastor; nada me faltará.", referencia: "Salmos 23:1", imagem: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e" },
         { texto: "Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.", referencia: "Salmos 119:105", imagem: "https://images.unsplash.com/photo-1519681393784-d120267933ba" },
-        { texto: "Tudo posso naquele que me fortalece.", referencia: "Filipenses 4:13", imagem: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05" },
-        { texto: "Confie no Senhor de todo o seu coração e não se apoie em sua própria inteligência.", referencia: "Provérbios 3:5", imagem: "https://images.unsplash.com/photo-1506744038136-46273834b3fb" },
-        { texto: "Ainda que eu caminhe pelo vale da sombra da morte, não temerei mal nenhum, pois tu estás comigo.", referencia: "Salmos 23:4", imagem: "https://images.unsplash.com/photo-1426604966848-d7adac902bff" }
+        { texto: "Tudo posso naquele que me fortalece.", referencia: "Filipenses 4:13", imagem: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05" }
     ];
     let indiceAtual = 0;
     function atualizarSlide() {
@@ -499,132 +553,74 @@
         const elementoTexto = document.getElementById('slide-texto');
         const elementoRef = document.getElementById('slide-ref');
         if (!elementoBox || !elementoTexto || !elementoRef) return;
-        elementoBox.style.opacity = '0.4';
-        setTimeout(() => {
-            const atual = listaVersiculos[indiceAtual];
-            elementoBox.style.backgroundImage = `url('${atual.imagem}')`;
-            elementoTexto.innerText = `"${atual.texto}"`;
-            elementoRef.innerText = `- ${atual.referencia}`;
-            elementoBox.style.opacity = '1';
-            indiceAtual = (indiceAtual + 1) % listaVersiculos.length;
-        }, 300);
+        const atual = listaVersiculos[indiceAtual];
+        elementoBox.style.backgroundImage = `url('${atual.imagem}')`;
+        elementoTexto.innerText = `"${atual.texto}"`;
+        elementoRef.innerText = `- ${atual.referencia}`;
+        indiceAtual = (indiceAtual + 1) % listaVersiculos.length;
     }
     window.proximoSlideManual = function() { atualizarSlide(); };
-    setInterval(atualizarSlide, 8000);
 
-    let telemetryChart = null;
-    async function carregarTelemetria() {
-        try {
-            const res = await fetch('/api/v1/telemetry');
-            const data = await res.json();
-            const labels = data.telemetry.map(t => t.label);
-            const scores = data.telemetry.map(t => t.score);
-            labels.push('Projeção');
-            scores.push(data.stats.projection);
-
-            const canvasEl = document.getElementById('longitudinalChart');
-            if (canvasEl) {
-                if (telemetryChart) telemetryChart.destroy();
-                telemetryChart = new Chart(canvasEl.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels,
-                        datasets: [{
-                            label: 'Desempenho vs Projeção',
-                            data: scores,
-                            borderColor: '#38bdf8',
-                            backgroundColor: 'rgba(56, 189, 248, 0.15)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.35,
-                            pointBackgroundColor: '#38bdf8',
-                            pointBorderColor: '#ffffff',
-                            pointRadius: 5
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700', size: 11 } } } },
-                        scales: {
-                            x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(56, 189, 248, 0.08)' } },
-                            y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(56, 189, 248, 0.08)' }, suggestedMin: 40, suggestedMax: 100 }
-                        }
-                    }
-                });
-            }
-
-            const statsEl = document.getElementById('telemetryStats');
-            if (statsEl) {
-                statsEl.innerHTML = '';
-                const stats = [
-                    ['Média Geral', data.stats.mean],
-                    ['Máximo', data.stats.max],
-                    ['Corte Alvo', data.stats.corte_alvo + ' pts'],
-                    ['Projeção', data.stats.projection + ' pts']
-                ];
-                stats.forEach(([label, val]) => {
-                    const div = document.createElement('div');
-                    div.style.cssText = 'background:rgba(15,23,42,0.85);border:1px solid var(--border-glow);padding:12px;border-radius:12px;text-align:center;';
-                    div.innerHTML = `<div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;font-weight:700;">${label}</div><div style="font-size:16px;font-weight:800;color:var(--accent-cyan);margin-top:4px;">${val}</div>`;
-                    statsEl.appendChild(div);
-                });
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        carregarNotas();
-        carregarErros();
-        carregarTelemetria();
-        atualizarSlide();
-    });
-
+    // Funções com Toggle Corrigido (Abre e Fecha)
     window.carregarBlocoDiario = async function() {
         const box = document.getElementById('blockResponse');
         if (!box) return;
+        if (box.style.display === 'block') { box.style.display = 'none'; return; }
         box.style.display = 'block';
+        box.innerText = 'A carregar...';
         const res = await fetch('/api/v1/blocks/daily');
         box.innerText = JSON.stringify(await res.json(), null, 2);
     };
+
     window.carregarRecomposicao = async function() {
-        const idEl = document.getElementById('attemptId');
+        const id = document.getElementById('attemptId').value;
         const container = document.getElementById('recompositionContentContainer');
-        if (!idEl || !container) return;
+        if (!container) return;
+        if (container.style.display === 'block') { container.style.display = 'none'; return; }
         container.style.display = 'block';
-        const res = await fetch(`/api/v1/recompositions/${idEl.value}`);
+        const res = await fetch(`/api/v1/recompositions/${id}`);
         const data = await res.json();
         document.getElementById('gapInfo').innerText = data.learning_gap;
         document.getElementById('microRevisaoInfo').innerText = data.micro_revisao;
         document.getElementById('exercicioInfo').innerText = data.exercicio_validacao;
     };
+
     window.enviarAcknowledge = async function() {
-        const idEl = document.getElementById('attemptId');
-        const cmdEl = document.getElementById('commandInput');
+        const id = document.getElementById('attemptId').value;
+        const cmd = document.getElementById('commandInput').value;
         const box = document.getElementById('ackResponse');
-        if (!idEl || !cmdEl || !box) return;
+        if (!box) return;
+        if (box.style.display === 'block') { box.style.display = 'none'; return; }
         box.style.display = 'block';
-        const res = await fetch(`/api/v1/recompositions/${idEl.value}/acknowledge`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({command: cmdEl.value}) });
+        const res = await fetch(`/api/v1/recompositions/${id}/acknowledge`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({command: cmd}) });
         box.innerText = JSON.stringify(await res.json(), null, 2);
     };
+
     window.carregarSimulado = async function() {
         const container = document.getElementById('simulatedContainer');
         if (!container) return;
+        if (container.style.display === 'block') { container.style.display = 'none'; return; }
         container.style.display = 'block';
         const res = await fetch('/api/v1/simulated/full');
         document.getElementById('questionBox').innerText = JSON.stringify(await res.json(), null, 2);
     };
+
     window.submeterSimulado = async function() {
         const box = document.getElementById('simResponse');
         if (!box) return;
+        if (box.style.display === 'block') { box.style.display = 'none'; return; }
         box.style.display = 'block';
+        box.innerText = 'A avaliar...';
         const res = await fetch('/api/v1/simulated/submit', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({answers: {1: 'A'}}) });
         box.innerText = JSON.stringify(await res.json(), null, 2);
     };
+
     window.enviarDiscursiva = async function() {
         const box = document.getElementById('discResponse');
         if (!box) return;
+        if (box.style.display === 'block') { box.style.display = 'none'; return; }
         box.style.display = 'block';
+        box.innerText = 'A auditar resposta...';
         const res = await fetch('/api/v1/discursive/submit', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ title: document.getElementById('examTitle').value, proposal_content: document.getElementById('proposalContent').value, student_answer: document.getElementById('studentAnswer').value }) });
         box.innerText = JSON.stringify(await res.json(), null, 2);
     };
